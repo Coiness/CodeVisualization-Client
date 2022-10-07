@@ -10,11 +10,14 @@ async function getData(): Promise<CanvasData> {
       height: 500,
       widgets: [
         {
+          id: "1",
+          type: "Number",
           x: 100,
           y: 100,
           width: 100,
           height: 100,
           color: "pink",
+          value: 18,
         },
       ],
       color: "#666",

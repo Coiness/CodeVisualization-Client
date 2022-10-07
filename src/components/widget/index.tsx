@@ -1,13 +1,5 @@
 import "./widget.css";
-
-interface WidgetModel {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-  value: unknown;
-}
+import { WidgetModel, WidgetMap, WidgetProps } from "./widgets";
 
 export interface WidgetManagerModel {
   widgets: WidgetModel[];
@@ -16,23 +8,15 @@ export interface WidgetManagerModel {
   color: string;
 }
 
-interface WidgetProps {
-  model: WidgetModel;
-}
-
-interface WidgetManagerProps {
+export interface WidgetManagerProps {
   model: WidgetManagerModel;
 }
 
 export function Widget(props: WidgetProps) {
   const { model } = props;
-  const { x, y, width, height, color } = model;
-  return (
-    <div
-      className="widget"
-      style={{ left: x, top: y, width, height, backgroundColor: color }}
-    ></div>
-  );
+  const WidgetComp = WidgetMap[model.type]();
+  const WidgetCompRender = WidgetComp.render;
+  return <WidgetCompRender {...props} />;
 }
 
 export function WidgetManager(props: WidgetManagerProps) {
@@ -45,7 +29,7 @@ export function WidgetManager(props: WidgetManagerProps) {
       style={{ width, height, backgroundColor: color }}
     >
       {widgets.map((widgetModel) => {
-        return <Widget model={widgetModel}></Widget>;
+        return <Widget key={widgetModel.id} model={widgetModel}></Widget>;
       })}
     </div>
   );
