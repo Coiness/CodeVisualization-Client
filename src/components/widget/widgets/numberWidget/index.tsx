@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Subject } from "../../../common/utils";
-import { IWidget, WidgetModel, WidgetProps } from "./type";
+import { Subject } from "../../../../common/utils";
+import { IWidget, WidgetModel, WidgetProps } from "../type";
+import "./index.css";
 
 type NWValue = number | null;
 
@@ -8,7 +9,7 @@ export interface NumberWidgetModel {
   value: NWValue;
 }
 
-type Model = NumberWidgetModel & WidgetModel;
+// type Model = NumberWidgetModel & WidgetModel;
 
 export class NumberWidget implements IWidget {
   private value: NWValue;
@@ -45,7 +46,6 @@ export class NumberWidget implements IWidget {
 
   render = (props: WidgetProps) => {
     const { model } = props;
-    const { x, y, width, height, color } = model as Model;
     this.value = model.value;
     const [value, setValue] = useState<NWValue>(this.value);
 
@@ -59,14 +59,7 @@ export class NumberWidget implements IWidget {
       };
     }, []);
 
-    return (
-      <div
-        className="widget"
-        style={{ left: x, top: y, width, height, backgroundColor: color }}
-      >
-        {value}
-      </div>
-    );
+    return <div className="numberWidget">{value}</div>;
   };
 }
 

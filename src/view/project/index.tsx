@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { sleep } from "../../common/utils";
 import { WidgetManagerModel, WidgetManager } from "../../components/widget";
+import { ControlPanel } from "./controlPanel";
 
 async function getData(): Promise<CanvasData> {
   await sleep(1000);
@@ -52,6 +53,7 @@ export function Project() {
     <div>
       project
       <MainCanvas></MainCanvas>
+      <ControlPanel></ControlPanel>
     </div>
   );
 }

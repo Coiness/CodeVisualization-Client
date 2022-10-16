@@ -4,7 +4,7 @@ export function sleep(time: number) {
   });
 }
 
-interface Subscription {
+export interface Subscription {
   unsubscribe: () => void;
 }
 

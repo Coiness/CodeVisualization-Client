@@ -1,4 +1,4 @@
-import { CreateNumberWidget, NumberWidgetModel } from "./NumberWidget";
+import { CreateNumberWidget, NumberWidgetModel } from "./numberWidget";
 
 export interface BaseModel {
   id: string;
