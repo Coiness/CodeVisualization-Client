@@ -9,7 +9,7 @@ export interface NumberWidgetModel {
   value: NWValue;
 }
 
-// type Model = NumberWidgetModel & WidgetModel;
+type Model = NumberWidgetModel & WidgetModel;
 
 export class NumberWidget implements IWidget {
   private value: NWValue;
@@ -45,7 +45,7 @@ export class NumberWidget implements IWidget {
   };
 
   render = (props: WidgetProps) => {
-    const { model } = props;
+    const model: Model = props.model;
     this.value = model.value;
     const [value, setValue] = useState<NWValue>(this.value);
 
@@ -57,7 +57,7 @@ export class NumberWidget implements IWidget {
       return () => {
         subscription.unsubscribe();
       };
-    }, [this.value$, this, this.value$.subscribe, model]);
+    }, [model]);
 
     return <div className="numberWidget">{value}</div>;
   };

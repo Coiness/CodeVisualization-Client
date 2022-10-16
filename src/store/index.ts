@@ -8,11 +8,8 @@ export interface Status<T> {
   subscribe: (f: (v: T) => void) => Subscription;
 }
 
-function createStatus<T>(defaultValue?: T) {
-  let value: T;
-  if (defaultValue) {
-    value = defaultValue;
-  }
+function createStatus<T>(defaultValue: T) {
+  let value = defaultValue;
   const subject = new Subject<T>();
   return {
     get(): T {
@@ -28,10 +25,7 @@ function createStatus<T>(defaultValue?: T) {
   };
 }
 
-export function useStore<T>(
-  status: Status<T>,
-  key: any
-): [v: T, f: (v: T) => void] {
+export function useStore<T>(status: Status<T>): [v: T, f: (v: T) => void] {
   const [state, setState] = useState<T>(status.get());
   useEffect(() => {
     const sub = status.subscribe((v) => {

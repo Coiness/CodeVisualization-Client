@@ -24,10 +24,8 @@ export function Widget(props: WidgetProps) {
   const WidgetComp = WidgetMap[model.type]();
   const WidgetCompRender = WidgetComp.render;
   const { x, y, width, height, color } = model;
-  const [activeWidgetValue, setActiveWidget] = useStore<WidgetInfo>(
-    activeWidget,
-    model.id
-  );
+  const [activeWidgetValue, setActiveWidget] =
+    useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
   return (
     <div
