@@ -57,7 +57,7 @@ export class NumberWidget implements IWidget {
       return () => {
         subscription.unsubscribe();
       };
-    }, []);
+    }, [this.value$, this, this.value$.subscribe, model]);
 
     return <div className="numberWidget">{value}</div>;
   };

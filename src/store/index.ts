@@ -28,7 +28,10 @@ function createStatus<T>(defaultValue?: T) {
   };
 }
 
-export function useStore<T>(status: Status<T>): [v: T, f: (v: T) => void] {
+export function useStore<T>(
+  status: Status<T>,
+  key: any
+): [v: T, f: (v: T) => void] {
   const [state, setState] = useState<T>(status.get());
   useEffect(() => {
     const sub = status.subscribe((v) => {

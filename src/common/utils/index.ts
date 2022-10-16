@@ -9,7 +9,7 @@ export interface Subscription {
 }
 
 export class Subject<T> {
-  private map = new Map<number, (value: T) => void>();
+  private map = new Map<Symbol, (value: T) => void>();
   next(value: T): void {
     const map = this.map;
     map.forEach((f) => {
@@ -18,7 +18,7 @@ export class Subject<T> {
   }
   subscribe(f: (value: T) => void): Subscription {
     const map = this.map;
-    const key = Date.now();
+    const key = Symbol();
     map.set(key, f);
 
     return {
