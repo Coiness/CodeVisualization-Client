@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Subject, Subscription } from "../common/utils";
-import { WidgetInfo } from "../components/widget";
+import { WidgetInfo } from "../components/widget/widgets";
 
 export interface Status<T> {
   get: () => T;

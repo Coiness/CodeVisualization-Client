@@ -1,15 +1,12 @@
-import { activeWidget, useStore } from "../../../store";
+import { WidgetInfoView } from "./WidgetInfoView";
+import "./controlPanel.css";
+import { ValueEdit } from "./ValueEdit";
+
 export function ControlPanel() {
-  const [activeWidgetValue, setActiveWidget] = useStore(activeWidget);
-  if (activeWidgetValue === null) {
-    return null;
-  }
-  const { type, id } = activeWidgetValue;
   return (
     <div className="controlPanel">
-      type: {type}
-      <br />
-      id: {id}
+      <WidgetInfoView></WidgetInfoView>
+      <ValueEdit></ValueEdit>
     </div>
   );
 }
