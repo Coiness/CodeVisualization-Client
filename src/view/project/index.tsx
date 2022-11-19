@@ -2,13 +2,14 @@ import { useState } from "react";
 import { sleep } from "../../common/utils";
 import { WidgetManagerModel, WidgetManager } from "../../components/widget";
 import { ControlPanel } from "./controlPanel";
+import "./index.css";
 
 async function getData(): Promise<CanvasData> {
   await sleep(1000);
   return {
     widgetManagerModel: {
-      width: 500,
-      height: 500,
+      width: 700,
+      height: 700,
       widgets: [
         {
           id: "1",
@@ -25,10 +26,20 @@ async function getData(): Promise<CanvasData> {
           type: "Number",
           x: 300,
           y: 100,
-          width: 50,
+          width: 120,
           height: 20,
           color: "skyblue",
           value: 20,
+        },
+        {
+          id: "3",
+          type: "String",
+          x: 400,
+          y: 500,
+          width: 100,
+          height: 30,
+          color: "yellow",
+          value: "qwe",
         },
       ],
       color: "#666",
@@ -51,7 +62,7 @@ function MainCanvas() {
   }
 
   return (
-    <div>
+    <div className="main">
       MainCanvas
       {data && <WidgetManager model={data.widgetManagerModel}></WidgetManager>}
     </div>
@@ -60,7 +71,7 @@ function MainCanvas() {
 
 export function Project() {
   return (
-    <div>
+    <div className="project">
       project
       <MainCanvas></MainCanvas>
       <ControlPanel></ControlPanel>

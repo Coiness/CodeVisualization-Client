@@ -1,9 +1,4 @@
-import { Subject } from "../../../common/utils";
-import {
-  CreateNumberWidget,
-  NumberWidgetModel,
-  NumberWidgetRender,
-} from "./numberWidget";
+import type { Subject } from "../../../common/utils";
 
 export interface BaseModel {
   id: string;
@@ -13,9 +8,10 @@ export interface BaseModel {
   width: number;
   height: number;
   color: string;
+  [key: string]: any;
 }
 
-export type WidgetModel = BaseModel & NumberWidgetModel;
+export type WidgetModel = BaseModel;
 
 export interface WidgetProps {
   model: WidgetModel;
@@ -29,26 +25,13 @@ export interface IWidget {
 
 export enum WidgetType {
   Number = "Number",
-  // String = "String",
+  String = "String",
 }
-
-export const WidgetMap: Record<WidgetType, (model: WidgetModel) => IWidget> = {
-  [WidgetType.Number]: CreateNumberWidget,
-  // [WidgetType.String]: CreateNumberWidget,
-};
 
 export interface WidgetRenderProps {
   widget: IWidget;
   model: WidgetModel;
 }
-
-export const WidgetRenderMap: Record<
-  WidgetType,
-  (props: WidgetRenderProps) => JSX.Element
-> = {
-  [WidgetType.Number]: NumberWidgetRender,
-  // [WidgetType.String]: CreateNumberWidget,
-};
 
 export type WidgetInfo = {
   // store用

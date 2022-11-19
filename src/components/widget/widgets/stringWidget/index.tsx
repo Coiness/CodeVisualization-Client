@@ -3,15 +3,15 @@ import { Subject } from "../../../../common/utils";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
 import "./index.css";
 
-type Value = number | null;
+type Value = string | null;
 
-export interface NumberWidgetModel {
+export interface StringWidgetModel {
   value: Value;
 }
 
-type Model = WidgetModel & NumberWidgetModel;
+type Model = WidgetModel & StringWidgetModel;
 
-export class NumberWidget implements IWidget {
+export class StringWidget implements IWidget {
   private value: Value;
   private model: Model;
   value$: Subject<Value>;
@@ -26,9 +26,6 @@ export class NumberWidget implements IWidget {
   init = () => {};
 
   setValue = (value: unknown) => {
-    if (value !== null && isNaN(Number(value))) {
-      return;
-    }
     this.model.value = value as Value;
     this.value = value as Value;
     this.value$.next(this.value);
@@ -38,20 +35,14 @@ export class NumberWidget implements IWidget {
     return this.value;
   };
 
-  inc = () => {
-    if (this.value !== null) {
-      this.setValue(this.value + 1);
-    }
-  };
-
-  dec = () => {
-    if (this.value !== null) {
-      this.setValue(this.value - 1);
+  reverse = () => {
+    if (this.value) {
+      this.setValue(this.value?.split("").reverse().join(""));
     }
   };
 }
 
-export function NumberWidgetRender(props: WidgetRenderProps) {
+export function StringWidgetRender(props: WidgetRenderProps) {
   const widget = props.widget;
   const model = props.model;
   const v = widget.getValue() as Value;
@@ -67,9 +58,9 @@ export function NumberWidgetRender(props: WidgetRenderProps) {
     };
   }, [model, widget]);
 
-  return <div className="numberWidget">number: {value}</div>;
+  return <div className="stringWidget">string: {value}</div>;
 }
 
-export function CreateNumberWidget(model: WidgetModel) {
-  return new NumberWidget(model as Model);
+export function CreateStringWidget(model: WidgetModel) {
+  return new StringWidget(model as Model);
 }
