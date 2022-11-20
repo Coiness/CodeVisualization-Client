@@ -28,3 +28,8 @@ export class Subject<T> {
     };
   }
 }
+
+export function cls(...args: any[]) {
+  const arr = args.filter((item) => !!item);
+  return arr.join(" ");
+}

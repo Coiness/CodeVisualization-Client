@@ -59,7 +59,11 @@ export function Widget(props: WidgetProps) {
       }}
       style={{ left: x, top: y, width, height, backgroundColor: color }}
     >
-      <WidgetCompRender {...props} widget={WidgetModel} />
+      <WidgetCompRender
+        className="widgetComp"
+        {...props}
+        widget={WidgetModel}
+      />
       {isActive && <SelectDrag></SelectDrag>}
     </div>
   );

@@ -29,6 +29,7 @@ export enum WidgetType {
 }
 
 export interface WidgetRenderProps {
+  className: any;
   widget: IWidget;
   model: WidgetModel;
 }

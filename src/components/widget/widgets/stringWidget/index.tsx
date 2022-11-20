@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Subject } from "../../../../common/utils";
+import { cls, Subject } from "../../../../common/utils";
+import { xSet } from "../../../../core/undo";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
 import "./index.css";
 
@@ -26,7 +27,11 @@ export class StringWidget implements IWidget {
   init = () => {};
 
   setValue = (value: unknown) => {
-    this.model.value = value as Value;
+    // this.model.value = value as Value;
+    xSet(this.model, "value", value, () => {
+      this.value = this.model.value;
+      this.value$.next(this.model.value);
+    });
     this.value = value as Value;
     this.value$.next(this.value);
   };
@@ -50,7 +55,6 @@ export function StringWidgetRender(props: WidgetRenderProps) {
 
   useEffect(() => {
     const subscription = widget.value$.subscribe((value) => {
-      model.value = value;
       setValue(value);
     });
     return () => {
@@ -58,7 +62,9 @@ export function StringWidgetRender(props: WidgetRenderProps) {
     };
   }, [model, widget]);
 
-  return <div className="stringWidget">string: {value}</div>;
+  return (
+    <div className={cls("stringWidget", props.className)}>string: {value}</div>
+  );
 }
 
 export function CreateStringWidget(model: WidgetModel) {

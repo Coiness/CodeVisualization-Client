@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Subject, Subscription } from "../common/utils";
-import { WidgetInfo } from "../components/widget/widgets";
+import { WidgetInfo, WidgetType } from "../components/widget/widgets";
+import { HistoryInfo } from "../core/undo";
+import { CanvasData } from "../view/project";
 
 export interface Status<T> {
   get: () => T;
@@ -42,4 +44,9 @@ export function useStore<T>(status: Status<T>): [v: T, f: (v: T) => void] {
 }
 
 export const activeWidget = createStatus<WidgetInfo>(null);
-export const activeWidgetType = createStatus<WidgetInfo>(null);
+export const activeWidgetType = createStatus<WidgetType | null>(null);
+export const snapshot = createStatus<CanvasData | null>(null);
+export const historyInfo = createStatus<HistoryInfo>({
+  history: [],
+  index: 0,
+});

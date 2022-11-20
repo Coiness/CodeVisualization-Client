@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Subject } from "../../../../common/utils";
+import { cls, Subject } from "../../../../common/utils";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
 import "./index.css";
 
@@ -67,7 +67,9 @@ export function NumberWidgetRender(props: WidgetRenderProps) {
     };
   }, [model, widget]);
 
-  return <div className="numberWidget">number: {value}</div>;
+  return (
+    <div className={cls("numberWidget", props.className)}>number: {value}</div>
+  );
 }
 
 export function CreateNumberWidget(model: WidgetModel) {

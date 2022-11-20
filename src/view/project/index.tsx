@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { sleep } from "../../common/utils";
 import { WidgetManagerModel, WidgetManager } from "../../components/widget";
+import { initUndo, useUndo } from "../../core/undo";
+import { snapshot } from "../../store";
 import { ControlPanel } from "./controlPanel";
 import "./index.css";
 
@@ -47,16 +49,20 @@ async function getData(): Promise<CanvasData> {
   } as CanvasData;
 }
 
-interface CanvasData {
+export interface CanvasData {
   widgetManagerModel: WidgetManagerModel;
 }
 
 function MainCanvas() {
   const [data, setData] = useState<CanvasData | null>(null);
 
+  useUndo();
+
   if (data == null) {
     (async () => {
       let d = await getData();
+      snapshot.set(d);
+      initUndo();
       setData(d);
     })();
   }
