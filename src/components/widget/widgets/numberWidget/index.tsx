@@ -5,18 +5,16 @@ import "./index.css";
 
 type Value = number | null;
 
-export interface NumberWidgetModel {
+export interface NumberWidgetModel extends WidgetModel {
   value: Value;
 }
 
-type Model = WidgetModel & NumberWidgetModel;
-
 export class NumberWidget implements IWidget {
   private value: Value;
-  private model: Model;
+  private model: NumberWidgetModel;
   value$: Subject<Value>;
 
-  constructor(model: Model) {
+  constructor(model: NumberWidgetModel) {
     this.value = model.value;
     this.value$ = new Subject<Value>();
     this.model = model;
@@ -73,5 +71,5 @@ export function NumberWidgetRender(props: WidgetRenderProps) {
 }
 
 export function CreateNumberWidget(model: WidgetModel) {
-  return new NumberWidget(model as Model);
+  return new NumberWidget(model as NumberWidgetModel);
 }

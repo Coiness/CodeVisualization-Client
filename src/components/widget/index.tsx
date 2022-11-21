@@ -9,6 +9,8 @@ import {
 } from "./widgets";
 import { activeWidget, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
+import { useCallback, useState } from "react";
+import { xSet } from "../../core/undo";
 
 export interface WidgetManagerModel {
   widgets: WidgetModel[];
@@ -39,14 +41,31 @@ export class WidgetModelManager {
 
 export const widgetModelManager = new WidgetModelManager();
 
+type MiniModel = {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  color?: string;
+};
+
 export function Widget(props: WidgetProps) {
   const { model } = props;
   const WidgetModel = widgetModelManager.getModel(model);
   const WidgetCompRender = WidgetRenderMap[model.type];
-  const { x, y, width, height, color } = model;
+  const [m, setM] = useState<MiniModel>(model);
+  const { x, y, width, height, color } = m;
   const [activeWidgetValue, setActiveWidget] =
     useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
+  const updateModel = useCallback(() => {
+    setM({
+      ...model,
+    });
+  }, [setM, model]);
+  if (!(x && y && width && height && color)) {
+    return null;
+  }
   return (
     <div
       className="widget"
@@ -64,7 +83,20 @@ export function Widget(props: WidgetProps) {
         {...props}
         widget={WidgetModel}
       />
-      {isActive && <SelectDrag></SelectDrag>}
+      {isActive && (
+        <SelectDrag
+          onDrag={(nx: number, ny: number) => {
+            xSet(
+              model,
+              [
+                ["x", x + nx],
+                ["y", y + ny],
+              ],
+              updateModel
+            );
+          }}
+        ></SelectDrag>
+      )}
     </div>
   );
 }

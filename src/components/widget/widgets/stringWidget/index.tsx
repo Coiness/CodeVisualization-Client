@@ -6,18 +6,16 @@ import "./index.css";
 
 type Value = string | null;
 
-export interface StringWidgetModel {
+export interface StringWidgetModel extends WidgetModel {
   value: Value;
 }
 
-type Model = WidgetModel & StringWidgetModel;
-
 export class StringWidget implements IWidget {
   private value: Value;
-  private model: Model;
+  private model: StringWidgetModel;
   value$: Subject<Value>;
 
-  constructor(model: Model) {
+  constructor(model: StringWidgetModel) {
     this.value = model.value;
     this.value$ = new Subject<Value>();
     this.model = model;
@@ -27,13 +25,10 @@ export class StringWidget implements IWidget {
   init = () => {};
 
   setValue = (value: unknown) => {
-    // this.model.value = value as Value;
-    xSet(this.model, "value", value, () => {
+    xSet(this.model, [["value", value]], () => {
       this.value = this.model.value;
       this.value$.next(this.model.value);
     });
-    this.value = value as Value;
-    this.value$.next(this.value);
   };
 
   getValue = () => {
@@ -68,5 +63,5 @@ export function StringWidgetRender(props: WidgetRenderProps) {
 }
 
 export function CreateStringWidget(model: WidgetModel) {
-  return new StringWidget(model as Model);
+  return new StringWidget(model as StringWidgetModel);
 }

@@ -56,6 +56,7 @@ function execDo(cs: ChangeSet, cb?: () => void) {
   historyInfoValue.history[historyInfoValue.index] = { cs, cb };
   historyInfoValue.index++;
   historyInfoValue.history.length = historyInfoValue?.index;
+  cb && cb();
 }
 
 function execUndo() {
@@ -86,25 +87,27 @@ function execRedo() {
 
 export function xSet(
   obj: any,
-  attr: string | number,
-  value: any,
+  change: [attr: string | number, value: any][],
   cb?: () => void
 ) {
   if (typeof obj === "object") {
     const path = getPath(obj);
-    let p;
-    if (path === "") {
-      p = "attr";
-    } else {
-      p = `${path}.${attr}`;
+    const cs = [] as ChangeSet;
+    for (let item of change) {
+      const [attr, value] = item;
+      let p;
+      if (path === "") {
+        p = `${attr}`;
+      } else {
+        p = `${path}.${attr}`;
+      }
+      if (obj.hasOwnProperty(attr)) {
+        cs.push({ t: "u", p, c: [obj[attr], value] });
+      } else {
+        cs.push({ t: "c", p, c: [value] });
+      }
     }
-    if (obj.hasOwnProperty(attr)) {
-      const cs = [{ t: "u", p, c: [obj[attr], value] }] as ChangeSet;
-      execDo(cs, cb);
-    } else {
-      const cs = [{ t: "c", p, c: [value] }] as ChangeSet;
-      execDo(cs, cb);
-    }
+    execDo(cs, cb);
   } else {
     throw new Error("xSet obj not object type");
   }
