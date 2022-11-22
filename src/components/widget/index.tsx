@@ -85,15 +85,33 @@ export function Widget(props: WidgetProps) {
       />
       {isActive && (
         <SelectDrag
-          onDrag={(nx: number, ny: number) => {
-            xSet(
-              model,
-              [
-                ["x", x + nx],
-                ["y", y + ny],
-              ],
-              updateModel
-            );
+          dragInfo={{
+            x,
+            y,
+            onDrag: (nx: number, ny: number) => {
+              xSet(
+                model,
+                [
+                  ["x", nx],
+                  ["y", ny],
+                ],
+                updateModel
+              );
+            },
+          }}
+          resizeInfo={{
+            width,
+            height,
+            onResize: (nw: number, nh: number) => {
+              xSet(
+                model,
+                [
+                  ["width", nw],
+                  ["height", nh],
+                ],
+                updateModel
+              );
+            },
           }}
         ></SelectDrag>
       )}
