@@ -6,11 +6,15 @@ import {
   WidgetInfo,
   WidgetRenderMap,
   IWidget,
+  BaseModel,
 } from "./widgets";
 import { activeWidget, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { xSet } from "../../core/undo";
+import { WidgetAction } from "../../core/action/WidgetAction";
+import { commitAction } from "../../core/action";
+import { modelChange } from "../../core/diff/objDiff";
 
 export interface WidgetManagerModel {
   widgets: WidgetModel[];
@@ -41,28 +45,31 @@ export class WidgetModelManager {
 
 export const widgetModelManager = new WidgetModelManager();
 
-type MiniModel = {
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-  color?: string;
-};
+export function useModelChange(model: BaseModel) {
+  const [m, s] = useState({ ...model });
+  useEffect(() => {
+    const sub = modelChange.subscribe((newModel) => {
+      if ((newModel as BaseModel).id === m.id) {
+        s({
+          ...newModel,
+        });
+      }
+    });
+    return () => {
+      sub.unsubscribe();
+    };
+  });
+  return m;
+}
 
 export function Widget(props: WidgetProps) {
-  const { model } = props;
+  const model = useModelChange(props.model);
   const WidgetModel = widgetModelManager.getModel(model);
   const WidgetCompRender = WidgetRenderMap[model.type];
-  const [m, setM] = useState<MiniModel>(model);
-  const { x, y, width, height, color } = m;
+  const { x, y, width, height, color } = model;
   const [activeWidgetValue, setActiveWidget] =
     useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
-  const updateModel = useCallback(() => {
-    setM({
-      ...model,
-    });
-  }, [setM, model]);
   if (!(x && y && width && height && color)) {
     return null;
   }
@@ -89,28 +96,22 @@ export function Widget(props: WidgetProps) {
             x,
             y,
             onDrag: (nx: number, ny: number) => {
-              xSet(
-                model,
-                [
-                  ["x", nx],
-                  ["y", ny],
-                ],
-                updateModel
-              );
+              const action = WidgetAction.create(model, {
+                type: "move",
+                change: { x: nx, y: ny },
+              });
+              commitAction(action);
             },
           }}
           resizeInfo={{
             width,
             height,
             onResize: (nw: number, nh: number) => {
-              xSet(
-                model,
-                [
-                  ["width", nw],
-                  ["height", nh],
-                ],
-                updateModel
-              );
+              const action = WidgetAction.create(model, {
+                type: "resize",
+                change: { w: nw, h: nh },
+              });
+              commitAction(action);
             },
           }}
         ></SelectDrag>

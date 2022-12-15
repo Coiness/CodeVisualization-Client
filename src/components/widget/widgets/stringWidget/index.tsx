@@ -25,10 +25,7 @@ export class StringWidget implements IWidget {
   init = () => {};
 
   setValue = (value: unknown) => {
-    xSet(this.model, [["value", value]], () => {
-      this.value = this.model.value;
-      this.value$.next(this.model.value);
-    });
+    xSet(this.model, [["value", value]]);
   };
 
   getValue = () => {

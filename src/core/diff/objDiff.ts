@@ -1,4 +1,6 @@
 import { get, cloneDeep } from "lodash";
+import { Subject } from "../../common/utils";
+import { BaseModel } from "../../components/widget/widgets";
 import { Obj } from "../types";
 
 // export function objDiff(o1: any, o2: any): ChangeSet {
@@ -11,6 +13,7 @@ import { Obj } from "../types";
 //     }
 //   }
 // }
+export const modelChange = new Subject<BaseModel>();
 
 export type ChangeSet = {
   t: "u" | "d" | "c";
@@ -38,6 +41,7 @@ export function doChange(obj: Obj, cs: ChangeSet) {
     } else if (change.t === "c") {
       o[attr] = change.c[0];
     }
+    modelChange.next(o as BaseModel);
   });
 }
 

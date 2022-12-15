@@ -6,7 +6,7 @@ import { Obj } from "../types";
 const pathKey = Symbol("pathKey");
 
 export type HistoryInfo = {
-  history: { cs: ChangeSet; cb: (() => void) | undefined }[];
+  history: { cs: ChangeSet }[];
   index: number;
 };
 
@@ -49,71 +49,72 @@ function getPath(obj: any) {
   return obj[pathKey];
 }
 
-function execDo(cs: ChangeSet, cb?: () => void) {
+export function execDo(cs: ChangeSet) {
   const data = snapshot.get();
   const historyInfoValue = historyInfo.get();
   doChange(data as Obj, cs);
-  historyInfoValue.history[historyInfoValue.index] = { cs, cb };
+  historyInfoValue.history[historyInfoValue.index] = { cs };
   historyInfoValue.index++;
   historyInfoValue.history.length = historyInfoValue?.index;
-  cb && cb();
 }
 
-function execUndo() {
+export function execUndo() {
   const data = snapshot.get();
   const historyInfoValue = historyInfo.get();
   if (historyInfoValue.index > 0) {
     historyInfoValue.index--;
-    const { cs, cb } = historyInfoValue.history[historyInfoValue.index];
+    const { cs } = historyInfoValue.history[historyInfoValue.index];
     doInvertedChange(data as Obj, cs);
-    cb && cb();
   } else {
     console.log("DEBUG: ", "undo empty");
   }
 }
 
-function execRedo() {
+export function execRedo() {
   const data = snapshot.get();
   const historyInfoValue = historyInfo.get();
   if (historyInfoValue.history.length > historyInfoValue.index) {
-    const { cs, cb } = historyInfoValue.history[historyInfoValue.index];
+    const { cs } = historyInfoValue.history[historyInfoValue.index];
     doChange(data as Obj, cs);
     historyInfoValue.index++;
-    cb && cb();
   } else {
     console.log("DEBUG: ", "redo empty");
   }
 }
 
-export function xSet(
+export function getSetCS(
   obj: any,
-  change: [attr: string | number, value: any][],
-  cb?: () => void
+  change: [attr: string | number, value: any][]
 ) {
-  if (typeof obj === "object") {
-    const path = getPath(obj);
-    const cs = [] as ChangeSet;
-    for (let item of change) {
-      const [attr, value] = item;
-      let p;
-      if (path === "") {
-        p = `${attr}`;
-      } else {
-        p = `${path}.${attr}`;
-      }
-      if (obj.hasOwnProperty(attr)) {
-        cs.push({ t: "u", p, c: [obj[attr], value] });
-      } else {
-        cs.push({ t: "c", p, c: [value] });
-      }
+  const path = getPath(obj);
+  const cs = [] as ChangeSet;
+  for (let item of change) {
+    const [attr, value] = item;
+    let p;
+    if (path === "") {
+      p = `${attr}`;
+    } else {
+      p = `${path}.${attr}`;
     }
-    execDo(cs, cb);
+    if (obj.hasOwnProperty(attr)) {
+      cs.push({ t: "u", p, c: [obj[attr], value] });
+    } else {
+      cs.push({ t: "c", p, c: [value] });
+    }
+  }
+  return cs;
+}
+
+export function xSet(obj: any, change: [attr: string | number, value: any][]) {
+  if (typeof obj === "object") {
+    const cs = getSetCS(obj, change);
+    execDo(cs);
   } else {
     throw new Error("xSet obj not object type");
   }
 }
 
-export function xRm(obj: any, attr: string | number, cb?: () => void) {
+export function xRm(obj: any, attr: string | number) {
   if (typeof obj === "object") {
     const path = getPath(obj);
     let p;
@@ -124,7 +125,7 @@ export function xRm(obj: any, attr: string | number, cb?: () => void) {
     }
     if (obj.hasOwnProperty(attr)) {
       const cs = [{ t: "d", p, c: [obj[attr]] }] as ChangeSet;
-      execDo(cs, cb);
+      execDo(cs);
     }
   } else {
     throw new Error("xSet obj not object type");
