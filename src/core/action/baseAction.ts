@@ -1,3 +1,4 @@
+import { sleep, Subject } from "../../common/utils";
 import { ChangeSet } from "../diff/objDiff";
 import { execDo } from "../undo";
 
@@ -32,14 +33,29 @@ export class BaseAction implements Action {
   }
 }
 
+export const actionCommitter = new Subject<Action>();
+
 // export function changeModel() {}
 
+/**
+ * 应用 action
+ *
+ * 收到长链通知或者播放录像时触发
+ *
+ * @param action
+ */
 export function applyAction(action: Action) {
-  // 将 action 交给对应拿着 model 的组件处理
-  // 组件执行动画之后应用其中的 cs
+  (async () => {
+    // 将 action 交给对应拿着 model 的组件处理
+    await sleep(1000);
+    // 组件执行动画之后应用其中的 cs
+    const { cs } = action;
+    execDo(cs);
+  })();
 }
 
 export function commitAction(action: Action) {
+  actionCommitter.next(action);
   // 应用其中的 cs
   const { cs } = action;
   execDo(cs);

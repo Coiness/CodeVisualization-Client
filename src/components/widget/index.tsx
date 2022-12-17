@@ -47,6 +47,8 @@ export const widgetModelManager = new WidgetModelManager();
 
 export function useModelChange(model: BaseModel) {
   const [m, s] = useState({ ...model });
+
+  // 监听对应 model 的 change
   useEffect(() => {
     const sub = modelChange.subscribe((newModel) => {
       if ((newModel as BaseModel).id === m.id) {
@@ -59,6 +61,12 @@ export function useModelChange(model: BaseModel) {
       sub.unsubscribe();
     };
   });
+
+  // 监听 props 传过来的 change
+  useEffect(() => {
+    s({ ...model });
+  }, [model]);
+
   return m;
 }
 

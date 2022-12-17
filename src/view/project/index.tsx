@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { sleep } from "../../common/utils";
 import { WidgetManagerModel, WidgetManager } from "../../components/widget";
+import { modelSwitcher } from "../../core";
 import { initUndo, useUndo } from "../../core/undo";
-import { snapshot } from "../../store";
+import { snapshot, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
 import "./index.css";
 
-async function getData(): Promise<CanvasData> {
+async function getData(): Promise<Snapshot> {
   await sleep(1000);
   return {
     widgetManagerModel: {
@@ -46,24 +47,25 @@ async function getData(): Promise<CanvasData> {
       ],
       color: "#666",
     },
-  } as CanvasData;
+  } as Snapshot;
 }
 
-export interface CanvasData {
+export interface Snapshot {
   widgetManagerModel: WidgetManagerModel;
 }
 
 function MainCanvas() {
-  const [data, setData] = useState<CanvasData | null>(null);
+  const [data] = useStore(snapshot);
+
+  console.log("DEBUG: ", data);
 
   useUndo();
 
   if (data == null) {
     (async () => {
       let d = await getData();
-      snapshot.set(d);
+      modelSwitcher.pushModel(d);
       initUndo();
-      setData(d);
     })();
   }
 
