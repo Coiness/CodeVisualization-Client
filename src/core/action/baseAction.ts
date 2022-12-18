@@ -1,8 +1,9 @@
-import { sleep, Subject } from "../../common/utils";
+import { Subject } from "../../common/utils";
 import { ChangeSet } from "../diff/objDiff";
 import { execDo } from "../undo";
 
 export interface Action {
+  type: string;
   id: string;
   data: unknown;
   cs: ChangeSet;
@@ -23,11 +24,13 @@ function createId(): string {
 }
 
 export class BaseAction implements Action {
+  type: string;
   id: string;
   data: unknown;
   cs: ChangeSet;
-  constructor(data: unknown, cs: ChangeSet) {
+  constructor(data: unknown, cs: ChangeSet, type: string) {
     this.id = createId();
+    this.type = type;
     this.data = data;
     this.cs = cs;
   }
@@ -36,6 +39,8 @@ export class BaseAction implements Action {
 export const actionCommitter = new Subject<Action>();
 
 // export function changeModel() {}
+
+export const actionExeter = new Subject<{ action: Action; end: () => void }>();
 
 /**
  * 应用 action
@@ -47,10 +52,14 @@ export const actionCommitter = new Subject<Action>();
 export function applyAction(action: Action) {
   (async () => {
     // 将 action 交给对应拿着 model 的组件处理
-    await sleep(1000);
-    // 组件执行动画之后应用其中的 cs
-    const { cs } = action;
-    execDo(cs);
+    actionExeter.next({
+      action,
+      end: () => {
+        // 组件执行动画之后应用其中的 cs
+        const { cs } = action;
+        execDo(cs);
+      },
+    });
   })();
 }
 

@@ -10,11 +10,11 @@ import {
 } from "./widgets";
 import { activeWidget, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
-import { useCallback, useEffect, useState } from "react";
-import { xSet } from "../../core/undo";
-import { WidgetAction } from "../../core/action/WidgetAction";
-import { commitAction } from "../../core/action";
+import { useEffect, useRef, useState } from "react";
+import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
+import { actionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
+import { linearAnimation } from "../../common/utils";
 
 export interface WidgetManagerModel {
   widgets: WidgetModel[];
@@ -70,6 +70,55 @@ export function useModelChange(model: BaseModel) {
   return m;
 }
 
+export function useWidgetAnimation(model: BaseModel) {
+  const dom = useRef<HTMLDivElement>(null);
+  const { x, y, width, height } = model;
+  useEffect(() => {
+    const sub = actionExeter.subscribe((data) => {
+      const { action, end } = data;
+      if (action.type !== "Widget") {
+        return;
+      }
+      const actionData = action.data as WidgetActionData;
+      const { id } = actionData;
+      if (id !== model.id) {
+        return;
+      }
+      const el = dom.current;
+      if (!el) {
+        return;
+      }
+      if (actionData.type === "move") {
+        linearAnimation(
+          el,
+          {
+            top: [y, actionData.change.y, (n) => `${n}px`],
+            left: [x, actionData.change.x, (n) => `${n}px`],
+          },
+          200,
+          end
+        );
+      } else if (actionData.type === "resize") {
+        linearAnimation(
+          el,
+          {
+            width: [width, actionData.change.w, (n) => `${n}px`],
+            height: [height, actionData.change.h, (n) => `${n}px`],
+          },
+          200,
+          end
+        );
+      } else {
+        throw new Error("widget exec action: action data type error");
+      }
+    });
+    return () => {
+      sub.unsubscribe();
+    };
+  });
+  return dom;
+}
+
 export function Widget(props: WidgetProps) {
   const model = useModelChange(props.model);
   const WidgetModel = widgetModelManager.getModel(model);
@@ -78,6 +127,7 @@ export function Widget(props: WidgetProps) {
   const [activeWidgetValue, setActiveWidget] =
     useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
+  const dom = useWidgetAnimation(model);
   if (!(x && y && width && height && color)) {
     return null;
   }
@@ -92,6 +142,7 @@ export function Widget(props: WidgetProps) {
         });
       }}
       style={{ left: x, top: y, width, height, backgroundColor: color }}
+      ref={dom}
     >
       <WidgetCompRender
         className="widgetComp"

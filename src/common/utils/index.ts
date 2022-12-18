@@ -33,3 +33,40 @@ export function cls(...args: any[]) {
   const arr = args.filter((item) => !!item);
   return arr.join(" ");
 }
+
+const LinearAnimationStepTime = 16;
+export function linearAnimation(
+  dom: HTMLElement,
+  style: {
+    [attr: string]: [
+      start: number,
+      end: number,
+      toString: (now: number) => string
+    ];
+  },
+  time: number,
+  callback?: () => void
+) {
+  let step: [string, number, number, (now: number) => string][] = [];
+  let count = time / LinearAnimationStepTime;
+  for (let s in style) {
+    step.push([
+      s,
+      style[s][0],
+      (style[s][1] - style[s][0]) / count,
+      style[s][2],
+    ]);
+  }
+  const timer = setInterval(() => {
+    count--;
+    for (let item of step) {
+      item[1] += item[2];
+      const key = item[0];
+      dom.style[key as any] = item[3](item[1]);
+    }
+    if (count <= 0) {
+      clearInterval(timer);
+      callback && callback();
+    }
+  }, LinearAnimationStepTime);
+}

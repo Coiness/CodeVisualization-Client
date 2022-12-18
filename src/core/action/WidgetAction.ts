@@ -3,7 +3,7 @@ import { ChangeSet } from "../diff/objDiff";
 import { getSetCS } from "../undo";
 import { BaseAction } from "./baseAction";
 
-type WidgetActionData =
+export type WidgetActionData =
   | {
       id: string;
       type: "resize";
@@ -27,7 +27,7 @@ type CreateWidgetActionParams =
 
 export class WidgetAction extends BaseAction {
   constructor(data: WidgetActionData, cs: ChangeSet) {
-    super(data, cs);
+    super(data, cs, "Widget");
     console.log("DEBUG: ", "widget");
   }
 

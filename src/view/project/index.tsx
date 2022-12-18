@@ -57,8 +57,6 @@ export interface Snapshot {
 function MainCanvas() {
   const [data] = useStore(snapshot);
 
-  console.log("DEBUG: ", data);
-
   useUndo();
 
   if (data == null) {
