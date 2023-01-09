@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { sleep } from "../../common/utils";
-import { WidgetManagerModel, WidgetManager } from "../../components/widget";
+import { WidgetRendererModel, WidgetRenderer } from "../../components/widget";
 import { modelSwitcher } from "../../core";
 import { initUndo, useUndo } from "../../core/undo";
 import { snapshot, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
+import { WidgetPanel } from "./widgetPanel";
 import "./index.css";
 
 async function getData(): Promise<Snapshot> {
@@ -51,7 +51,7 @@ async function getData(): Promise<Snapshot> {
 }
 
 export interface Snapshot {
-  widgetManagerModel: WidgetManagerModel;
+  widgetManagerModel: WidgetRendererModel;
 }
 
 function MainCanvas() {
@@ -70,7 +70,9 @@ function MainCanvas() {
   return (
     <div className="main">
       MainCanvas
-      {data && <WidgetManager model={data.widgetManagerModel}></WidgetManager>}
+      {data && (
+        <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
+      )}
     </div>
   );
 }
@@ -78,7 +80,7 @@ function MainCanvas() {
 export function Project() {
   return (
     <div className="project">
-      project
+      <WidgetPanel></WidgetPanel>
       <MainCanvas></MainCanvas>
       <ControlPanel></ControlPanel>
     </div>

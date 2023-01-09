@@ -1,6 +1,14 @@
 .project {
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
   border: 3px solid skyblue;
 }
+
+.project > * {
+  flex: 1;
+}
+
 .main {
   border: 3px solid pink;
 }
