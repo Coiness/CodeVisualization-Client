@@ -17,9 +17,17 @@ export function initUndo() {
 export function useUndo() {
   useEffect(() => {
     const fun = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "z" || e.key === "Z") &&
+        !e.shiftKey
+      ) {
         execUndo();
-      } else if ((e.ctrlKey || e.metaKey) && e.key === "z" && e.shiftKey) {
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "z" || e.key === "Z") &&
+        e.shiftKey
+      ) {
         execRedo();
       }
     };
