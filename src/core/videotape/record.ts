@@ -3,10 +3,11 @@ import { Subscription } from "../../common/utils";
 import { snapshot } from "../../store";
 import { Snapshot } from "../../view/project";
 import { Action, actionCommitter } from "../action";
-import { Video } from "./type";
+import { Step, Video } from "./type";
 
 export class Recorder {
   private snapshot: Snapshot = {} as Snapshot;
+  private steps: Step[] = [];
   private actions: Action[] = [];
   private recording: boolean = false;
   private actionsSub: Subscription = {} as Subscription;
@@ -17,7 +18,9 @@ export class Recorder {
       this.snapshot = cloneDeep(s);
       this.recording = true;
       this.actionsSub = actionCommitter.subscribe((action) => {
-        this.actions.push(action);
+        this.steps.push({
+          actions: [action],
+        });
       });
     } else {
       throw new Error("start record: snapshot is null");
@@ -33,7 +36,7 @@ export class Recorder {
 
     return {
       snapshot: this.snapshot,
-      actions: this.actions,
+      steps: this.steps,
     };
   }
 }

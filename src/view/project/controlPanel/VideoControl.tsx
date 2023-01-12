@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
-import { Action, applyAction, execUndo, modelSwitcher } from "../../../core";
-import { Recorder } from "../../../core/videotape";
+import { applyAction, execUndo, modelSwitcher } from "../../../core";
+import { Recorder, Step } from "../../../core/videotape";
 import { mode, useStore } from "../../../store";
 
 const recorder = new Recorder();
@@ -9,7 +9,7 @@ export function VideoControl() {
   const [recording, setRecording] = useState(false);
   const [canvasMode, setMode] = useStore(mode);
 
-  const actions = useRef<Action[]>([]);
+  const steps = useRef<Step[]>([]);
   const [index, setIndex] = useState<number>(0);
 
   const handleClick = useCallback(() => {
@@ -17,9 +17,9 @@ export function VideoControl() {
       recorder.start();
     } else {
       const video = recorder.end();
-      const { snapshot, actions: acs } = video;
+      const { snapshot, steps: sts } = video;
       modelSwitcher.pushModel(snapshot);
-      actions.current = acs;
+      steps.current = sts;
       setMode("play");
     }
     setRecording(!recording);
@@ -30,15 +30,20 @@ export function VideoControl() {
       console.log("DEBUG: ", "last end");
       return;
     }
-    execUndo();
+    const len = steps.current[index - 1].actions.length;
+    for (let i = 0; i < len; i++) {
+      execUndo();
+    }
     setIndex(index - 1);
   }, [index]);
   const handleNext = useCallback(() => {
-    if (index === actions.current.length) {
+    if (index === steps.current.length) {
       console.log("DEBUG: ", "next end");
       return;
     }
-    applyAction(actions.current[index]);
+    for (let action of steps.current[index].actions) {
+      applyAction(action);
+    }
     setIndex(index + 1);
   }, [index]);
   return (
