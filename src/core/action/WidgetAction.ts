@@ -28,7 +28,6 @@ type CreateWidgetActionParams =
 export class WidgetAction extends BaseAction {
   constructor(data: WidgetActionData, cs: ChangeSet) {
     super(data, cs, "Widget");
-    console.log("DEBUG: ", "widget");
   }
 
   static create(model: BaseModel, params: CreateWidgetActionParams) {
