@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+import { listenModelChange, useModelChange } from "../..";
 import { cls, Subject } from "../../../../common/utils";
+import { commitAction } from "../../../../core";
+import { ValueAction } from "../../../../core/action/ValueAction";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
 import "./index.css";
 
@@ -12,6 +15,7 @@ export interface NumberWidgetModel extends WidgetModel {
 export class NumberWidget implements IWidget {
   private value: Value;
   private model: NumberWidgetModel;
+  private closeListen: () => void = () => {};
   value$: Subject<Value>;
 
   constructor(model: NumberWidgetModel) {
@@ -21,15 +25,25 @@ export class NumberWidget implements IWidget {
     this.init();
   }
 
-  init = () => {};
+  init = () => {
+    this.closeListen = listenModelChange(this.model, (m) => {
+      this.model = m as NumberWidgetModel;
+      this._updateValue();
+    });
+  };
+
+  private _updateValue() {
+    this.value = this.model.value;
+    this.value$.next(this.value);
+  }
 
   setValue = (value: unknown) => {
-    if (value !== null && isNaN(Number(value))) {
+    const v = Number(value);
+    if (v !== null && isNaN(v)) {
       return;
     }
-    this.model.value = value as Value;
-    this.value = value as Value;
-    this.value$.next(this.value);
+    const action = ValueAction.create(this.model, { value: v });
+    commitAction(action);
   };
 
   getValue = () => {
@@ -47,11 +61,16 @@ export class NumberWidget implements IWidget {
       this.setValue(this.value - 1);
     }
   };
+
+  // TODO 调用 destory
+  destory() {
+    this.closeListen();
+  }
 }
 
 export function NumberWidgetRender(props: WidgetRenderProps) {
   const widget = props.widget;
-  const model = props.model;
+  const model = useModelChange(props.model);
   const v = widget.getValue() as Value;
   const [value, setValue] = useState<Value>(v);
 

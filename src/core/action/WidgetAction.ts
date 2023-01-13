@@ -1,6 +1,6 @@
 import { BaseModel } from "../../components/widget/widgets";
 import { ChangeSet } from "../diff/objDiff";
-import { getSetCS } from "../undo";
+import { getCS } from "../undo";
 import { BaseAction } from "./baseAction";
 
 export type WidgetActionData =
@@ -39,12 +39,12 @@ export class WidgetAction extends BaseAction {
     };
     let cs: ChangeSet;
     if (type === "move") {
-      cs = getSetCS(model, [
+      cs = getCS(model, [
         ["x", change.x],
         ["y", change.y],
       ]);
     } else if (type === "resize") {
-      cs = getSetCS(model, [
+      cs = getCS(model, [
         ["width", change.w],
         ["height", change.h],
       ]);

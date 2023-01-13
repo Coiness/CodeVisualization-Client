@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+import { listenModelChange } from "../..";
 import { cls, Subject } from "../../../../common/utils";
+import { commitAction } from "../../../../core";
+import { ValueAction } from "../../../../core/action/ValueAction";
 import { xSet } from "../../../../core/undo";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
 import "./index.css";
@@ -13,6 +16,7 @@ export interface StringWidgetModel extends WidgetModel {
 export class StringWidget implements IWidget {
   private value: Value;
   private model: StringWidgetModel;
+  private closeListen: () => void = () => {};
   value$: Subject<Value>;
 
   constructor(model: StringWidgetModel) {
@@ -22,10 +26,21 @@ export class StringWidget implements IWidget {
     this.init();
   }
 
-  init = () => {};
+  init = () => {
+    this.closeListen = listenModelChange(this.model, (m) => {
+      this.model = m as StringWidgetModel;
+      this._updateValue();
+    });
+  };
+
+  private _updateValue() {
+    this.value = this.model.value;
+    this.value$.next(this.value);
+  }
 
   setValue = (value: unknown) => {
-    xSet(this.model, [["value", value]]);
+    const action = ValueAction.create(this.model, { value });
+    commitAction(action);
   };
 
   getValue = () => {
@@ -37,6 +52,10 @@ export class StringWidget implements IWidget {
       this.setValue(this.value?.split("").reverse().join(""));
     }
   };
+
+  destory() {
+    this.closeListen();
+  }
 }
 
 export function StringWidgetRender(props: WidgetRenderProps) {

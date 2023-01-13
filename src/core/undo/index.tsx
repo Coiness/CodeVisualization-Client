@@ -90,10 +90,7 @@ export function execRedo() {
   }
 }
 
-export function getSetCS(
-  obj: any,
-  change: [attr: string | number, value: any][]
-) {
+export function getCS(obj: any, change: [attr: string | number, value: any][]) {
   const path = getPath(obj);
   const cs = [] as ChangeSet;
   for (let item of change) {
@@ -115,7 +112,7 @@ export function getSetCS(
 
 export function xSet(obj: any, change: [attr: string | number, value: any][]) {
   if (typeof obj === "object") {
-    const cs = getSetCS(obj, change);
+    const cs = getCS(obj, change);
     execDo(cs);
   } else {
     throw new Error("xSet obj not object type");

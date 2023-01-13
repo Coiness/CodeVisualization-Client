@@ -45,6 +45,18 @@ export class WidgetModelManager {
 
 export const widgetModelManager = new WidgetModelManager();
 
+export function listenModelChange(
+  model: BaseModel,
+  callback: (model: BaseModel) => void
+) {
+  const sub = modelChange.subscribe((newModel) => {
+    if ((newModel as BaseModel).id === model.id) {
+      callback(newModel);
+    }
+  });
+  return sub.unsubscribe;
+}
+
 export function useModelChange(model: BaseModel) {
   const [m, s] = useState({ ...model });
 
@@ -57,10 +69,8 @@ export function useModelChange(model: BaseModel) {
         });
       }
     });
-    return () => {
-      sub.unsubscribe();
-    };
-  });
+    return sub.unsubscribe;
+  }, []);
 
   // 监听 props 传过来的 change
   useEffect(() => {

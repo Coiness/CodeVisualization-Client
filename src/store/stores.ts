@@ -35,3 +35,13 @@ export const historyInfo = createStatus<HistoryInfo>({
   index: 0,
 });
 export const mode = createStatus<DisplayMode>("edit");
+
+const stores = {
+  activeWidget,
+  activeWidgetType,
+  snapshot,
+  historyInfo,
+  mode,
+};
+
+(window as any).stores = stores;
