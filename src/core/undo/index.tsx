@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { CommonModel } from "../../components/widget/widgets";
 import { historyInfo, snapshot } from "../../store";
 import { ChangeSet, doChange, doInvertedChange } from "../diff/objDiff";
 import { Obj } from "../types";
@@ -90,8 +91,14 @@ export function execRedo() {
   }
 }
 
-export function getCS(obj: any, change: [attr: string | number, value: any][]) {
-  const path = getPath(obj);
+export function getCS(
+  target: any,
+  change: [attr: string | number, value: any][],
+  model?: CommonModel
+) {
+  model = model ?? target;
+  const mp = getPath(model);
+  const path = getPath(target);
   const cs = [] as ChangeSet;
   for (let item of change) {
     const [attr, value] = item;
@@ -101,10 +108,10 @@ export function getCS(obj: any, change: [attr: string | number, value: any][]) {
     } else {
       p = `${path}.${attr}`;
     }
-    if (obj.hasOwnProperty(attr)) {
-      cs.push({ t: "u", p, c: [obj[attr], value] });
+    if (target.hasOwnProperty(attr)) {
+      cs.push({ modelPath: mp, t: "u", p, c: [target[attr], value] });
     } else {
-      cs.push({ t: "c", p, c: [value] });
+      cs.push({ modelPath: mp, t: "c", p, c: [value] });
     }
   }
   return cs;

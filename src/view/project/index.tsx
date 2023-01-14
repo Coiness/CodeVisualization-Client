@@ -9,8 +9,9 @@ import "./index.css";
 
 async function getData(): Promise<Snapshot> {
   await sleep(1000);
-  return {
+  const res = {
     widgetManagerModel: {
+      id: "widgetRenderer",
       width: 700,
       height: 700,
       widgets: [
@@ -48,6 +49,7 @@ async function getData(): Promise<Snapshot> {
       color: "#666",
     },
   } as Snapshot;
+  return res;
 }
 
 export interface Snapshot {

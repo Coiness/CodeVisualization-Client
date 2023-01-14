@@ -70,3 +70,27 @@ export function linearAnimation(
     }
   }, LinearAnimationStepTime);
 }
+
+export const createOnlyId = (() => {
+  let nowPrefix = "";
+  let count = 0;
+  return (pre = "default") => {
+    let time = String(Date.now());
+    if (time === nowPrefix) {
+      nowPrefix = time;
+      count = 0;
+    } else {
+      count++;
+    }
+    return `${pre}:${time}:${count}`;
+  };
+})();
+
+export function checkNil(obj: any) {
+  for (let x in obj) {
+    if (obj[x] === null || obj[x] === undefined) {
+      return false;
+    }
+  }
+  return true;
+}

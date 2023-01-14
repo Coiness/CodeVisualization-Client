@@ -1,4 +1,4 @@
-import { Subject } from "../../common/utils";
+import { createOnlyId, Subject } from "../../common/utils";
 import { ChangeSet } from "../diff/objDiff";
 import { execDo } from "../undo";
 
@@ -9,27 +9,13 @@ export interface Action {
   cs: ChangeSet;
 }
 
-let nowPrefix = "";
-let count = 0;
-
-function createId(): string {
-  let prefix = String(Date.now());
-  if (prefix === nowPrefix) {
-    nowPrefix = prefix;
-    count = 0;
-  } else {
-    count++;
-  }
-  return `${prefix}:${count}`;
-}
-
 export class BaseAction implements Action {
   type: string;
   id: string;
   data: unknown;
   cs: ChangeSet;
   constructor(data: unknown, cs: ChangeSet, type: string) {
-    this.id = createId();
+    this.id = createOnlyId("action");
     this.type = type;
     this.data = data;
     this.cs = cs;

@@ -1,6 +1,6 @@
 import { get, cloneDeep } from "lodash";
 import { Subject } from "../../common/utils";
-import { BaseModel } from "../../components/widget/widgets";
+import { CommonModel } from "../../components/widget/widgets";
 import { Obj } from "../types";
 
 // export function objDiff(o1: any, o2: any): ChangeSet {
@@ -13,13 +13,19 @@ import { Obj } from "../types";
 //     }
 //   }
 // }
-export const modelChange = new Subject<BaseModel>();
+export const modelChange = new Subject<CommonModel>();
 
 export type ChangeSet = {
-  t: "u" | "d" | "c";
-  p: string;
-  c: any[];
+  modelPath: string; // 对应逻辑层 model path
+  t: "u" | "d" | "c"; // 操作类型
+  p: string; // 操作路径 path
+  c: any[]; // 具体操作
 }[];
+
+export function getModelByPath(obj: Obj, path: string): CommonModel {
+  const res = get(obj, path);
+  return res;
+}
 
 export function doChange(obj: Obj, cs: ChangeSet) {
   cs.forEach((change) => {
@@ -41,7 +47,7 @@ export function doChange(obj: Obj, cs: ChangeSet) {
     } else if (change.t === "c") {
       o[attr] = change.c[0];
     }
-    modelChange.next(o as BaseModel);
+    modelChange.next(getModelByPath(obj, change.modelPath));
   });
 }
 

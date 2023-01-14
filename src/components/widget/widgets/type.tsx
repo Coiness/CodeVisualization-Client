@@ -1,7 +1,10 @@
 import type { Subject } from "../../../common/utils";
 
-export interface BaseModel {
+export interface CommonModel {
   id: string;
+}
+
+export interface BaseModel extends CommonModel {
   type: WidgetType;
   x: number;
   y: number;

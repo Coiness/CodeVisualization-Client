@@ -8,6 +8,7 @@ import {
   IWidget,
   BaseModel,
   WidgetType,
+  CommonModel,
 } from "./widgets";
 import { activeWidget, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
@@ -15,9 +16,9 @@ import { useEffect, useRef, useState } from "react";
 import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
 import { actionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
-import { linearAnimation } from "../../common/utils";
+import { checkNil, linearAnimation } from "../../common/utils";
 
-export interface WidgetRendererModel {
+export interface WidgetRendererModel extends CommonModel {
   widgets: WidgetModel[];
   width: number;
   height: number;
@@ -53,27 +54,27 @@ export class WidgetModelManager {
 
 export const widgetModelManager = new WidgetModelManager();
 
-export function listenModelChange(
-  model: BaseModel,
-  callback: (model: BaseModel) => void
+export function listenModelChange<T extends CommonModel>(
+  model: T,
+  callback: (model: T) => void
 ) {
   const sub = modelChange.subscribe((newModel) => {
-    if ((newModel as BaseModel).id === model.id) {
-      callback(newModel);
+    if ((newModel as T).id === model.id) {
+      callback(newModel as T);
     }
   });
   return sub.unsubscribe;
 }
 
-export function useModelChange(model: BaseModel) {
+export function useModelChange<T extends CommonModel>(model: T): T {
   const [m, s] = useState({ ...model });
 
   // 监听对应 model 的 change
   useEffect(() => {
     const sub = modelChange.subscribe((newModel) => {
-      if ((newModel as BaseModel).id === m.id) {
+      if ((newModel as T).id === m.id) {
         s({
-          ...newModel,
+          ...(newModel as T),
         });
       }
     });
@@ -146,7 +147,8 @@ export function Widget(props: WidgetProps) {
     useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
   const dom = useWidgetAnimation(model);
-  if (!(x && y && width && height && color)) {
+  if (!checkNil({ x, y, width, height, color })) {
+    console.log("DEBUG: ", "参数缺失");
     return null;
   }
   return (
@@ -198,12 +200,12 @@ export function Widget(props: WidgetProps) {
 }
 
 export function WidgetRenderer(props: WidgetRendererProps) {
-  const { model } = props;
+  const model = useModelChange(props.model);
   const { widgets, width, height, color } = model;
 
   return (
     <div
-      className="widgetManager"
+      className="widgetRenderer"
       style={{ width, height, backgroundColor: color }}
     >
       {widgets.map((widgetModel) => {
