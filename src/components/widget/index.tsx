@@ -7,6 +7,7 @@ import {
   WidgetRenderMap,
   IWidget,
   BaseModel,
+  WidgetType,
 } from "./widgets";
 import { activeWidget, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
@@ -16,15 +17,21 @@ import { actionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
 import { linearAnimation } from "../../common/utils";
 
-export interface WidgetManagerModel {
+export interface WidgetRendererModel {
   widgets: WidgetModel[];
   width: number;
   height: number;
   color: string;
 }
 
-export interface WidgetManagerProps {
-  model: WidgetManagerModel;
+export interface WidgetRendererProps {
+  model: WidgetRendererModel;
+}
+
+export interface createWidgetParams {
+  type: WidgetType;
+  x?: number;
+  y?: number;
 }
 
 export class WidgetModelManager {
@@ -41,6 +48,7 @@ export class WidgetModelManager {
     this.widgetModels[model.id] = widgetModel;
     return widgetModel;
   }
+  createWidget(params: createWidgetParams) {}
 }
 
 export const widgetModelManager = new WidgetModelManager();
@@ -189,7 +197,7 @@ export function Widget(props: WidgetProps) {
   );
 }
 
-export function WidgetManager(props: WidgetManagerProps) {
+export function WidgetRenderer(props: WidgetRendererProps) {
   const { model } = props;
   const { widgets, width, height, color } = model;
 

@@ -6,7 +6,11 @@ export interface BaseWidget {
   color: string;
 }
 
+export interface BaseAddWidgetParams {
+  type: string;
+}
+
 export interface BaseWidgetType {
-  addWidgetParams: unknown;
-  addWidgetResult: unknown;
+  addWidgetParams: BaseAddWidgetParams;
+  addWidgetResult: BaseWidget;
 }
