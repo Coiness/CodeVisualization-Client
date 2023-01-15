@@ -77,12 +77,12 @@ export const createOnlyId = (() => {
   return (pre = "default") => {
     let time = String(Date.now());
     if (time === nowPrefix) {
+      count++;
+    } else {
       nowPrefix = time;
       count = 0;
-    } else {
-      count++;
     }
-    return `${pre}:${time}:${count}`;
+    return `${pre}:${nowPrefix}:${count}`;
   };
 })();
 
