@@ -2,6 +2,7 @@ import { get, cloneDeep } from "lodash";
 import { Subject } from "../../common/utils";
 import { CommonModel } from "../../components/widget/widgets";
 import { Obj } from "../types";
+import { initPathDfs } from "../undo";
 
 // export function objDiff(o1: any, o2: any): ChangeSet {
 //   return [];
@@ -37,15 +38,17 @@ export function doChange(obj: Obj, cs: ChangeSet) {
       o = get(obj, p);
     }
     if (!o || !attr) {
-      console.log("DEBUG: ", o, attr);
+      console.log("DEBUG: ", o, attr, change);
       throw new Error("doChange error, o or attr is undefined");
     }
     if (change.t === "u") {
       o[attr] = change.c[1];
+      initPathDfs(o[attr], [...path, attr]);
     } else if (change.t === "d") {
       delete o[attr];
     } else if (change.t === "c") {
       o[attr] = change.c[0];
+      initPathDfs(o[attr], [...path, attr]);
     }
     modelChange.next(getModelByPath(obj, change.modelPath));
   });

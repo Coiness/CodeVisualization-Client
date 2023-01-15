@@ -43,7 +43,7 @@ function initPath(obj: any) {
   initPathDfs(obj, []);
 }
 
-function initPathDfs(obj: any, path: string[]) {
+export function initPathDfs(obj: any, path: string[]) {
   if (typeof obj === "object" && obj !== null) {
     for (let attr in obj) {
       path.push(attr);
