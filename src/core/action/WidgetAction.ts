@@ -1,7 +1,14 @@
+import { Subject } from "../../common/utils";
 import { BaseModel } from "../../components/widget/widgets";
 import { ChangeSet } from "../diff/objDiff";
 import { getCS } from "../undo";
-import { BaseAction } from "./baseAction";
+import { Action, BaseAction } from "./baseAction";
+
+export const widgetActionExeter = new Subject<{
+  action: Action;
+  setStop: (s: () => void) => void;
+  end: () => void;
+}>();
 
 export type WidgetActionData =
   | {
@@ -26,6 +33,9 @@ type CreateWidgetActionParams =
     };
 
 export class WidgetAction extends BaseAction {
+  private stopFun: () => void = () => {};
+  private over: boolean = false;
+
   constructor(data: WidgetActionData, cs: ChangeSet) {
     super(data, cs, "Widget");
   }
@@ -52,5 +62,35 @@ export class WidgetAction extends BaseAction {
       throw new Error("create WidgetAction type error");
     }
     return new WidgetAction(data as WidgetActionData, cs);
+  }
+
+  async play() {
+    const p: Promise<void> = new Promise(async (resolve) => {
+      this.over = false;
+      // 将 action 交给对应拿着 model 的组件处理
+      widgetActionExeter.next({
+        action: this,
+        setStop: (s: () => void) => {
+          this.stopFun = s;
+        },
+        end: () => {
+          this.over = true;
+          // 组件执行动画之后应用其中的 cs
+          resolve();
+        },
+      });
+    });
+
+    return p;
+  }
+
+  stop() {
+    this.stopFun();
+
+    // 停止动画时如果动画还没执行完，就立即 commit action
+    if (!this.over) {
+      this.over = true;
+      this.commit();
+    }
   }
 }

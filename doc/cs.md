@@ -21,4 +21,8 @@
 * 如果通过 API 生成录像，流程如下
   * TODO
 * 录像播放流程如下
-  * TODO
+  * 开始播放录像时，更新 snapshot 为录像中 snapshot
+  * 每次执行 next 时，一次执行 video.steps 中每一个 step
+  * 每执行一个 step，执行其中所有 action.play，并在 play 结束之后执行 action.commit
+  * 每次执行 next 时，将上一个 step 中的 action 全部执行 action.stop，执行新的动画时，停止之前的动画
+  * action.play 和 action.stop 由 action 内部配合其 UI 层自己实现

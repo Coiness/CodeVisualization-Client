@@ -28,4 +28,8 @@ export class ValueAction extends BaseAction {
     let cs = getCS(model, [["value", value]]);
     return new ValueAction(data as ValueActionData, cs);
   }
+
+  async play() {}
+
+  stop() {}
 }

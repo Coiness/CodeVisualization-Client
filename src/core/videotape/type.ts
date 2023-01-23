@@ -1,8 +1,8 @@
 import { Snapshot } from "../../view/project";
-import { Action } from "../action";
+import { BaseAction } from "../action";
 
 export interface Step {
-  actions: Action[];
+  actions: BaseAction[];
 }
 
 export interface Video {

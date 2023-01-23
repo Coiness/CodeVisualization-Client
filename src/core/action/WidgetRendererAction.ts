@@ -36,4 +36,8 @@ export class WidgetRendererAction extends BaseAction {
     );
     return new WidgetRendererAction(data, cs);
   }
+
+  async play() {}
+
+  stop() {}
 }

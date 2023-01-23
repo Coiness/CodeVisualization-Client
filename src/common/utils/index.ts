@@ -35,6 +35,15 @@ export function cls(...args: any[]) {
 }
 
 const LinearAnimationStepTime = 16;
+
+/**
+ * 线性变化动画函数
+ * @param dom 需要执行动画的 dom 元素
+ * @param style 需要改变的样式
+ * @param time 动画执行时间
+ * @param callback 动画执行结束回调
+ * @returns 停止执行动画
+ */
 export function linearAnimation(
   dom: HTMLElement,
   style: {
@@ -69,6 +78,9 @@ export function linearAnimation(
       callback && callback();
     }
   }, LinearAnimationStepTime);
+  return () => {
+    clearInterval(timer);
+  };
 }
 
 export const createOnlyId = (() => {
