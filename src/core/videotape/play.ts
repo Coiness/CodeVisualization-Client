@@ -1,5 +1,4 @@
 import { Snapshot } from "../../view/project";
-import { applyAction } from "../action";
 import { modelSwitcher } from "../modelSwitcher";
 import { execUndo } from "../undo";
 import { Step, Video } from "./type";
@@ -21,8 +20,17 @@ export class Player {
       console.log("DEBUG: ", "next end");
       return;
     }
+    // 执行新动画时，停止之前的动画
+    if (this.index !== 0) {
+      for (let action of this.steps[this.index - 1].actions) {
+        action.stop();
+      }
+    }
+    // 执行新动画
     for (let action of this.steps[this.index].actions) {
-      applyAction(action);
+      action.play().then(() => {
+        action.commit();
+      });
     }
     this.index++;
   }

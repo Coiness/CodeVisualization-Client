@@ -14,7 +14,7 @@ import { activeWidget, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
 import { useEffect, useRef, useState } from "react";
 import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
-import { actionExeter, commitAction } from "../../core/action";
+import { widgetActionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
 import { checkNil, linearAnimation } from "../../common/utils";
 
@@ -93,8 +93,8 @@ export function useWidgetAnimation(model: BaseModel) {
   const dom = useRef<HTMLDivElement>(null);
   const { x, y, width, height } = model;
   useEffect(() => {
-    const sub = actionExeter.subscribe((data) => {
-      const { action, end } = data;
+    const sub = widgetActionExeter.subscribe((data) => {
+      const { action, setStop, end } = data;
       if (action.type !== "Widget") {
         return;
       }
@@ -108,24 +108,28 @@ export function useWidgetAnimation(model: BaseModel) {
         return;
       }
       if (actionData.type === "move") {
-        linearAnimation(
-          el,
-          {
-            top: [y, actionData.change.y, (n) => `${n}px`],
-            left: [x, actionData.change.x, (n) => `${n}px`],
-          },
-          200,
-          end
+        setStop(
+          linearAnimation(
+            el,
+            {
+              top: [y, actionData.change.y, (n) => `${n}px`],
+              left: [x, actionData.change.x, (n) => `${n}px`],
+            },
+            200,
+            end
+          )
         );
       } else if (actionData.type === "resize") {
-        linearAnimation(
-          el,
-          {
-            width: [width, actionData.change.w, (n) => `${n}px`],
-            height: [height, actionData.change.h, (n) => `${n}px`],
-          },
-          200,
-          end
+        setStop(
+          linearAnimation(
+            el,
+            {
+              width: [width, actionData.change.w, (n) => `${n}px`],
+              height: [height, actionData.change.h, (n) => `${n}px`],
+            },
+            200,
+            end
+          )
         );
       } else {
         throw new Error("widget exec action: action data type error");

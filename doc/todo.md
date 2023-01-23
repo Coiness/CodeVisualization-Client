@@ -1,3 +1,2 @@
-- 优化回放逻辑底层
 - add widget action 和 value action 增加回放动画
 - 打通 open api
