@@ -2,13 +2,12 @@ import { cloneDeep } from "lodash";
 import { Subscription } from "../../common/utils";
 import { snapshot } from "../../store";
 import { Snapshot } from "../../view/project";
-import { Action, actionCommitter } from "../action";
+import { actionCommitter } from "../action";
 import { Step, Video } from "./type";
 
 export class Recorder {
   private snapshot: Snapshot = {} as Snapshot;
   private steps: Step[] = [];
-  private actions: Action[] = [];
   private recording: boolean = false;
   private actionsSub: Subscription = {} as Subscription;
 
