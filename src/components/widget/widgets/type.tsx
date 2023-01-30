@@ -21,6 +21,7 @@ export interface WidgetProps {
 }
 
 export interface IWidget {
+  setDiscard: (discard: () => void) => void;
   setValue: (value: unknown) => void;
   getValue: () => unknown;
   value$: Subject<any>;

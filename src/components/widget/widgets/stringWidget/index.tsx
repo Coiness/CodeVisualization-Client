@@ -4,7 +4,9 @@ import { cls, Subject } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
 import { ValueAction } from "../../../../core/action/ValueAction";
 import { xSet } from "../../../../core/undo";
+import { snapshot } from "../../../../store";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
+import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import "./index.css";
 
 type Value = string | null;
@@ -16,6 +18,7 @@ export interface StringWidgetModel extends WidgetModel {
 export class StringWidget implements IWidget {
   private value: Value;
   private model: StringWidgetModel;
+  private discard: () => void = () => {};
   private closeListen: () => void = () => {};
   value$: Subject<Value>;
 
@@ -31,7 +34,15 @@ export class StringWidget implements IWidget {
       this.model = m as StringWidgetModel;
       this._updateValue();
     });
+    let sub = snapshot.subscribe(() => {
+      sub.unsubscribe();
+      this.destory();
+    });
   };
+
+  setDiscard(discard: () => void) {
+    this.discard = discard;
+  }
 
   private _updateValue() {
     this.value = this.model.value;
@@ -55,26 +66,19 @@ export class StringWidget implements IWidget {
 
   destory() {
     this.closeListen();
+    this.discard();
   }
 }
 
 export function StringWidgetRender(props: WidgetRenderProps) {
   const widget = props.widget;
   const model = props.model;
-  const v = widget.getValue() as Value;
-  const [value, setValue] = useState<Value>(v);
-
-  useEffect(() => {
-    const subscription = widget.value$.subscribe((value) => {
-      setValue(value);
-    });
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [model, widget]);
+  const { value, dom } = useValueWidget(widget, model as ValueWidgetModel);
 
   return (
-    <div className={cls("stringWidget", props.className)}>string: {value}</div>
+    <div className={cls("stringWidget", props.className)} ref={dom}>
+      string: {value}
+    </div>
   );
 }
 

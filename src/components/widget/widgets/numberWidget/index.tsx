@@ -3,7 +3,9 @@ import { listenModelChange, useModelChange } from "../..";
 import { cls, Subject } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
 import { ValueAction } from "../../../../core/action/ValueAction";
+import { snapshot } from "../../../../store";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
+import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import "./index.css";
 
 type Value = number | null;
@@ -15,6 +17,7 @@ export interface NumberWidgetModel extends WidgetModel {
 export class NumberWidget implements IWidget {
   private value: Value;
   private model: NumberWidgetModel;
+  private discard: () => void = () => {};
   private closeListen: () => void = () => {};
   value$: Subject<Value>;
 
@@ -30,7 +33,15 @@ export class NumberWidget implements IWidget {
       this.model = m as NumberWidgetModel;
       this._updateValue();
     });
+    let sub = snapshot.subscribe(() => {
+      sub.unsubscribe();
+      this.destory();
+    });
   };
+
+  setDiscard(discard: () => void) {
+    this.discard = discard;
+  }
 
   private _updateValue() {
     this.value = this.model.value;
@@ -65,27 +76,19 @@ export class NumberWidget implements IWidget {
   // TODO 调用 destory
   destory() {
     this.closeListen();
+    this.discard();
   }
 }
 
 export function NumberWidgetRender(props: WidgetRenderProps) {
   const widget = props.widget;
   const model = useModelChange(props.model);
-  const v = widget.getValue() as Value;
-  const [value, setValue] = useState<Value>(v);
-
-  useEffect(() => {
-    const subscription = widget.value$.subscribe((value) => {
-      model.value = value;
-      setValue(value);
-    });
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [model, widget]);
+  const { value, dom } = useValueWidget(widget, model as ValueWidgetModel);
 
   return (
-    <div className={cls("numberWidget", props.className)}>number: {value}</div>
+    <div className={cls("numberWidget", props.className)} ref={dom}>
+      number: {value}
+    </div>
   );
 }
 

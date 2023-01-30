@@ -10,7 +10,7 @@ import {
   WidgetType,
   CommonModel,
 } from "./widgets";
-import { activeWidget, useStore } from "../../store";
+import { activeWidget, snapshot, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
 import { useEffect, useRef, useState } from "react";
 import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
@@ -47,8 +47,16 @@ export class WidgetModelManager {
 
     const widgetModel = WidgetMap[model.type](model);
     this.widgetModels[model.id] = widgetModel;
+    widgetModel.setDiscard(() => {
+      delete this.widgetModels[model.id];
+    });
     return widgetModel;
   }
+
+  /**
+   * 暂未实现
+   * @param params
+   */
   createWidget(params: createWidgetParams) {}
 }
 
@@ -66,16 +74,20 @@ export function listenModelChange<T extends CommonModel>(
   return sub.unsubscribe;
 }
 
+// TODO 将这里变合理
 export function useModelChange<T extends CommonModel>(model: T): T {
+  const now = useRef<T>(model);
   const [m, s] = useState({ ...model });
 
   // 监听对应 model 的 change
   useEffect(() => {
     const sub = modelChange.subscribe((newModel) => {
       if ((newModel as T).id === m.id) {
+        // console.log("DEBUG: model change");
         s({
           ...(newModel as T),
         });
+        now.current = newModel as T;
       }
     });
     return sub.unsubscribe;
@@ -86,7 +98,11 @@ export function useModelChange<T extends CommonModel>(model: T): T {
     s({ ...model });
   }, [model]);
 
-  return m;
+  if (now.current !== model) {
+    now.current = model;
+    // s({ ...model });
+  }
+  return now.current;
 }
 
 export function useWidgetAnimation(model: BaseModel) {
