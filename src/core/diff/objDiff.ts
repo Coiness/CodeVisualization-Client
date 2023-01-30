@@ -29,6 +29,8 @@ export function getModelByPath(obj: Obj, path: string): CommonModel {
 }
 
 export function doChange(obj: Obj, cs: ChangeSet) {
+	// 防止 cs 中 create 的对象被修改，导致影响 cs
+  cs = cloneDeep(cs);
   cs.forEach((change) => {
     const path = change.p.split(".");
     let attr = path.pop();
