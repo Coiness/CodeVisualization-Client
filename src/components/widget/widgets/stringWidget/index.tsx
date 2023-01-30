@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { listenModelChange } from "../..";
 import { cls, Subject } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
 import { ValueAction } from "../../../../core/action/ValueAction";
-import { xSet } from "../../../../core/undo";
 import { snapshot } from "../../../../store";
 import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";

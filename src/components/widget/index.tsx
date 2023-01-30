@@ -10,7 +10,7 @@ import {
   WidgetType,
   CommonModel,
 } from "./widgets";
-import { activeWidget, snapshot, useStore } from "../../store";
+import { activeWidget, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
 import { useEffect, useRef, useState } from "react";
 import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
@@ -91,7 +91,7 @@ export function useModelChange<T extends CommonModel>(model: T): T {
       }
     });
     return sub.unsubscribe;
-  }, []);
+  }, [m.id]);
 
   // 监听 props 传过来的 change
   useEffect(() => {

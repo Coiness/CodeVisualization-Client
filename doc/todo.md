@@ -1,2 +1,2 @@
-- add widget action 和 value action 增加回放动画
 - 打通 open api
+- add widget action 增加回放动画
