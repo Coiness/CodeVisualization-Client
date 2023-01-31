@@ -1,8 +1,5 @@
 // 测试 OpenAPI 小 Demo
 
-import { API } from "./index";
-// import { WidgetType } from "./animationApi/types/widget";
-export const code = `
 let count = API.animationApi.addWidget({
 	type: "number",
 	x: 10,
@@ -28,6 +25,3 @@ API.animationApi.resizeWidget({ id: str.id, width: 200, height: 80 });
 API.commonApi.nextStep();
 
 API.commonApi.end();
-`;
-
-// 冒泡排序

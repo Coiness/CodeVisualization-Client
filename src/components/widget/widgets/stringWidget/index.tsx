@@ -75,7 +75,7 @@ export function StringWidgetRender(props: WidgetRenderProps) {
 
   return (
     <div className={cls("stringWidget", props.className)} ref={dom}>
-      string: {value}
+      {value}
     </div>
   );
 }

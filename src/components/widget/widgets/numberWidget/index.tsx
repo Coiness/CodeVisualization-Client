@@ -86,7 +86,7 @@ export function NumberWidgetRender(props: WidgetRenderProps) {
 
   return (
     <div className={cls("numberWidget", props.className)} ref={dom}>
-      number: {value}
+      {value}
     </div>
   );
 }
