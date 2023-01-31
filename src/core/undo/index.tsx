@@ -11,10 +11,6 @@ export type HistoryInfo = {
   index: number;
 };
 
-export function initUndo() {
-  initPath(snapshot.get());
-}
-
 export function useUndo() {
   useEffect(() => {
     const fun = (e: KeyboardEvent) => {
@@ -42,6 +38,11 @@ export function useUndo() {
 function initPath(obj: any) {
   initPathDfs(obj, []);
 }
+
+// 监听 snapshot 每次 snapshot 更新时，执行 initPath
+snapshot.subscribe((s) => {
+  initPath(s);
+});
 
 export function initPathDfs(obj: any, path: string[]) {
   if (typeof obj === "object" && obj !== null) {

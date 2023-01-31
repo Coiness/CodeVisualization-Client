@@ -1,9 +1,13 @@
-import { useCallback, useState } from "react";
-import { Player, Recorder } from "../../../core/videotape";
+import { useCallback, useEffect, useState } from "react";
+import { Subject } from "../../../common/utils";
+import { Player, Recorder, Video } from "../../../core/videotape";
 import { mode, useStore } from "../../../store";
 
 const recorder = new Recorder();
 const player = new Player();
+
+// 用于让外界触发 play，目前 open api 在使用
+export const playCaller = new Subject<Video>();
 
 export function VideoControl() {
   const [recording, setRecording] = useState(false);
@@ -19,6 +23,16 @@ export function VideoControl() {
     }
     setRecording(!recording);
   }, [recording, setMode]);
+
+  useEffect(() => {
+    const sub = playCaller.subscribe((video: Video) => {
+      player.start(video);
+      setMode("play");
+    });
+    return () => {
+      sub.unsubscribe();
+    };
+  }, []);
 
   return (
     <div>

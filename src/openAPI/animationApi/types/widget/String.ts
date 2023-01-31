@@ -1,8 +1,8 @@
-import { BaseWidget, BaseWidgetType } from "./Base";
+import { BaseAddWidgetParams, BaseWidget, BaseWidgetType } from "./Base";
 export interface StringWidget extends BaseWidget {
   value: number;
 }
-export interface AddStringWidgetParams {
+export interface AddStringWidgetParams extends BaseAddWidgetParams {
   type: "string";
   stringValue: string;
 }

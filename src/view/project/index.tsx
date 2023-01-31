@@ -1,7 +1,7 @@
 import { sleep } from "../../common/utils";
 import { WidgetRendererModel, WidgetRenderer } from "../../components/widget";
 import { modelSwitcher } from "../../core";
-import { initUndo, useUndo } from "../../core/undo";
+import { useUndo } from "../../core/undo";
 import { snapshot, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
 import { WidgetPanel } from "./widgetPanel";
@@ -65,7 +65,6 @@ function MainCanvas() {
     (async () => {
       let d = await getData();
       modelSwitcher.pushModel(d);
-      initUndo();
     })();
   }
 
