@@ -1,2 +1,4 @@
-- 打通 open api
+- 写页面使用描述文档
+- 设计页面布局
+- 引入组件库
 - add widget action 增加回放动画

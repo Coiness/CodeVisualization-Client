@@ -26,3 +26,9 @@
   * 每执行一个 step，执行其中所有 action.play，并在 play 结束之后执行 action.commit
   * 每次执行 next 时，将上一个 step 中的 action 全部执行 action.stop，执行新的动画时，停止之前的动画
   * action.play 和 action.stop 由 action 内部配合其 UI 层自己实现
+
+## Open API
+* 用户输入代码
+* 用户代码中调用系统提供的 API 操作画布
+* 执行用户代码生成录像
+* 切换到录像播放模式
