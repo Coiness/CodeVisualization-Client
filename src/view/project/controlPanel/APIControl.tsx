@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import { ApiDriver } from "../../../openAPI/driver";
+import { Button } from "antd";
 export function ApiControl() {
   const text = useRef<HTMLTextAreaElement>(null);
 
@@ -17,7 +18,7 @@ export function ApiControl() {
         style={{ width: "300px", height: "300px" }}
       ></textarea>
       <br />
-      <button onClick={handleClick}>API</button>
+      <Button onClick={handleClick}>API</Button>
     </div>
   );
 }
