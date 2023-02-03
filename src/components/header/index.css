@@ -1,0 +1,21 @@
+.header {
+  --headerHeight: 60px;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  height: var(--headerHeight);
+  padding: 0px var(--page-left-right-padding);
+  box-shadow: 0px 0px 5px 0px #ccc;
+
+  background-color: #fff;
+}
+
+.header .content {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  padding: 0px 20px;
+}

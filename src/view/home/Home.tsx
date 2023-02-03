@@ -1,21 +1,22 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import "./index.css";
+import { Header } from "../../components/header";
+import { TopMenu } from "../../components/topMenu";
+import { Content } from "./Content";
 export function Home() {
-  let navigate = useNavigate();
   // let location = useLocation();
   // useEffect(() => {
   //   console.log("DEBUG: ", location);
   // }, [location]);
   return (
     <div>
-      <div>Home</div>
-      <div
-        onClick={() => {
-          navigate("/project");
-        }}
-      >
-        to project
-      </div>
+      <Header
+        content={
+          <div className="topMenu">
+            <TopMenu></TopMenu>
+          </div>
+        }
+      ></Header>
+      <Content></Content>
     </div>
   );
 }

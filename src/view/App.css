@@ -2,4 +2,6 @@ html,
 body,
 #root {
   height: 100%;
+
+  --page-left-right-padding: 20px;
 }
