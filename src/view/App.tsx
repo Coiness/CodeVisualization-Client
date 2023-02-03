@@ -1,11 +1,16 @@
 import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Home } from "./home/Home";
 import { Project } from "./project";
 
 function App() {
   return (
-    <div className="App" style={{ height: "100%" }}>
-      <Project></Project>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="project" element={<Project />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
