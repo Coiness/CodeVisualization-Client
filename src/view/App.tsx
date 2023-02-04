@@ -2,6 +2,9 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Home } from "./home/Home";
 import { Project } from "./project";
+import { ProjectCenter } from "./projectCenter";
+import { VideoCenter } from "./videoCenter";
+import { AlgorithmCenter } from "./algorithmCenter";
 
 function App() {
   return (
@@ -9,6 +12,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="project" element={<Project />} />
+        <Route path="projectCenter" element={<ProjectCenter />} />
+        <Route path="videoCenter" element={<VideoCenter />} />
+        <Route path="algorithmCenter" element={<AlgorithmCenter />} />
       </Routes>
     </BrowserRouter>
   );
