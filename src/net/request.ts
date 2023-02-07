@@ -5,7 +5,7 @@ import { Result, ResultCode } from "./type";
 const model: "dev" | "build" = "dev";
 
 const prefixMap = {
-  dev: "/api",
+  dev: "",
   build: "",
 };
 

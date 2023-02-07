@@ -1,7 +1,8 @@
 import "./index.css";
-import { useCallback, useEffect, useState } from "react";
-import { Button, Input, Modal } from "antd";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Button, Input, InputRef, message, Modal } from "antd";
 import { Subject } from "../../common/utils";
+import { login, register } from "../../net";
 
 export function openLogin() {
   loginVisible.next(true);
@@ -38,6 +39,54 @@ export function Login() {
 
 function LoginPanel() {
   const [model, setModel] = useState<"login" | "register">("login");
+
+  const loginAccount = useRef<InputRef | null>(null);
+  const loginPwd = useRef<InputRef | null>(null);
+
+  async function execLogin() {
+    let account = loginAccount?.current?.input?.value;
+    let pwd = loginPwd?.current?.input?.value;
+
+    if (!account || !pwd) {
+      message.error("请输入完整");
+      return;
+    }
+
+    let res = await login(account, pwd);
+    if (res) {
+      message.success("登录成功");
+    } else {
+      message.error("登录失败");
+    }
+  }
+
+  const registerAccount = useRef<InputRef | null>(null);
+  const registerPwd = useRef<InputRef | null>(null);
+  const registerPwd2 = useRef<InputRef | null>(null);
+
+  async function execRegister() {
+    let account = registerAccount?.current?.input?.value;
+    let pwd = registerPwd?.current?.input?.value;
+    let pwd2 = registerPwd2?.current?.input?.value;
+
+    if (!account || !pwd || !pwd2) {
+      message.error("请输入完整");
+      return;
+    }
+
+    if (pwd !== pwd2) {
+      message.error("两次输入的密码不一致");
+      return;
+    }
+
+    let res = await register(account, pwd);
+    if (res) {
+      message.success("注册成功");
+    } else {
+      message.error("注册失败");
+    }
+  }
+
   return (
     <div className="loginPanel">
       {model === "login" && (
@@ -46,17 +95,21 @@ function LoginPanel() {
           <div className="account">
             <div className="left">账号</div>
             <div className="right">
-              <Input></Input>
+              <Input ref={loginAccount}></Input>
             </div>
           </div>
           <div className="pwd">
             <div className="left">密码</div>
             <div className="right">
-              <Input.Password></Input.Password>
+              <Input.Password ref={loginPwd}></Input.Password>
             </div>
           </div>
           <div className="submit">
-            <Button type="primary" style={{ height: "40px" }}>
+            <Button
+              type="primary"
+              style={{ height: "40px" }}
+              onClick={execLogin}
+            >
               登录
             </Button>
           </div>
@@ -80,29 +133,27 @@ function LoginPanel() {
           <div className="account">
             <div className="left">账号</div>
             <div className="right">
-              <Input></Input>
+              <Input ref={registerAccount}></Input>
             </div>
           </div>
           <div className="pwd">
             <div className="left">密码</div>
             <div className="right">
-              <Input.Password></Input.Password>
+              <Input.Password ref={registerPwd}></Input.Password>
             </div>
           </div>
           <div className="pwd2">
             <div className="left">确认密码</div>
             <div className="right">
-              <Input.Password></Input.Password>
-            </div>
-          </div>
-          <div className="username">
-            <div className="left">用户名</div>
-            <div className="right">
-              <Input></Input>
+              <Input.Password ref={registerPwd2}></Input.Password>
             </div>
           </div>
           <div className="submit">
-            <Button type="primary" style={{ height: "40px" }}>
+            <Button
+              type="primary"
+              style={{ height: "40px" }}
+              onClick={execRegister}
+            >
               注册
             </Button>
           </div>
