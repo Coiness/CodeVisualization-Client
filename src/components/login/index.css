@@ -1,0 +1,57 @@
+.loginPanel {
+  /* height: 400px; */
+  padding: 0px 20px;
+}
+
+.loginPanel .title {
+  display: block;
+  margin-top: 10px;
+
+  text-align: center;
+  font-size: 32px;
+}
+
+.loginPanel > * > * {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  --login-panel-item-height: 40px;
+  height: var(--login-panel-item-height);
+  margin-top: 20px;
+}
+
+.loginPanel > * > * > .left {
+  width: 80px;
+  height: var(--login-panel-item-height);
+  margin-right: 20px;
+
+  font-size: 20px;
+  line-height: var(--login-panel-item-height);
+  text-align: justify;
+}
+
+.loginPanel > * > * > .left::after {
+  display: inline-block;
+  width: 100%;
+  content: "";
+}
+
+.loginPanel > * > * > .right {
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: var(--login-panel-item-height);
+}
+
+.loginPanel > * > .footer {
+  display: block;
+}
+
+.loginPanel > * > .footer > .right {
+  float: right;
+}

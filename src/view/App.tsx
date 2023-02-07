@@ -5,6 +5,7 @@ import { Project } from "./project";
 import { ProjectCenter } from "./projectCenter";
 import { VideoCenter } from "./videoCenter";
 import { AlgorithmCenter } from "./algorithmCenter";
+import { Login } from "../components/login";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="videoCenter" element={<VideoCenter />} />
         <Route path="algorithmCenter" element={<AlgorithmCenter />} />
       </Routes>
+      <Login></Login>
     </BrowserRouter>
   );
 }
