@@ -29,6 +29,7 @@ export function Login() {
       maskClosable={true}
       onCancel={closePanel}
       footer={null}
+      width={400}
     >
       <LoginPanel></LoginPanel>
     </Modal>
@@ -53,6 +54,11 @@ function LoginPanel() {
             <div className="right">
               <Input.Password></Input.Password>
             </div>
+          </div>
+          <div className="submit">
+            <Button type="primary" style={{ height: "40px" }}>
+              登录
+            </Button>
           </div>
           <div className="footer">
             <div className="right">
@@ -94,6 +100,11 @@ function LoginPanel() {
             <div className="right">
               <Input></Input>
             </div>
+          </div>
+          <div className="submit">
+            <Button type="primary" style={{ height: "40px" }}>
+              注册
+            </Button>
           </div>
           <div className="footer">
             <div className="right">
