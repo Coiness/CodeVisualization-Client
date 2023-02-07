@@ -1,5 +1,5 @@
-import { post } from "./request";
-import { setAccount, setToken } from "./token";
+import { get, post } from "./request";
+import { clear, setAccount, setToken } from "./token";
 
 export async function register(account: string, pwd: string): Promise<boolean> {
   let r = await post("/user/register", { account, pwd });
@@ -15,6 +15,18 @@ export async function login(account: string, pwd: string): Promise<boolean> {
   return r.flag;
 }
 
-export async function getUserInfo() {}
+export function logout() {
+  clear();
+}
+
+export type UserInfoData = {
+  username: string;
+  img: string;
+};
+
+export async function getUserInfo(account: string): Promise<UserInfoData> {
+  let r = await get("/user/getUserInfo", { account });
+  return r.data;
+}
 
 export async function modifyUsername() {}

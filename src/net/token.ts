@@ -16,3 +16,8 @@ export function getAccount(): string | null {
 export function setAccount(account: string) {
   window.localStorage.setItem(AccountKey, account);
 }
+
+export function clear() {
+  window.localStorage.removeItem(AccountKey);
+  window.localStorage.removeItem(TokenKey);
+}

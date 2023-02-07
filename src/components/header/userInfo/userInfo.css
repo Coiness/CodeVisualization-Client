@@ -1,0 +1,38 @@
+.outterUserImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 1000px;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  cursor: pointer;
+}
+
+.userInfoPopover {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+
+  width: 100px;
+}
+
+.userInfoPopover .innerUserImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 1000px;
+  margin-bottom: 10px;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  cursor: pointer;
+}
+
+.userInfoPopover .divider {
+  margin: 5px 0px;
+  background-color: #ccc;
+}

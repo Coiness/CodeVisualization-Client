@@ -1,6 +1,6 @@
 import "./index.css";
 import { Logo } from "./Logo";
-import { UserInfo } from "./UserInfo";
+import { UserInfo } from "./userInfo";
 
 export interface HeaderProps {
   content: JSX.Element;
