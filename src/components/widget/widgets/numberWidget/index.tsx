@@ -72,7 +72,6 @@ export class NumberWidget implements IWidget {
     }
   };
 
-  // TODO 调用 destory
   destory() {
     this.closeListen();
     this.discard();
