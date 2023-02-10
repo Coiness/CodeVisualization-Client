@@ -1,27 +1,12 @@
 import "./index.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Button, Input, InputRef, message, Modal } from "antd";
-import { Subject } from "../../common/utils";
 import { login, register } from "../../net";
+import { closeDialog } from "../../view/dialogs/dialog";
 
-export function openLogin() {
-  loginVisible.next(true);
-}
-
-const loginVisible = new Subject<boolean>();
-
-export function Login() {
-  const [visible, setVisible] = useState<boolean>(false);
-
-  useEffect(() => {
-    const sub = loginVisible.subscribe((v) => {
-      setVisible(v);
-    });
-    return sub.unsubscribe;
-  }, []);
-
+export function Login(visible: boolean) {
   const closePanel = useCallback(() => {
-    loginVisible.next(false);
+    closeDialog("login");
   }, []);
 
   return (

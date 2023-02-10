@@ -5,7 +5,7 @@ import { Project } from "./project";
 import { ProjectCenter } from "./projectCenter";
 import { VideoCenter } from "./videoCenter";
 import { AlgorithmCenter } from "./algorithmCenter";
-import { Login } from "../components/login";
+import { Dialogs } from "./dialogs/dialog";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Route path="videoCenter" element={<VideoCenter />} />
         <Route path="algorithmCenter" element={<AlgorithmCenter />} />
       </Routes>
-      <Login></Login>
+      <Dialogs></Dialogs>
     </BrowserRouter>
   );
 }

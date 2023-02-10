@@ -9,18 +9,29 @@ import "./index.css";
 import { getInitSnapshot } from "../../common/const";
 import { Header } from "../../components/header";
 import { Button } from "antd";
+import * as projectAPI from "../../net/projectAPI";
+import { useEffect, useState } from "react";
 
 function getProjectId() {
   return getLocationQuery("id");
 }
 
-async function getData(id: string | null): Promise<Snapshot> {
+async function getProjectData(id: string | null): Promise<ProjectInfo> {
   if (id === null) {
-    return getInitSnapshot();
+    return {
+      id: "",
+      account: "",
+      name: "",
+      snapshot: getInitSnapshot(),
+    };
   } else {
-    // 请求
-    await sleep(1000);
-    return getInitSnapshot();
+    let p = await projectAPI.getProjectInfo(id);
+    return {
+      id: p.id,
+      name: p.name,
+      account: p.account,
+      snapshot: p.snapshot,
+    };
   }
 }
 
@@ -29,20 +40,16 @@ export interface Snapshot {
 }
 
 type MainCanvasProps = {
-  projectId: string | null;
+  snapshot: Snapshot;
 };
 
 function MainCanvas(props: MainCanvasProps) {
-  const id = props.projectId;
   const [data] = useStore(snapshot);
 
   useUndo();
 
-  if (data == null) {
-    (async () => {
-      let d = await getData(id);
-      modelSwitcher.pushModel(d);
-    })();
+  if (data === null) {
+    modelSwitcher.pushModel(props.snapshot);
   }
 
   return (
@@ -54,36 +61,60 @@ function MainCanvas(props: MainCanvasProps) {
   );
 }
 
+type ProjectInfo = {
+  id: string;
+  account: string;
+  name: string;
+  snapshot: Snapshot;
+};
+
 export function Project() {
   const id = getProjectId();
+  const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
+
+  useEffect(() => {
+    if (projectInfo === null) {
+      getProjectData(id).then((info) => {
+        if (projectInfo === null) {
+          setProjectInfo(info);
+        }
+      });
+    }
+  }, [projectInfo, setProjectInfo]);
 
   return (
-    <div className="projectDS">
-      <Header content={<HeaderToolBar projectId={id}></HeaderToolBar>}></Header>
-      <div className="projectDSContent">
-        <WidgetPanel></WidgetPanel>
-        <MainCanvas projectId={id}></MainCanvas>
-        <ControlPanel></ControlPanel>
+    projectInfo && (
+      <div className="projectDS">
+        <Header
+          content={<HeaderToolBar {...projectInfo}></HeaderToolBar>}
+        ></Header>
+        <div className="projectDSContent">
+          <WidgetPanel></WidgetPanel>
+          <MainCanvas snapshot={projectInfo.snapshot}></MainCanvas>
+          <ControlPanel></ControlPanel>
+        </div>
       </div>
-    </div>
+    )
   );
 }
 
-type HeaderToolBarProps = {
-  projectId: string | null;
-};
+export function HeaderToolBar(props: ProjectInfo) {
+  const id = props.id;
 
-export function HeaderToolBar(props: HeaderToolBarProps) {
-  const id = props.projectId;
+  function save() {
+    // projectAPI.createProject()
+  }
 
   return (
     <div>
-      {id === null ? (
+      {id === "" ? (
         <div className="save">
-          <Button type="default">保存</Button>
+          <Button type="default" onClick={save}>
+            保存
+          </Button>
         </div>
       ) : (
-        <div className="projectName">演示名</div>
+        <div className="projectName">{props.name}</div>
       )}
     </div>
   );
