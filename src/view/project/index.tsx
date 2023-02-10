@@ -1,4 +1,4 @@
-import { sleep } from "../../common/utils";
+import { getLocationQuery, sleep } from "../../common/utils";
 import { WidgetRendererModel, WidgetRenderer } from "../../components/widget";
 import { modelSwitcher } from "../../core";
 import { useUndo } from "../../core/undo";
@@ -6,71 +6,47 @@ import { snapshot, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
 import { WidgetPanel } from "./widgetPanel";
 import "./index.css";
+import { getInitSnapshot } from "../../common/const";
+import { Header } from "../../components/header";
+import { Button } from "antd";
 
-async function getData(): Promise<Snapshot> {
-  await sleep(1000);
-  const res = {
-    widgetManagerModel: {
-      id: "widgetRenderer",
-      width: 700,
-      height: 700,
-      widgets: [
-        {
-          id: "1",
-          type: "Number",
-          x: 100,
-          y: 100,
-          width: 100,
-          height: 30,
-          color: "pink",
-          value: 18,
-        },
-        {
-          id: "2",
-          type: "Number",
-          x: 300,
-          y: 100,
-          width: 120,
-          height: 20,
-          color: "skyblue",
-          value: 20,
-        },
-        {
-          id: "3",
-          type: "String",
-          x: 400,
-          y: 500,
-          width: 100,
-          height: 30,
-          color: "yellow",
-          value: "qwe",
-        },
-      ],
-      color: "#666",
-    },
-  } as Snapshot;
-  return res;
+function getProjectId() {
+  return getLocationQuery("id");
+}
+
+async function getData(id: string | null): Promise<Snapshot> {
+  if (id === null) {
+    return getInitSnapshot();
+  } else {
+    // 请求
+    await sleep(1000);
+    return getInitSnapshot();
+  }
 }
 
 export interface Snapshot {
   widgetManagerModel: WidgetRendererModel;
 }
 
-function MainCanvas() {
+type MainCanvasProps = {
+  projectId: string | null;
+};
+
+function MainCanvas(props: MainCanvasProps) {
+  const id = props.projectId;
   const [data] = useStore(snapshot);
 
   useUndo();
 
   if (data == null) {
     (async () => {
-      let d = await getData();
+      let d = await getData(id);
       modelSwitcher.pushModel(d);
     })();
   }
 
   return (
     <div className="main">
-      MainCanvas
       {data && (
         <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
       )}
@@ -79,11 +55,36 @@ function MainCanvas() {
 }
 
 export function Project() {
+  const id = getProjectId();
+
   return (
-    <div className="project">
-      <WidgetPanel></WidgetPanel>
-      <MainCanvas></MainCanvas>
-      <ControlPanel></ControlPanel>
+    <div className="projectDS">
+      <Header content={<HeaderToolBar projectId={id}></HeaderToolBar>}></Header>
+      <div className="projectDSContent">
+        <WidgetPanel></WidgetPanel>
+        <MainCanvas projectId={id}></MainCanvas>
+        <ControlPanel></ControlPanel>
+      </div>
+    </div>
+  );
+}
+
+type HeaderToolBarProps = {
+  projectId: string | null;
+};
+
+export function HeaderToolBar(props: HeaderToolBarProps) {
+  const id = props.projectId;
+
+  return (
+    <div>
+      {id === null ? (
+        <div className="save">
+          <Button type="default">保存</Button>
+        </div>
+      ) : (
+        <div className="projectName">演示名</div>
+      )}
     </div>
   );
 }

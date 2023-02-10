@@ -1,0 +1,27 @@
+.home > .content {
+  height: 100%;
+}
+
+.newProject {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 50px;
+  border-radius: 100px;
+  box-shadow: 0px 1px 3px 0px #999;
+
+  text-align: center;
+  font-size: 24px;
+  line-height: 50px;
+
+  background-color: #fff;
+
+  transform: translate(-50%, -50%);
+
+  cursor: pointer;
+}
+
+.newProject:hover {
+  background-color: #fafafa;
+}

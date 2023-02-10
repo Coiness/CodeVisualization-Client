@@ -106,3 +106,10 @@ export function checkNil(obj: any) {
   }
   return true;
 }
+
+export function getLocationQuery(attr: string) {
+  let t = window.location.search
+    .substr(1)
+    .match(new RegExp("(^|&)" + attr + "=([^&]*)(&|$)"));
+  return t != null ? t[2] : null;
+}

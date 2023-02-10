@@ -1,0 +1,86 @@
+.videoCenter {
+  height: 100%;
+}
+
+.videoCenter .videoCenterContent {
+  display: flex;
+
+  height: calc(100% - 60px);
+  padding: 0px 20px;
+  overflow: hidden;
+
+  background-color: #eee;
+}
+
+.videoCenter .videoCenterContent .left {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+
+  width: 240px;
+  margin: 20px 0px;
+  padding: 20px;
+  box-sizing: border-box;
+
+  background-color: #ddd;
+}
+
+.videoCenter .videoCenterContent .left > * {
+  width: 100%;
+  height: 60px;
+
+  box-sizing: border-box;
+}
+
+.videoCenter .videoCenterContent .left > * > * {
+  width: 100%;
+  height: 100%;
+  font-size: 24px;
+}
+
+.videoCenter .videoCenterContent .left > .search {
+  height: 50px;
+}
+
+.videoCenter .videoCenterContent .left > .blank {
+  flex: 1;
+}
+
+.videoCenter .videoCenterContent .right {
+  flex: 1;
+
+  padding: 20px 0px 0px 20px;
+  box-sizing: border-box;
+
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.videoCenter .videoCenterContent .right::-webkit-scrollbar {
+  display: none;
+}
+
+.videoCenter .videoCenterContent .right .videoList {
+  width: 100%;
+}
+
+.videoCenter .videoCenterContent .right .videoList:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.videoCenter .videoCenterContent .right .videoList .video {
+  float: left;
+
+  width: 270px;
+  height: 200px;
+  margin: 0px 20px 20px 0px;
+  border-radius: 5px;
+  box-shadow: 0px 1px 3px 0px #ccc;
+
+  background-color: #fff;
+}

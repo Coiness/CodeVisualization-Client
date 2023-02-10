@@ -8,7 +8,7 @@ export function Home() {
   //   console.log("DEBUG: ", location);
   // }, [location]);
   return (
-    <div>
+    <div className="home">
       <Header
         content={
           <div className="topMenu">
