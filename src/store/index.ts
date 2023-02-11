@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Status } from "./status";
 export * from "./commonStores";
 export * from "./projectStores";
+export * from "./initData";
 
 export function useStore<T>(status: Status<T>): [v: T, f: (v: T) => void] {
   const [state, setState] = useState<T>(status.get());

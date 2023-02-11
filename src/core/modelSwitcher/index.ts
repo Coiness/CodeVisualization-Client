@@ -22,6 +22,12 @@ export class ModelSwitcher {
     snapshot.set(ss);
     historyInfo.set(hi);
   }
+  setModel(ss: Snapshot) {
+    if (this.models.length !== 0) {
+      this.popModel();
+    }
+    this.pushModel(ss);
+  }
 }
 
 export const modelSwitcher = new ModelSwitcher();

@@ -1,0 +1,6 @@
+.codeEditor {
+  width: 100%;
+
+  /* 小误差 */
+  height: calc(100% - 1px);
+}

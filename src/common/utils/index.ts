@@ -107,9 +107,48 @@ export function checkNil(obj: any) {
   return true;
 }
 
-export function getLocationQuery(attr: string) {
-  let t = window.location.search
-    .substr(1)
-    .match(new RegExp("(^|&)" + attr + "=([^&]*)(&|$)"));
+export function getLocationQuery(attr: string, s?: string) {
+  if (!s) {
+    s = window.location.search;
+  }
+  let t = s.substr(1).match(new RegExp("(^|&)" + attr + "=([^&]*)(&|$)"));
   return t != null ? t[2] : null;
+}
+
+export function getDoubleRandom(l: number, r: number) {
+  return l + Math.random() * (r - l + 1);
+}
+
+export function getIntRandom(l: number, r: number) {
+  return parseInt(`${getDoubleRandom(l, r)}`, 10);
+}
+
+export function randomColor(l: number, r: number) {
+  return (
+    "rgb(" +
+    getIntRandom(l, r) +
+    "," +
+    getIntRandom(l, r) +
+    "," +
+    getIntRandom(l, r) +
+    ")"
+  );
+}
+
+export function getDateString(date: number) {
+  let res = "";
+  const dateObj = new Date(date);
+  res += dateObj.getFullYear();
+  res += "/";
+  const M = dateObj.getMonth() + 1;
+  res += M < 10 ? "0" + M : M;
+  res += "/";
+  res += dateObj.getDate();
+  res += " ";
+  const h = dateObj.getHours();
+  res += h < 10 ? "0" + h : h;
+  res += ":";
+  const m = dateObj.getMinutes();
+  res += m < 10 ? "0" + m : m;
+  return res;
 }

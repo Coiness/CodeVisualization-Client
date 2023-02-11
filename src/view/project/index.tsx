@@ -1,5 +1,5 @@
 import { getLocationQuery, sleep } from "../../common/utils";
-import { WidgetRendererModel, WidgetRenderer } from "../../components/widget";
+import { WidgetRenderer } from "../../components/widget";
 import { modelSwitcher } from "../../core";
 import { useUndo } from "../../core/undo";
 import { snapshot, useStore } from "../../store";
@@ -8,12 +8,15 @@ import { WidgetPanel } from "./widgetPanel";
 import "./index.css";
 import { getInitSnapshot } from "../../common/const";
 import { Header } from "../../components/header";
-import { Button } from "antd";
 import * as projectAPI from "../../net/projectAPI";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { HeaderToolBar, setProjectName } from "./headerToolBar";
+import { Snapshot, ProjectInfo, ProjectInfoKey } from "./types";
+import { useLocation } from "react-router-dom";
+export * from "./types";
 
-function getProjectId() {
-  return getLocationQuery("id");
+function getProjectId(search: string) {
+  return getLocationQuery("id", search);
 }
 
 async function getProjectData(id: string | null): Promise<ProjectInfo> {
@@ -30,27 +33,20 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
       id: p.id,
       name: p.name,
       account: p.account,
-      snapshot: p.snapshot,
+      snapshot: JSON.parse(p.snapshot),
     };
   }
 }
 
-export interface Snapshot {
-  widgetManagerModel: WidgetRendererModel;
-}
+// type MainCanvasProps = {
+//   snapshot: Snapshot;
+// };
 
-type MainCanvasProps = {
-  snapshot: Snapshot;
-};
-
-function MainCanvas(props: MainCanvasProps) {
+// function MainCanvas(props: MainCanvasProps) {
+function MainCanvas() {
   const [data] = useStore(snapshot);
 
   useUndo();
-
-  if (data === null) {
-    modelSwitcher.pushModel(props.snapshot);
-  }
 
   return (
     <div className="main">
@@ -61,61 +57,39 @@ function MainCanvas(props: MainCanvasProps) {
   );
 }
 
-type ProjectInfo = {
-  id: string;
-  account: string;
-  name: string;
-  snapshot: Snapshot;
-};
-
 export function Project() {
-  const id = getProjectId();
+  const location = useLocation();
+  const id = getProjectId(location.search);
   const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
 
   useEffect(() => {
-    if (projectInfo === null) {
-      getProjectData(id).then((info) => {
-        if (projectInfo === null) {
-          setProjectInfo(info);
-        }
-      });
+    getProjectData(id).then((info) => {
+      setProjectInfo(info);
+      modelSwitcher.setModel(info.snapshot);
+    });
+  }, [id]);
+
+  const change = useCallback((key: ProjectInfoKey, value: any) => {
+    if (projectInfo) {
+      projectInfo[key] = value;
     }
-  }, [projectInfo, setProjectInfo]);
+  }, []);
 
   return (
     projectInfo && (
       <div className="projectDS">
         <Header
-          content={<HeaderToolBar {...projectInfo}></HeaderToolBar>}
+          content={
+            <HeaderToolBar info={projectInfo} change={change}></HeaderToolBar>
+          }
         ></Header>
         <div className="projectDSContent">
           <WidgetPanel></WidgetPanel>
-          <MainCanvas snapshot={projectInfo.snapshot}></MainCanvas>
+          {/* <MainCanvas snapshot={projectInfo.snapshot}></MainCanvas> */}
+          <MainCanvas></MainCanvas>
           <ControlPanel></ControlPanel>
         </div>
       </div>
     )
-  );
-}
-
-export function HeaderToolBar(props: ProjectInfo) {
-  const id = props.id;
-
-  function save() {
-    // projectAPI.createProject()
-  }
-
-  return (
-    <div>
-      {id === "" ? (
-        <div className="save">
-          <Button type="default" onClick={save}>
-            保存
-          </Button>
-        </div>
-      ) : (
-        <div className="projectName">{props.name}</div>
-      )}
-    </div>
   );
 }

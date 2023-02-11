@@ -3,7 +3,7 @@ import { getAccount } from "./token";
 
 export async function createAlgorithm(name: string, content: string) {
   let r = await post("/algorithm/create", { name, content });
-  return r.data;
+  return r.data.id;
 }
 
 export async function removeAlgorithm(id: string) {

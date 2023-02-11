@@ -3,7 +3,7 @@ import { getAccount } from "./token";
 
 export async function createVideo(name: string, content: string) {
   let r = await post("/video/create", { name, content });
-  return r.data;
+  return r.data.id;
 }
 
 export async function removeVideo(id: string) {

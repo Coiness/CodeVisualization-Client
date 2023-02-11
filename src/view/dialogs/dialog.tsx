@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { Subject } from "../../common/utils";
 import { Login } from "../../components/login";
+import { SetAlgorithmNameDialog } from "../algorithmEdit";
+import { SetProjectNameDialog } from "../project/headerToolBar";
+import { SetVideoNameDialog } from "../videoPlay";
 
 const dialogs: { [key: string]: (v: boolean) => JSX.Element } = {
   login: Login,
-  // setProjectName: ,
+  setProjectName: SetProjectNameDialog,
+  setAlgorithmName: SetAlgorithmNameDialog,
+  setVideoName: SetVideoNameDialog,
 };
 
 const sub = new Subject<{ key: string; status: boolean }>();
@@ -24,7 +29,7 @@ export function Dialogs() {
     <>
       {Object.keys(dialogs).map((key: string) => {
         let x = dialogs[key](status[key]);
-        return x;
+        return <div key={key}>{x}</div>;
       })}
     </>
   );
