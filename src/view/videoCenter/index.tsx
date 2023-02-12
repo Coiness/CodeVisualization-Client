@@ -21,7 +21,6 @@ export type Video = {
     name: string;
   };
   createTime: number;
-  modifyTime: number;
   bgi: string;
 };
 
@@ -47,7 +46,6 @@ export function VideoCenter() {
                   name: item.user.username,
                 },
                 createTime: parseInt(item.createTime),
-                modifyTime: parseInt(item.modifyTime),
                 bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
               };
             })
@@ -78,16 +76,6 @@ export function VideoCenter() {
             <Button type="text">我的录像</Button>
           </div>
           <div className="blank"></div>
-          <div className="create">
-            <Button
-              type="default"
-              onClick={() => {
-                navigate("/videoPlay");
-              }}
-            >
-              新建录像
-            </Button>
-          </div>
         </div>
         <div className="right">
           <VideoList list={videoList}></VideoList>
@@ -141,7 +129,7 @@ function VideoList(props: { list: Video[] | null }) {
               ></div>
             </div>
             <div className="time">
-              最近修改：{getDateString(item.modifyTime)}
+              创建时间：{getDateString(item.createTime)}
             </div>
           </div>
         );

@@ -7,18 +7,21 @@ import { defaultSnapshot } from "../common/snapshot";
 
 // API 驱动
 export const ApiDriver = {
-  r: () => {},
-  start(code: string): Promise<void> {
+  r: (value: unknown) => {
+    return;
+  },
+  start(code: string): Promise<unknown> {
     modelSwitcher.pushModel(cloneDeep(defaultSnapshot));
     eval(`
 			window.execApi = function(API) {
 				${code}
 			}
 		`);
-    (window as any).execApi(API);
-    return new Promise((resolve) => {
+    let res = new Promise((resolve) => {
       this.r = resolve;
     });
+    (window as any).execApi(API);
+    return res;
   },
   end(v: Video) {
     modelSwitcher.popModel();
@@ -28,7 +31,7 @@ export const ApiDriver = {
       name: "",
       video: v,
     });
-    this.r();
+    this.r(null);
     // playCaller.next(v);
   },
 };

@@ -1,6 +1,6 @@
 import { getLocationQuery, sleep, Subject } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
-import { modelSwitcher, Video } from "../../core";
+import { cloneAction, modelSwitcher, Player, Video } from "../../core";
 import { useUndo } from "../../core/undo";
 import { initVideoInfo, snapshot, useStore } from "../../store";
 import "./index.css";
@@ -9,8 +9,15 @@ import { Header } from "../../components/header";
 import * as videoAPI from "../../net/videoAPI";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Input, InputRef, Modal } from "antd";
+import { Button, Input, InputRef, Modal, Slider } from "antd";
 import { closeDialog, openDialog } from "../dialogs/dialog";
+import {
+  BackwardOutlined,
+  ForwardOutlined,
+  PauseOutlined,
+  PlayCircleOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 
 export type VideoInfo = {
   id: string;
@@ -25,15 +32,22 @@ async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
     return info;
   } else {
     let r = await videoAPI.getVideoInfo(id);
-    console.log("DEBUG: ", r);
+    let v: Video = JSON.parse(r.content);
+    v.steps.forEach((step) => {
+      for (let i = 0; i < step.actions.length; i++) {
+        step.actions[i] = cloneAction(step.actions[i]);
+      }
+    });
     return {
-      id: "",
-      account: "",
-      name: "",
-      video: {} as any,
+      id: r.id,
+      account: r.account,
+      name: r.name,
+      video: v,
     };
   }
 }
+
+const player = new Player();
 
 export function VideoPlay() {
   const location = useLocation();
@@ -46,8 +60,8 @@ export function VideoPlay() {
     getVideoInfo(id).then((info) => {
       if (info !== null) {
         setInfo(info);
+        player.start(info.video);
         // modelSwitcher.setModel(info.snapshot);
-        console.log("DEBUG: ", info);
       } else {
         navigate("/videoCenter");
       }
@@ -90,7 +104,71 @@ export function VideoPlay() {
           </div>
         }
       ></Header>
-      <div className="videoPlayContent">content</div>
+      <div className="videoPlayContent">
+        <MainCanvas></MainCanvas>
+        <Control></Control>
+      </div>
+    </div>
+  );
+}
+
+function MainCanvas() {
+  const [data] = useStore(snapshot);
+
+  useUndo();
+
+  console.log("DEBUG: ", data);
+
+  return (
+    <div className="mainCanvas">
+      {data && (
+        <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
+      )}
+    </div>
+  );
+}
+
+function Control() {
+  const [autoPlay, setAutoPlay] = useState<boolean>(false);
+
+  return (
+    <div className="control">
+      <div className="left">
+        <div className="stop">
+          {!autoPlay && (
+            <Button shape="circle" icon={<PauseOutlined />}></Button>
+          )}
+          {autoPlay && (
+            <Button shape="circle" icon={<PlayCircleOutlined />}></Button>
+          )}
+        </div>
+        <div className="speed">
+          <Slider defaultValue={30} />
+        </div>
+        <div className="restart">
+          <Button shape="circle" icon={<ReloadOutlined />}></Button>
+        </div>
+      </div>
+      <div className="middle">
+        <Button
+          type="text"
+          shape="circle"
+          icon={<BackwardOutlined />}
+          onClick={() => player.last()}
+        ></Button>
+        <div className="progress">
+          <Slider defaultValue={30} />
+        </div>
+        <Button
+          type="text"
+          shape="circle"
+          icon={<ForwardOutlined />}
+          onClick={() => player.next()}
+        ></Button>
+      </div>
+      <div className="right">
+        <Button>进入演示模式</Button>
+      </div>
     </div>
   );
 }

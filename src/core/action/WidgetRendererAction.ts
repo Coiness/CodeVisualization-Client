@@ -16,7 +16,7 @@ type CreateWidgetRendererActionParams = {
 
 export class WidgetRendererAction extends BaseAction {
   constructor(data: WidgetRendererActionData, cs: ChangeSet) {
-    super(data, cs, "Value");
+    super(data, cs, "WidgetRenderer");
   }
 
   static create(
