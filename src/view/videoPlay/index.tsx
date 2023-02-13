@@ -2,7 +2,7 @@ import { getLocationQuery, sleep, Subject } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
 import { cloneAction, modelSwitcher, Player, Video } from "../../core";
 import { useUndo } from "../../core/undo";
-import { initVideoInfo, snapshot, useStore } from "../../store";
+import { animateSpeed, initVideoInfo, snapshot, useStore } from "../../store";
 import "./index.css";
 import { getInitSnapshot } from "../../common/const";
 import { Header } from "../../components/header";
@@ -100,6 +100,7 @@ export function VideoPlay() {
       <Header
         content={
           <div className="videoPlayHeader">
+            <div>{vInfo?.name}</div>
             <Button onClick={save}>保存</Button>
           </div>
         }
@@ -117,36 +118,104 @@ function MainCanvas() {
 
   useUndo();
 
-  console.log("DEBUG: ", data);
+  const [zoom, setZoom] = useState<number>(1);
+
+  function handelMouseWhell(e: any) {
+    if (e.deltaY > 0) {
+      if (zoom > 0.2) {
+        setZoom(zoom - 0.1);
+      }
+    } else {
+      if (zoom < 2) {
+        setZoom(zoom + 0.1);
+      }
+    }
+  }
 
   return (
-    <div className="mainCanvas">
-      {data && (
-        <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
-      )}
+    <div className="mainCanvas" onWheel={handelMouseWhell}>
+      <div className="zoom" style={{ zoom }}>
+        {data && (
+          <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
+        )}
+      </div>
     </div>
   );
 }
 
 function Control() {
   const [autoPlay, setAutoPlay] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
+  const [speed, setSpeed] = useState<number>(1);
+
+  useEffect(() => {
+    animateSpeed.set(speed);
+  }, [speed]);
+
+  useEffect(() => {
+    if (autoPlay) {
+      let t = setInterval(() => {
+        if (progress === player.getStepCount()) {
+          setAutoPlay(false);
+        }
+        player.next();
+      }, 400 / animateSpeed.get());
+      return () => {
+        clearInterval(t);
+      };
+    }
+  }, [autoPlay, progress]);
+
+  useEffect(() => {
+    let sub = player.progress.subscribe((p) => {
+      setProgress(p);
+    });
+    return sub.unsubscribe;
+  });
 
   return (
     <div className="control">
       <div className="left">
         <div className="stop">
-          {!autoPlay && (
-            <Button shape="circle" icon={<PauseOutlined />}></Button>
-          )}
           {autoPlay && (
-            <Button shape="circle" icon={<PlayCircleOutlined />}></Button>
+            <Button
+              shape="circle"
+              icon={<PauseOutlined />}
+              onClick={() => {
+                setAutoPlay(false);
+              }}
+            ></Button>
+          )}
+          {!autoPlay && (
+            <Button
+              shape="circle"
+              icon={<PlayCircleOutlined />}
+              disabled={progress === player.getStepCount()}
+              onClick={() => {
+                setAutoPlay(true);
+              }}
+            ></Button>
           )}
         </div>
         <div className="speed">
-          <Slider defaultValue={30} />
+          <Slider
+            defaultValue={speed}
+            max={5}
+            min={0.5}
+            step={0.1}
+            onChange={(v) => setSpeed(v)}
+            disabled={autoPlay}
+          />
         </div>
         <div className="restart">
-          <Button shape="circle" icon={<ReloadOutlined />}></Button>
+          <Button
+            shape="circle"
+            icon={<ReloadOutlined />}
+            disabled={autoPlay || progress === 0}
+            onClick={() => {
+              player.go(0);
+            }}
+          ></Button>
         </div>
       </div>
       <div className="middle">
@@ -155,15 +224,22 @@ function Control() {
           shape="circle"
           icon={<BackwardOutlined />}
           onClick={() => player.last()}
+          disabled={autoPlay}
         ></Button>
         <div className="progress">
-          <Slider defaultValue={30} />
+          <Slider
+            value={progress}
+            max={player.getStepCount()}
+            onChange={(v) => player.go(v)}
+            disabled={autoPlay}
+          />
         </div>
         <Button
           type="text"
           shape="circle"
           icon={<ForwardOutlined />}
           onClick={() => player.next()}
+          disabled={autoPlay}
         ></Button>
       </div>
       <div className="right">
@@ -187,6 +263,7 @@ export function SetVideoNameDialog(visible: boolean) {
     if (name) {
       console.log("DEBUG: next", name);
       setVideoName.next(name);
+      closePanel();
     }
   }, []);
 

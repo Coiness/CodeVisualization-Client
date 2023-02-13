@@ -40,3 +40,17 @@
   height: 100%;
   background-color: skyblue;
 }
+
+.algorithmEditHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+}
+
+.algorithmEditHeader > * {
+  margin-right: 10px;
+}

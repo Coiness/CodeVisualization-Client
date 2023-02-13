@@ -104,6 +104,7 @@ export function AlgorithmEdit() {
       <Header
         content={
           <div className="algorithmEditHeader">
+            <div className="name">{alInfo?.name}</div>
             <Button onClick={save}>保存</Button>
             <Button onClick={run}>执行</Button>
           </div>

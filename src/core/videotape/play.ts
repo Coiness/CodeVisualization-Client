@@ -1,3 +1,4 @@
+import { Subject } from "../../common/utils";
 import { Snapshot } from "../../view/project";
 import { modelSwitcher } from "../modelSwitcher";
 import { execUndo } from "../undo";
@@ -8,10 +9,13 @@ export class Player {
   private steps: Step[] = [];
   private index: number = 0;
 
+  progress = new Subject<number>();
+
   start(video: Video) {
     this.snapshot = video.snapshot;
     this.steps = video.steps;
     this.index = 0;
+    this.progress.next(this.index);
     modelSwitcher.pushModel(this.snapshot);
   }
 
@@ -33,6 +37,7 @@ export class Player {
       });
     }
     this.index++;
+    this.progress.next(this.index);
   }
 
   last() {
@@ -45,6 +50,21 @@ export class Player {
       execUndo();
     }
     this.index--;
+    this.progress.next(this.index);
+  }
+
+  getStepCount() {
+    return this.steps.length;
+  }
+
+  go(index: number) {
+    while (this.index !== index) {
+      if (this.index < index) {
+        this.next();
+      } else if (this.index > index) {
+        this.last();
+      }
+    }
   }
 
   end() {}

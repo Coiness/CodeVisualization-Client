@@ -48,11 +48,27 @@ function MainCanvas() {
 
   useUndo();
 
+  const [zoom, setZoom] = useState<number>(1);
+
+  function handelMouseWhell(e: any) {
+    if (e.deltaY > 0) {
+      if (zoom > 0.2) {
+        setZoom(zoom - 0.1);
+      }
+    } else {
+      if (zoom < 2) {
+        setZoom(zoom + 0.1);
+      }
+    }
+  }
+
   return (
-    <div className="main">
-      {data && (
-        <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
-      )}
+    <div className="main" onWheel={handelMouseWhell}>
+      <div className="zoom" style={{ zoom }}>
+        {data && (
+          <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { linearAnimation, Subject } from "../../../common/utils";
 import { valueWidgetExecer, ValueActionData } from "../../../core";
+import { animateSpeed } from "../../../store";
 import { BaseModel } from "./type";
 
 export interface ValueWidgetModel extends BaseModel {
@@ -61,14 +62,14 @@ export function useValueWidget(widget: ValueWidget, model: ValueWidgetModel) {
           {
             fontSize: [SmallFontSize, LargeFontSize, (n) => `${n}px`],
           },
-          100,
+          100 / animateSpeed.get(),
           () => {
             stop = linearAnimation(
               el,
               {
                 fontSize: [LargeFontSize, SmallFontSize, (n) => `${n}px`],
               },
-              100,
+              100 / animateSpeed.get(),
               end
             );
           }

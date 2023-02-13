@@ -10,7 +10,7 @@ import {
   WidgetType,
   CommonModel,
 } from "./widgets";
-import { activeWidget, useStore } from "../../store";
+import { activeWidget, animateSpeed, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
 import { useEffect, useRef, useState } from "react";
 import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
@@ -131,7 +131,7 @@ export function useWidgetAnimation(model: BaseModel) {
               top: [y, actionData.change.y, (n) => `${n}px`],
               left: [x, actionData.change.x, (n) => `${n}px`],
             },
-            200,
+            200 / animateSpeed.get(),
             end
           )
         );
@@ -143,7 +143,7 @@ export function useWidgetAnimation(model: BaseModel) {
               width: [width, actionData.change.w, (n) => `${n}px`],
               height: [height, actionData.change.h, (n) => `${n}px`],
             },
-            200,
+            200 / animateSpeed.get(),
             end
           )
         );
