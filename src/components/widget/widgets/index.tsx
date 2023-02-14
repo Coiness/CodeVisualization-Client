@@ -1,6 +1,8 @@
 import { Obj } from "../../../core";
 import { snapshot } from "../../../store";
-import { BaseModel } from "./type";
+import { NumberWidgetControlPanel } from "./numberWidget";
+import { StringWidgetControlPanel } from "./stringWidget";
+import { BaseModel, WidgetType } from "./type";
 
 export * from "./type";
 export * from "./widgetRenders";
@@ -27,4 +29,14 @@ function getModelByIdDfs(id: string, now: Obj): BaseModel | null {
     }
   }
   return null;
+}
+
+export function getWidgetControlPanel(type: WidgetType) {
+  if (type === WidgetType.Number) {
+    return NumberWidgetControlPanel;
+  } else if (type === WidgetType.String) {
+    return StringWidgetControlPanel;
+  } else {
+    throw new Error("get widget control panel: widget type error");
+  }
 }

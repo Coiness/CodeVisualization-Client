@@ -127,11 +127,11 @@ function MainCanvas() {
   function handelMouseWhell(e: any) {
     if (e.deltaY > 0) {
       if (zoom > 0.2) {
-        setZoom(zoom - 0.1);
+        setZoom(zoom - 0.05);
       }
     } else {
       if (zoom < 2) {
-        setZoom(zoom + 0.1);
+        setZoom(zoom + 0.05);
       }
     }
   }

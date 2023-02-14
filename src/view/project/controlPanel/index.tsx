@@ -1,16 +1,26 @@
-import { WidgetInfoView } from "./WidgetInfoView";
+import { Empty } from "antd";
+import { getWidgetControlPanel } from "../../../components/widget/widgets";
+import { activeWidget, activeWidgetType, useStore } from "../../../store";
 import "./controlPanel.css";
-import { ValueEdit } from "./ValueEdit";
-import { VideoControl } from "./VideoControl";
-import { ApiControl } from "./APIControl";
 
 export function ControlPanel() {
-  return (
-    <div className="controlPanel">
-      <VideoControl></VideoControl>
-      <WidgetInfoView></WidgetInfoView>
-      <ValueEdit></ValueEdit>
-      <ApiControl></ApiControl>
-    </div>
-  );
+  let [widget, setWidget] = useStore(activeWidget);
+
+  if (widget) {
+    let Comp = getWidgetControlPanel(widget.type);
+    return (
+      <div className="controlPanel">
+        <Comp></Comp>
+      </div>
+    );
+  } else {
+    return (
+      <div className="controlPanel">
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={"未选择元素"}
+        />
+      </div>
+    );
+  }
 }

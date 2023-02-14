@@ -32,6 +32,11 @@ export enum WidgetType {
   String = "String",
 }
 
+export const WidgetTypeNameMap = {
+  [WidgetType.Number]: "数字",
+  [WidgetType.String]: "字符串",
+};
+
 export interface WidgetRenderProps {
   className: any;
   widget: IWidget;

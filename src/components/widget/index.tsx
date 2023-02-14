@@ -227,6 +227,15 @@ export function WidgetRenderer(props: WidgetRendererProps) {
     <div
       className="widgetRenderer"
       style={{ width, height, backgroundColor: color }}
+      onAuxClick={(e) => {
+        // e.preventDefault();
+        // e.nativeEvent.preventDefault();
+        // e.nativeEvent.returnValue = false;
+        // console.log("DEBUG: ", e);
+      }}
+      onDoubleClick={(e) => {
+        activeWidget.set(null);
+      }}
     >
       {widgets.map((widgetModel) => {
         return <Widget key={widgetModel.id} model={widgetModel}></Widget>;

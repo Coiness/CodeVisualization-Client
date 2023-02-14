@@ -3,4 +3,35 @@
   height: 100%;
   background-color: #ccc;
   color: #000;
+
+  overflow: scroll;
+}
+
+.widgetPanel::-webkit-scrollbar {
+  display: none;
+}
+
+.widgetPanel > .list {
+  width: 100%;
+}
+
+.widgetPanel > .list:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.widgetPanel > .list > .widgetItem {
+  float: left;
+  width: 50%;
+  height: 100px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.widgetPanel > .list > .widgetItem > * {
+  width: 100%;
+  height: 100%;
 }

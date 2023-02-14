@@ -4,7 +4,7 @@ import { DisplayMode } from "../core";
 import { HistoryInfo } from "../core/undo";
 import { Snapshot } from "../view/project";
 
-export const activeWidget = createStatus<WidgetInfo>(null);
+export const activeWidget = createStatus<WidgetInfo | null>(null);
 export const activeWidgetType = createStatus<WidgetType | null>(null);
 export const snapshot = createStatus<Snapshot | null>(null);
 export const historyInfo = createStatus<HistoryInfo>({

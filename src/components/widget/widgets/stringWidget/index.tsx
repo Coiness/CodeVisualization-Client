@@ -3,7 +3,13 @@ import { cls, Subject } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
 import { ValueAction } from "../../../../core/action/ValueAction";
 import { snapshot } from "../../../../store";
-import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
+import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
+import {
+  StringControl,
+  ValueEdit,
+  WidgetInfoView,
+} from "../../controlPanelItem";
+import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import "./index.css";
 
@@ -12,6 +18,20 @@ type Value = string | null;
 export interface StringWidgetModel extends WidgetModel {
   value: Value;
 }
+
+export const stringWidgetDefaultInfo: WidgetDefaultInfo = {
+  defaultData: {
+    id: "",
+    type: WidgetType.String,
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+    color: "rgb(184, 255, 209)",
+    value: "",
+  },
+  name: "字符串",
+};
 
 export class StringWidget implements IWidget {
   private value: Value;
@@ -48,6 +68,7 @@ export class StringWidget implements IWidget {
   }
 
   setValue = (value: unknown) => {
+    console.log("DEBUG: ", value);
     const action = ValueAction.create(this.model, { value });
     commitAction(action);
   };
@@ -75,11 +96,21 @@ export function StringWidgetRender(props: WidgetRenderProps) {
 
   return (
     <div className={cls("stringWidget", props.className)} ref={dom}>
-      {value}
+      <div className="value">{value}</div>
     </div>
   );
 }
 
 export function CreateStringWidget(model: WidgetModel) {
   return new StringWidget(model as StringWidgetModel);
+}
+
+export function StringWidgetControlPanel() {
+  return (
+    <div className="stringControlPanel">
+      <WidgetInfoView></WidgetInfoView>
+      <ValueEdit></ValueEdit>
+      <StringControl></StringControl>
+    </div>
+  );
 }

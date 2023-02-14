@@ -1,3 +1,5 @@
+import "./valueEdit.css";
+import { Button, Input } from "antd";
 import { useEffect, useState } from "react";
 import { activeWidget, useStore } from "../../../store";
 export function ValueEdit() {
@@ -22,17 +24,25 @@ export function ValueEdit() {
     return null;
   }
 
+  function submit() {
+    widget?.setValue(value);
+  }
+
   return (
-    <div>
-      <h1>ValueEdit</h1>
-      <span>value: </span>
-      <input
-        type="text"
-        onChange={(e) => {
-          widget?.setValue(e.target.value);
-        }}
-        value={value as string}
-      />
+    <div className="valueEdit">
+      <div className="text">当前值：</div>
+      <Input.Group compact className="inputGroup">
+        <Input
+          className="input"
+          value={value as string}
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+        ></Input>
+        <Button className="submit" onClick={submit}>
+          修改
+        </Button>
+      </Input.Group>
     </div>
   );
 }

@@ -1,0 +1,10 @@
+.valueEdit > .text {
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+.valueEdit > .inputGroup {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}

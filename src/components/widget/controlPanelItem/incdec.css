@@ -1,0 +1,13 @@
+.incdec {
+  display: flex;
+
+  margin: 10px 0px;
+}
+
+.incdec > * {
+  flex: 1;
+}
+
+.incdec > *:first-child {
+  margin-right: 10px;
+}

@@ -3,7 +3,9 @@ import { cls, Subject } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
 import { ValueAction } from "../../../../core/action/ValueAction";
 import { snapshot } from "../../../../store";
-import { IWidget, WidgetModel, WidgetRenderProps } from "../type";
+import { IncDec, ValueEdit, WidgetInfoView } from "../../controlPanelItem";
+import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
+import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import "./index.css";
 
@@ -12,6 +14,20 @@ type Value = number | null;
 export interface NumberWidgetModel extends WidgetModel {
   value: Value;
 }
+
+export const numberWidgetDefaultInfo: WidgetDefaultInfo = {
+  defaultData: {
+    id: "",
+    type: WidgetType.Number,
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+    color: "rgb(252, 218, 255)",
+    value: 0,
+  },
+  name: "数字",
+};
 
 export class NumberWidget implements IWidget {
   private value: Value;
@@ -85,11 +101,21 @@ export function NumberWidgetRender(props: WidgetRenderProps) {
 
   return (
     <div className={cls("numberWidget", props.className)} ref={dom}>
-      {value}
+      <div className="value">{value}</div>
     </div>
   );
 }
 
 export function CreateNumberWidget(model: WidgetModel) {
   return new NumberWidget(model as NumberWidgetModel);
+}
+
+export function NumberWidgetControlPanel() {
+  return (
+    <div className="numberControlPanel">
+      <WidgetInfoView></WidgetInfoView>
+      <ValueEdit></ValueEdit>
+      <IncDec></IncDec>
+    </div>
+  );
 }
