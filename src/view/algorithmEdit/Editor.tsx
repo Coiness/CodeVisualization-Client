@@ -1,24 +1,28 @@
 import "./editor.css";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useCodeEditor() {
   let dom = useRef<HTMLDivElement | null>(null);
   let editor = useRef<monaco.editor.IStandaloneCodeEditor>();
 
+  let code = useRef<string>();
+
   function getCode() {
-    return editor.current?.getValue();
+    code.current = editor.current?.getValue();
+    return code.current;
   }
 
-  function setCode(code: string) {
-    editor.current?.setValue(code);
+  function setCode(c: string) {
+    code.current = c;
+    editor.current?.setValue(code.current);
   }
 
   useEffect(() => {
     if (dom.current) {
       let r = monaco.editor.create(dom.current, {
-        value: "",
+        value: code.current,
         language: "javascript",
         theme: "vs",
       });
