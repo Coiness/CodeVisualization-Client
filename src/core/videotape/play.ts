@@ -67,5 +67,9 @@ export class Player {
     }
   }
 
+  getSnapshot() {
+    return this.snapshot;
+  }
+
   end() {}
 }

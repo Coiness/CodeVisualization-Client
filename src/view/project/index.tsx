@@ -2,7 +2,7 @@ import { getLocationQuery, sleep } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
 import { modelSwitcher } from "../../core";
 import { useUndo } from "../../core/undo";
-import { snapshot, useStore } from "../../store";
+import { initProjectInfo, snapshot, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
 import { WidgetPanel } from "./widgetPanel";
 import "./index.css";
@@ -21,12 +21,15 @@ function getProjectId(search: string) {
 
 async function getProjectData(id: string | null): Promise<ProjectInfo> {
   if (id === null) {
-    return {
-      id: "",
-      account: "",
-      name: "",
-      snapshot: getInitSnapshot(),
-    };
+    let info = initProjectInfo.get();
+    return (
+      info ?? {
+        id: "",
+        account: "",
+        name: "",
+        snapshot: getInitSnapshot(),
+      }
+    );
   } else {
     let p = await projectAPI.getProjectInfo(id);
     return {

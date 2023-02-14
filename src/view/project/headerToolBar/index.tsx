@@ -1,9 +1,20 @@
+import "./index.css";
 import { ProjectInfo, ProjectInfoKey } from "../types";
 import { Button, Input, InputRef, Modal } from "antd";
 import { closeDialog, openDialog } from "../../dialogs/dialog";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Subject } from "../../../common/utils";
 import * as projectAPI from "../../../net/projectAPI";
+import {
+  CloudDownloadOutlined,
+  RedoOutlined,
+  UndoOutlined,
+} from "@ant-design/icons";
+import { execRedo, execUndo, Recorder } from "../../../core";
+import { initVideoInfo } from "../../../store";
+import { useNavigate } from "react-router-dom";
+
+const recorder = new Recorder();
 
 export function HeaderToolBar(props: {
   info: ProjectInfo;
@@ -11,6 +22,8 @@ export function HeaderToolBar(props: {
 }) {
   const id = props.info.id;
   const nameRef = useRef<string>(props.info.name);
+  const [recording, setRecording] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   async function save() {
     if (nameRef.current === "") {
@@ -33,15 +46,55 @@ export function HeaderToolBar(props: {
   });
 
   return (
-    <div>
-      {id === "" ? (
-        <div className="save">
-          <Button type="default" onClick={save}>
-            保存
-          </Button>
-        </div>
-      ) : (
-        <div className="projectName">{nameRef.current}</div>
+    <div className="projectHeader">
+      <div className="projectName">{nameRef.current}</div>
+      <Button type="default" onClick={save}>
+        保存
+      </Button>
+      <Button icon={<CloudDownloadOutlined />}>下载到本地</Button>
+      <div className="blank"></div>
+      <Button
+        icon={<UndoOutlined />}
+        onClick={() => {
+          execUndo();
+        }}
+      >
+        撤销
+      </Button>
+      <Button
+        icon={<RedoOutlined />}
+        onClick={() => {
+          execRedo();
+        }}
+      >
+        重做
+      </Button>
+      {!recording && (
+        <Button
+          onClick={() => {
+            setRecording(true);
+            recorder.start();
+          }}
+        >
+          录制
+        </Button>
+      )}
+      {recording && (
+        <Button
+          onClick={() => {
+            setRecording(false);
+            const video = recorder.end();
+            initVideoInfo.set({
+              id: "",
+              account: "",
+              name: "",
+              video,
+            });
+            navigate("/videoPlay");
+          }}
+        >
+          停止
+        </Button>
       )}
     </div>
   );

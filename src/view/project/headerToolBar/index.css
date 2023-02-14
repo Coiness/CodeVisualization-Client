@@ -1,0 +1,17 @@
+.projectHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+
+  flex: 1;
+  height: 100%;
+}
+
+.projectHeader > * {
+  margin-right: 10px;
+}
+
+.projectHeader > .blank {
+  flex: 1;
+}

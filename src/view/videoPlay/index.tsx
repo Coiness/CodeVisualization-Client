@@ -2,7 +2,13 @@ import { getLocationQuery, sleep, Subject } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
 import { cloneAction, modelSwitcher, Player, Video } from "../../core";
 import { useUndo } from "../../core/undo";
-import { animateSpeed, initVideoInfo, snapshot, useStore } from "../../store";
+import {
+  animateSpeed,
+  initVideoInfo,
+  initProjectInfo,
+  snapshot,
+  useStore,
+} from "../../store";
 import "./index.css";
 import { getInitSnapshot } from "../../common/const";
 import { Header } from "../../components/header";
@@ -116,8 +122,6 @@ export function VideoPlay() {
 function MainCanvas() {
   const [data] = useStore(snapshot);
 
-  useUndo();
-
   const [zoom, setZoom] = useState<number>(1);
 
   function handelMouseWhell(e: any) {
@@ -147,6 +151,7 @@ function Control() {
   const [autoPlay, setAutoPlay] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     animateSpeed.set(speed);
@@ -243,7 +248,20 @@ function Control() {
         ></Button>
       </div>
       <div className="right">
-        <Button>进入演示模式</Button>
+        <Button
+          onClick={() => {
+            let s = player.getSnapshot();
+            initProjectInfo.set({
+              id: "",
+              account: "",
+              name: "",
+              snapshot: s,
+            });
+            navigate("/project");
+          }}
+        >
+          进入演示模式
+        </Button>
       </div>
     </div>
   );

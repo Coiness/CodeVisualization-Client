@@ -7,8 +7,9 @@ export function Logo() {
       onClick={() => {
         nav("/");
       }}
+      style={{ fontWeight: 700, fontSize: "30px" }}
     >
-      Logo
+      DS Visualization
     </div>
   );
 }
