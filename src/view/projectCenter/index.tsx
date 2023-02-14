@@ -11,6 +11,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../../components/loading";
 
 export type Project = {
   id: string;
@@ -148,6 +149,6 @@ function ProjectList(props: { list: Project[] | null }) {
       })}
     </div>
   ) : (
-    <div>加载中</div>
+    <Loading></Loading>
   );
 }

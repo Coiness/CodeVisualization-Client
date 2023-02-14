@@ -11,6 +11,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../../components/loading";
 
 export type Algorithm = {
   id: string;
@@ -148,6 +149,6 @@ function AlgorithmList(props: { list: Algorithm[] | null }) {
       })}
     </div>
   ) : (
-    <div>加载中</div>
+    <Loading></Loading>
   );
 }

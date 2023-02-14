@@ -11,6 +11,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../../components/loading";
 
 export type Video = {
   id: string;
@@ -136,6 +137,6 @@ function VideoList(props: { list: Video[] | null }) {
       })}
     </div>
   ) : (
-    <div>加载中</div>
+    <Loading></Loading>
   );
 }
