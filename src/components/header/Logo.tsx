@@ -1,15 +1,16 @@
+import "./logo.css";
 import { useNavigate } from "react-router-dom";
 
 export function Logo() {
   let nav = useNavigate();
   return (
     <div
+      className="logo"
       onClick={() => {
         nav("/");
       }}
-      style={{ fontWeight: 700, fontSize: "30px" }}
     >
-      DS Visualization
+      D&A Visualization
     </div>
   );
 }

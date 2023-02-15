@@ -1,0 +1,15 @@
+.logo {
+  height: 50px;
+  border-radius: 5px;
+  padding: 0px 10px;
+  box-sizing: border-box;
+
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 50px;
+  cursor: pointer;
+}
+
+.logo:hover {
+  background-color: #eee;
+}
