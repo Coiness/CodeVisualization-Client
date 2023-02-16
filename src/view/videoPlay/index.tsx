@@ -15,7 +15,7 @@ import { Header } from "../../components/header";
 import * as videoAPI from "../../net/videoAPI";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Input, InputRef, Modal, Slider } from "antd";
+import { Button, Input, InputRef, Modal, Select, Slider } from "antd";
 import { closeDialog, openDialog } from "../dialogs/dialog";
 import {
   BackwardOutlined,
@@ -30,6 +30,7 @@ export type VideoInfo = {
   account: string;
   name: string;
   video: Video;
+  permission: number;
 };
 
 async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
@@ -49,6 +50,7 @@ async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
       account: r.account,
       name: r.name,
       video: v,
+      permission: r.permission,
     };
   }
 }
@@ -101,14 +103,41 @@ export function VideoPlay() {
     return sub.unsubscribe;
   });
 
+  function handleSelectChange(v: number) {
+    if (vInfo) {
+      videoAPI.changePermission(vInfo.id, v).then((flag) => {
+        if (flag) {
+          setInfo({
+            ...vInfo,
+            permission: v,
+          });
+        }
+      });
+    }
+  }
+
   return (
     <div className="videoPlay">
       <Header
         content={
-          <div className="videoPlayHeader">
-            <div>{vInfo?.name}</div>
-            <Button onClick={save}>保存</Button>
-          </div>
+          vInfo ? (
+            <div className="videoPlayHeader">
+              <div>{vInfo.name}</div>
+              <Button onClick={save}>保存</Button>
+              {vInfo.name !== "" && (
+                <Select
+                  value={vInfo.permission}
+                  onChange={handleSelectChange}
+                  options={[
+                    { value: 0, label: "仅自己可见" },
+                    { value: 1, label: "所有人可见" },
+                  ]}
+                />
+              )}
+            </div>
+          ) : (
+            <></>
+          )
         }
       ></Header>
       <div className="videoPlayContent">
@@ -256,6 +285,7 @@ function Control() {
               account: "",
               name: "",
               snapshot: s,
+              permission: 0,
             });
             navigate("/project");
           }}

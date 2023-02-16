@@ -3,7 +3,7 @@ import { getAccount } from "./token";
 
 export async function createProject(name: string, snapshot: string) {
   let r = await post("/project/create", { name, snapshot });
-  return r.data;
+  return r.data.id;
 }
 
 export async function removeProject(id: string) {

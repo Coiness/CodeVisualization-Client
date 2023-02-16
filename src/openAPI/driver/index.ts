@@ -29,6 +29,7 @@ export const ApiDriver = {
       account: "",
       name: "",
       video: v,
+      permission: 0,
     });
     this.r(null);
   },

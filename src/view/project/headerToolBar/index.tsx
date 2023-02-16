@@ -1,6 +1,6 @@
 import "./index.css";
 import { ProjectInfo, ProjectInfoKey } from "../types";
-import { Button, Input, InputRef, Modal } from "antd";
+import { Button, Input, InputRef, Modal, Select } from "antd";
 import { closeDialog, openDialog } from "../../dialogs/dialog";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Subject } from "../../../common/utils";
@@ -20,8 +20,9 @@ export function HeaderToolBar(props: {
   info: ProjectInfo;
   change: (key: ProjectInfoKey, value: any) => void;
 }) {
-  const id = props.info.id;
-  const nameRef = useRef<string>(props.info.name);
+  const info = props.info;
+  const id = info.id;
+  const nameRef = useRef<string>(info.name);
   const [recording, setRecording] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ export function HeaderToolBar(props: {
     } else {
       return projectAPI.createProject(
         nameRef.current,
-        JSON.stringify(props.info.snapshot)
+        JSON.stringify(info.snapshot)
       );
     }
   }
@@ -41,9 +42,20 @@ export function HeaderToolBar(props: {
       nameRef.current = name;
       let id = await save();
       props.change("id", id);
+      navigate(`/project?id=${id}`);
     });
     return sub.unsubscribe;
   });
+
+  function handleSelectChange(v: number) {
+    if (info) {
+      projectAPI.changePermission(info.id, v).then((flag) => {
+        if (flag) {
+          props.change("permission", v);
+        }
+      });
+    }
+  }
 
   return (
     <div className="projectHeader">
@@ -52,6 +64,16 @@ export function HeaderToolBar(props: {
         保存
       </Button>
       <Button icon={<CloudDownloadOutlined />}>下载到本地</Button>
+      {info.name !== "" && (
+        <Select
+          value={info.permission}
+          onChange={handleSelectChange}
+          options={[
+            { value: 0, label: "仅自己可见" },
+            { value: 1, label: "所有人可见" },
+          ]}
+        />
+      )}
       <div className="blank"></div>
       <Button
         icon={<UndoOutlined />}
@@ -89,6 +111,7 @@ export function HeaderToolBar(props: {
               account: "",
               name: "",
               video,
+              permission: 0,
             });
             navigate("/videoPlay");
           }}

@@ -28,6 +28,7 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
         account: "",
         name: "",
         snapshot: getInitSnapshot(),
+        permission: 0,
       }
     );
   } else {
@@ -37,6 +38,7 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
       name: p.name,
       account: p.account,
       snapshot: JSON.parse(p.snapshot),
+      permission: p.permission,
     };
   }
 }
@@ -89,9 +91,11 @@ export function Project() {
   }, [id]);
 
   const change = useCallback((key: ProjectInfoKey, value: any) => {
-    if (projectInfo) {
-      projectInfo[key] = value;
-    }
+    let newInfo = {
+      ...projectInfo,
+      [key]: value,
+    };
+    setProjectInfo(newInfo as ProjectInfo);
   }, []);
 
   return (

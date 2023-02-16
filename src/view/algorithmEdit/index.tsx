@@ -1,7 +1,7 @@
 import "./index.css";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
-import { Button, Input, InputRef, Modal } from "antd";
+import { Button, Input, InputRef, Modal, Select } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useCodeEditor } from "./Editor";
 import { closeDialog, openDialog } from "../dialogs/dialog";
@@ -20,6 +20,7 @@ export type AlgorithmInfo = {
     showCode: string;
     runCode: string;
   };
+  permission: number;
 };
 
 async function getAlInfo(id: string | null) {
@@ -32,6 +33,7 @@ async function getAlInfo(id: string | null) {
         showCode: "",
         runCode: "",
       },
+      permission: 0,
     };
   } else {
     const r = await algorithmAPI.getAlgorithmInfo(id);
@@ -40,6 +42,7 @@ async function getAlInfo(id: string | null) {
       account: r.account,
       name: r.name,
       content: JSON.parse(r.content),
+      permission: r.permission,
     };
   }
 }
@@ -99,15 +102,43 @@ export function AlgorithmEdit() {
     }
   }
 
+  function handleSelectChange(v: number) {
+    if (alInfo) {
+      algorithmAPI.changePermission(alInfo.id, v).then((flag) => {
+        if (flag) {
+          setInfo({
+            ...alInfo,
+            permission: v,
+          });
+        }
+      });
+    }
+  }
+
   return (
     <div className="algorithmEdit">
       <Header
         content={
-          <div className="algorithmEditHeader">
-            <div className="name">{alInfo?.name}</div>
-            <Button onClick={save}>保存</Button>
-            <Button onClick={run}>执行</Button>
-          </div>
+          alInfo !== null ? (
+            <div className="algorithmEditHeader">
+              <div className="name">{alInfo.name}</div>
+              <Button onClick={save}>保存</Button>
+              <Button onClick={run}>执行</Button>
+              {alInfo.name !== "" && (
+                <Select
+                  value={alInfo.permission}
+                  onChange={handleSelectChange}
+                  options={[
+                    { value: 0, label: "仅自己可见" },
+                    { value: 1, label: "所有人可用" },
+                    { value: 2, label: "所有人可见" },
+                  ]}
+                />
+              )}
+            </div>
+          ) : (
+            <></>
+          )
         }
       ></Header>
       <div className="algorithmEditContent">
