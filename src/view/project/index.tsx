@@ -1,4 +1,4 @@
-import { getLocationQuery, sleep } from "../../common/utils";
+import { getLocationQuery } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
 import { modelSwitcher } from "../../core";
 import { useUndo } from "../../core/undo";
@@ -10,8 +10,8 @@ import { getInitSnapshot } from "../../common/const";
 import { Header } from "../../components/header";
 import * as projectAPI from "../../net/projectAPI";
 import { useCallback, useEffect, useState } from "react";
-import { HeaderToolBar, setProjectName } from "./headerToolBar";
-import { Snapshot, ProjectInfo, ProjectInfoKey } from "./types";
+import { HeaderToolBar } from "./headerToolBar";
+import { ProjectInfo, ProjectInfoKey } from "./types";
 import { useLocation } from "react-router-dom";
 export * from "./types";
 
@@ -90,13 +90,16 @@ export function Project() {
     });
   }, [id]);
 
-  const change = useCallback((key: ProjectInfoKey, value: any) => {
-    let newInfo = {
-      ...projectInfo,
-      [key]: value,
-    };
-    setProjectInfo(newInfo as ProjectInfo);
-  }, []);
+  const change = useCallback(
+    (key: ProjectInfoKey, value: any) => {
+      let newInfo = {
+        ...projectInfo,
+        [key]: value,
+      };
+      setProjectInfo(newInfo as ProjectInfo);
+    },
+    [projectInfo, setProjectInfo]
+  );
 
   return (
     projectInfo && (

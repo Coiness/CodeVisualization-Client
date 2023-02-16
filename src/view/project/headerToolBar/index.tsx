@@ -21,7 +21,6 @@ export function HeaderToolBar(props: {
   change: (key: ProjectInfoKey, value: any) => void;
 }) {
   const info = props.info;
-  const id = info.id;
   const nameRef = useRef<string>(info.name);
   const [recording, setRecording] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -130,7 +129,7 @@ export function SetProjectNameDialog(visible: boolean) {
 
   const closePanel = useCallback(() => {
     closeDialog("setProjectName");
-  }, [closeDialog]);
+  }, []);
 
   const submit = useCallback(() => {
     const name = inp?.current?.input?.value;

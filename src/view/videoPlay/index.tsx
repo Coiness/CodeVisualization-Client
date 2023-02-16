@@ -1,7 +1,6 @@
-import { getLocationQuery, sleep, Subject } from "../../common/utils";
+import { getLocationQuery, Subject } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
-import { cloneAction, modelSwitcher, Player, Video } from "../../core";
-import { useUndo } from "../../core/undo";
+import { cloneAction, Player, Video } from "../../core";
 import {
   animateSpeed,
   initVideoInfo,
@@ -10,7 +9,6 @@ import {
   useStore,
 } from "../../store";
 import "./index.css";
-import { getInitSnapshot } from "../../common/const";
 import { Header } from "../../components/header";
 import * as videoAPI from "../../net/videoAPI";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -74,7 +72,7 @@ export function VideoPlay() {
         navigate("/videoCenter");
       }
     });
-  }, [id]);
+  }, [id, navigate]);
 
   async function save(): Promise<string | null> {
     if (nameRef.current === "") {
@@ -304,7 +302,7 @@ export function SetVideoNameDialog(visible: boolean) {
 
   const closePanel = useCallback(() => {
     closeDialog("setVideoName");
-  }, [closeDialog]);
+  }, []);
 
   const submit = useCallback(() => {
     const name = inp?.current?.input?.value;
@@ -313,7 +311,7 @@ export function SetVideoNameDialog(visible: boolean) {
       setVideoName.next(name);
       closePanel();
     }
-  }, []);
+  }, [closePanel]);
 
   return (
     <Modal

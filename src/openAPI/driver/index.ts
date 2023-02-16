@@ -11,6 +11,8 @@ export const ApiDriver = {
   },
   start(code: string): Promise<unknown> {
     modelSwitcher.pushModel(cloneDeep(defaultSnapshot));
+
+    // eslint-disable-next-line
     eval(`
 			window.execApi = function(API) {
 				${code}

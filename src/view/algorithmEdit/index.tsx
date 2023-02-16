@@ -1,6 +1,5 @@
 import "./index.css";
 import { Header } from "../../components/header";
-import { TopMenu } from "../../components/topMenu";
 import { Button, Input, InputRef, Modal, Select } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useCodeEditor } from "./Editor";
@@ -48,7 +47,7 @@ async function getAlInfo(id: string | null) {
 }
 
 export function AlgorithmEdit() {
-  const [showCodeEnable, setShowCodeEnable] = useState<boolean>(false);
+  const [showCodeEnable] = useState<boolean>(false);
   const { el: editor1, getCode: getCode1, setCode: setCode1 } = useCodeEditor();
   const { el: editor2, getCode: getCode2, setCode: setCode2 } = useCodeEditor();
   const [alInfo, setInfo] = useState<AlgorithmInfo | null>(null);
@@ -63,7 +62,7 @@ export function AlgorithmEdit() {
       setCode1(info.content.showCode);
       setCode2(info.content.runCode);
     });
-  }, []);
+  }, [setInfo, setCode1, setCode2, id]);
 
   useEffect(load, [id, load]);
 
@@ -164,7 +163,7 @@ export function SetAlgorithmNameDialog(visible: boolean) {
 
   const closePanel = useCallback(() => {
     closeDialog("setAlgorithmName");
-  }, [closeDialog]);
+  }, []);
 
   const submit = useCallback(() => {
     const name = inp?.current?.input?.value;
