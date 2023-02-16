@@ -26,36 +26,50 @@ export type Algorithm = {
   bgi: string;
 };
 
+function constructList(algorithms: any[]): Algorithm[] {
+  return algorithms.map((item: any) => {
+    let deg = getIntRandom(0, 180);
+    let c1 = randomColor(180, 220);
+    let c2 = randomColor(180, 220);
+    return {
+      id: item.id,
+      name: item.name,
+      user: {
+        account: item.account,
+        img: item.user.img,
+        name: item.user.username,
+      },
+      createTime: parseInt(item.createTime),
+      modifyTime: parseInt(item.modifyTime),
+      bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
+    };
+  });
+}
+
 export function AlgorithmCenter() {
   const [algorithmList, setList] = useState<Algorithm[] | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (algorithmList === null) {
-      algorithmAPI.searchAlgorithm("").then((res) => {
-        if (algorithmList === null) {
-          setList(
-            res.algorithms.map((item: any) => {
-              let deg = getIntRandom(0, 180);
-              let c1 = randomColor(180, 220);
-              let c2 = randomColor(180, 220);
-              return {
-                id: item.id,
-                name: item.name,
-                user: {
-                  account: item.account,
-                  img: item.user.img,
-                  name: item.user.username,
-                },
-                createTime: parseInt(item.createTime),
-                modifyTime: parseInt(item.modifyTime),
-                bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
-              };
-            })
-          );
-        }
-      });
+  async function getAlgorithmList(
+    type: "all" | "search" | "mine",
+    search?: string
+  ) {
+    let list: any[] = [];
+    if (type === "all") {
+      let res = await algorithmAPI.searchAlgorithm("");
+      list = res.algorithms;
+    } else if (type === "search") {
+      let res = await algorithmAPI.searchAlgorithm(search ?? "");
+      list = res.algorithms;
+    } else if (type === "mine") {
+      let res = await algorithmAPI.getMyAlgorithm();
+      list = res.algorithms;
     }
+    setList(constructList(list));
+  }
+
+  useEffect(() => {
+    getAlgorithmList("all");
   }, []);
 
   return (
@@ -70,13 +84,21 @@ export function AlgorithmCenter() {
       <div className="algorithmCenterContent">
         <div className="left">
           <div className="search">
-            <Input.Search></Input.Search>
+            <Input.Search
+              onSearch={(s) => {
+                getAlgorithmList("search", s);
+              }}
+            ></Input.Search>
           </div>
           <div className="all">
-            <Button type="text">全部算法</Button>
+            <Button type="text" onClick={() => getAlgorithmList("all")}>
+              全部算法
+            </Button>
           </div>
           <div className="mine">
-            <Button type="text">我的算法</Button>
+            <Button type="text" onClick={() => getAlgorithmList("mine")}>
+              我的算法
+            </Button>
           </div>
           <div className="blank"></div>
           <div className="create">
