@@ -8,6 +8,7 @@ import { AlgorithmCenter } from "./algorithmCenter";
 import { Dialogs } from "./dialogs/dialog";
 import { AlgorithmEdit } from "./algorithmEdit";
 import { VideoPlay } from "./videoPlay";
+import { UserInfo } from "./userInfo/UserInfo";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="algorithmCenter" element={<AlgorithmCenter />} />
         <Route path="algorithmEdit" element={<AlgorithmEdit />} />
         <Route path="videoPlay" element={<VideoPlay />} />
+        <Route path="userInfo" element={<UserInfo />} />
       </Routes>
       <Dialogs></Dialogs>
     </BrowserRouter>

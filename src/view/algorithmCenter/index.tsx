@@ -1,5 +1,5 @@
 import "./index.css";
-import { Button, Input } from "antd";
+import { Button, Input, Popover } from "antd";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
+import { UserCard } from "../../components/userCard";
 
 export type Algorithm = {
   id: string;
@@ -158,10 +159,17 @@ function AlgorithmList(props: { list: Algorithm[] | null }) {
               </div>
             </div>
             <div className="user">
-              <div
-                className="img"
-                style={{ backgroundImage: `url(${item.user.img})` }}
-              ></div>
+              <Popover
+                overlayInnerStyle={{ padding: "0px" }}
+                placement="right"
+                trigger={"click"}
+                content={<UserCard account={item.user.account}></UserCard>}
+              >
+                <div
+                  className="img"
+                  style={{ backgroundImage: `url(${item.user.img})` }}
+                ></div>
+              </Popover>
             </div>
             <div className="time">
               最近修改：{getDateString(item.modifyTime)}

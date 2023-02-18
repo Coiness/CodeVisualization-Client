@@ -30,3 +30,10 @@ export async function getUserInfo(account: string): Promise<UserInfoData> {
 }
 
 export async function modifyUsername() {}
+
+export async function getFollowInfo(account: string): Promise<any> {
+  return {
+    followed: false,
+    reverseFollowed: false,
+  };
+}

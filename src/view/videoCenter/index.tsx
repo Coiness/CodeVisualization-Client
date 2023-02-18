@@ -1,5 +1,5 @@
 import "./index.css";
-import { Button, Input } from "antd";
+import { Button, Input, Popover } from "antd";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
+import { UserCard } from "../../components/userCard";
 
 export type Video = {
   id: string;
@@ -124,10 +125,17 @@ function VideoList(props: { list: Video[] | null }) {
               </div>
             </div>
             <div className="user">
-              <div
-                className="img"
-                style={{ backgroundImage: `url(${item.user.img})` }}
-              ></div>
+              <Popover
+                overlayInnerStyle={{ padding: "0px" }}
+                placement="right"
+                trigger={"click"}
+                content={<UserCard account={item.user.account}></UserCard>}
+              >
+                <div
+                  className="img"
+                  style={{ backgroundImage: `url(${item.user.img})` }}
+                ></div>
+              </Popover>
             </div>
             <div className="time">
               创建时间：{getDateString(item.createTime)}
