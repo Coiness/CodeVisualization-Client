@@ -141,7 +141,12 @@ function ProjectList(props: { list: Project[] | null }) {
                 overlayInnerStyle={{ padding: "0px" }}
                 placement="right"
                 trigger={"click"}
-                content={<UserCard account={item.user.account}></UserCard>}
+                content={
+                  <UserCard
+                    account={item.user.account}
+                    width="300px"
+                  ></UserCard>
+                }
               >
                 <div
                   className="img"

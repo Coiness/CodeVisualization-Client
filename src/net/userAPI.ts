@@ -31,9 +31,29 @@ export async function getUserInfo(account: string): Promise<UserInfoData> {
 
 export async function modifyUsername() {}
 
+export async function follow(account: string) {
+  let res = await post("/user/follow", { followAccount: account });
+  return res.flag;
+}
+
+export async function cancelfollow(account: string) {
+  let res = await post("/user/removeFollow", { followAccount: account });
+  return res.flag;
+}
+
 export async function getFollowInfo(account: string): Promise<any> {
+  let res = await get("/user/getFollowInfo", { followAccount: account });
   return {
-    followed: false,
-    reverseFollowed: false,
+    ...res.data,
   };
+}
+
+export async function getFollowList(account: string) {
+  let res = await get("/user/followList", { account });
+  return res.data.list;
+}
+
+export async function getFansList(account: string) {
+  let res = await get("/user/fansList", { account });
+  return res.data.list;
 }

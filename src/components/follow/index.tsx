@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import * as userAPI from "../../net/userAPI";
 
@@ -22,7 +22,44 @@ export function Follow(props: FollowProps) {
     });
   }, [props.account, setInfo]);
 
-  const changeFollow = useCallback((follow: boolean) => {}, []);
+  const changeFollow = useCallback(
+    (follow: boolean) => {
+      if (info === null) {
+        return;
+      }
+      if (follow) {
+        setInfo({
+          ...info,
+          followed: true,
+        });
+        userAPI.follow(props.account).then((flag) => {
+          if (!flag) {
+            message.error("关注失败");
+            setInfo({
+              ...info,
+              followed: false,
+            });
+          }
+        });
+      } else {
+        setInfo({
+          ...info,
+          followed: false,
+        });
+        userAPI.cancelfollow(props.account).then((flag) => {
+          if (!flag) {
+            message.error("取关失败");
+            setInfo({
+              ...info,
+              followed: true,
+            });
+          }
+        });
+      }
+    },
+    [info, setInfo]
+  );
+
   useEffect(load, [load]);
 
   if (info === null) {

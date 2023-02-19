@@ -1,5 +1,5 @@
 .userInfo {
-  height: calc(100% - 60px);
+  height: 100%;
 }
 
 .topMenu {
@@ -12,7 +12,14 @@
 }
 
 .userInfoContent {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
+  height: calc(100% - 60px);
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .userInfoContent .baseInfo {
@@ -48,4 +55,47 @@
 
 .userInfoContent .baseInfo .blank {
   flex: 1;
+}
+
+.userInfoContent .bottom {
+  flex: 1;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  margin-top: 20px;
+}
+
+.userInfoContent .bottom .friend {
+  width: 300px;
+  height: 100%;
+  margin-right: 20px;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 5px 0px #ccc;
+}
+
+.userInfoContent .bottom .friend .friendMenu {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfoContent .bottom .friend .friendMenu > * {
+  flex: 1;
+  text-align: center;
+}
+
+.userInfoContent .bottom .works {
+  flex: 1;
+  height: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 5px 0px #ccc;
 }

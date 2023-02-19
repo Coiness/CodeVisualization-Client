@@ -6,8 +6,9 @@ import { getAccount } from "../../net/token";
 import { getLocationQuery } from "../../common/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as userAPI from "../../net/userAPI";
-import { Button } from "antd";
+import { Button, Menu } from "antd";
 import { Follow } from "../../components/follow";
+import { UserCard } from "../../components/userCard";
 
 export function UserInfo() {
   return (
@@ -24,16 +25,26 @@ export function UserInfo() {
   );
 }
 
+type UserList = {
+  account: string;
+  name: string;
+  img: string;
+}[];
+
 export interface UserInfoData {
   account: string;
   name: string;
   img: string;
+  followList: UserList;
+  fansList: UserList;
 }
 
 function Content() {
   const [info, setInfo] = useState<UserInfoData | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const [friendNow, setFriendNow] = useState<string>("follow");
+
   useEffect(() => {
     const r = getLocationQuery("account", location.search);
     if (!r) {
@@ -41,11 +52,18 @@ function Content() {
       return;
     }
     const account: string = r;
-    userAPI.getUserInfo(account).then((info) => {
+    userAPI.getUserInfo(account).then(async (info) => {
+      const followList = await userAPI.getFollowList(account);
+      const fansList = await userAPI.getFansList(account);
+
+      console.log("DEBUG: ", info, followList, fansList);
+
       setInfo({
         account,
         name: info.username,
         img: info.img,
+        followList,
+        fansList,
       });
     });
   }, []);
@@ -54,6 +72,31 @@ function Content() {
   }
 
   const isMe = info.account === getAccount();
+
+  const friendMenuData = [
+    {
+      label: (
+        <>
+          <div style={{ height: "24px", lineHeight: "24px" }}>关注</div>
+          <div style={{ height: "24px", lineHeight: "15px", fontSize: "12px" }}>
+            {info.followList.length}
+          </div>
+        </>
+      ),
+      key: "follow",
+    },
+    {
+      label: (
+        <>
+          <div style={{ height: "24px", lineHeight: "24px" }}>关注</div>
+          <div style={{ height: "24px", lineHeight: "15px", fontSize: "12px" }}>
+            {info.fansList.length}
+          </div>
+        </>
+      ),
+      key: "fans",
+    },
+  ];
 
   return (
     <div className="userInfoContent">
@@ -69,9 +112,33 @@ function Content() {
         </div>
       </div>
       <div className="bottom">
-        <div className="friend"></div>
+        <div className="friend">
+          <Menu
+            className="friendMenu"
+            mode="horizontal"
+            items={friendMenuData}
+            onClick={(info) => {
+              setFriendNow(info.key);
+            }}
+          ></Menu>
+          {friendNow === "follow" && (
+            <UserList list={info.followList}></UserList>
+          )}
+          {friendNow === "fans" && <UserList list={info.fansList}></UserList>}
+        </div>
         <div className="works"></div>
       </div>
+    </div>
+  );
+}
+
+function UserList(props: { list: UserList }) {
+  const list = props.list;
+  return (
+    <div className="userList">
+      {list.map((item) => {
+        return <UserCard account={item.account}></UserCard>;
+      })}
     </div>
   );
 }

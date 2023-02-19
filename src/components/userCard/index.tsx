@@ -8,6 +8,7 @@ import { getAccount } from "../../net/token";
 
 export interface UserCardProps {
   account: string;
+  width?: string;
 }
 
 interface UserCardInfo {
@@ -48,8 +49,12 @@ export function UserCard(props: UserCardProps) {
     }
   }
 
+  const style = {
+    width: props.width,
+  };
+
   return (
-    <div className="userCard" onClick={jump}>
+    <div className="userCard" onClick={jump} style={style}>
       <div
         className="img"
         style={{ backgroundImage: `url(${info.img})` }}
@@ -57,7 +62,7 @@ export function UserCard(props: UserCardProps) {
       <div className="username">{info.name}</div>
       <div className="blank"></div>
       <div className="follow">
-        {isMe && <Follow account={info.account}></Follow>}
+        {!isMe && <Follow account={info.account}></Follow>}
       </div>
     </div>
   );
