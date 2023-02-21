@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
+import { Empty } from "../../components/empty";
 
 export type Video = {
   id: string;
@@ -136,64 +137,72 @@ export function VideoList(props: { list: Video[] | null }) {
   let videos = props.list;
   const navigate = useNavigate();
   return videos ? (
-    <div className="videoList">
-      {videos.map((item) => {
-        return (
-          <div
-            className="video"
-            key={item.id}
-            style={{
-              backgroundImage: item.bgi,
-            }}
-          >
-            <div className="name">{item.name}</div>
-            <div className="control">
-              <div className="btns">
-                <Button
-                  shape="circle"
-                  size="large"
-                  icon={<EditOutlined />}
-                  onClick={() => {
-                    navigate(`/videoPlay?id=${item.id}`);
-                  }}
-                ></Button>
-                <Button
-                  shape="circle"
-                  size="large"
-                  icon={<DownloadOutlined />}
-                ></Button>
-                <Button
-                  shape="circle"
-                  size="large"
-                  icon={<DeleteOutlined />}
-                ></Button>
-              </div>
-            </div>
-            <div className="user">
-              <Popover
-                overlayInnerStyle={{ padding: "0px" }}
-                placement="right"
-                trigger={"click"}
-                content={
-                  <UserCard
-                    account={item.user.account}
-                    width="300px"
-                  ></UserCard>
-                }
+    videos.length > 0 ? (
+      <div className="listContainer">
+        <div className="videoList">
+          {videos.map((item) => {
+            return (
+              <div
+                className="video"
+                key={item.id}
+                style={{
+                  backgroundImage: item.bgi,
+                }}
               >
-                <div
-                  className="img"
-                  style={{ backgroundImage: `url(${item.user.img})` }}
-                ></div>
-              </Popover>
-            </div>
-            <div className="time">
-              创建时间：{getDateString(item.createTime)}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+                <div className="name">{item.name}</div>
+                <div className="control">
+                  <div className="btns">
+                    <Button
+                      shape="circle"
+                      size="large"
+                      icon={<EditOutlined />}
+                      onClick={() => {
+                        navigate(`/videoPlay?id=${item.id}`);
+                      }}
+                    ></Button>
+                    <Button
+                      shape="circle"
+                      size="large"
+                      icon={<DownloadOutlined />}
+                    ></Button>
+                    <Button
+                      shape="circle"
+                      size="large"
+                      icon={<DeleteOutlined />}
+                    ></Button>
+                  </div>
+                </div>
+                <div className="user">
+                  <Popover
+                    overlayInnerStyle={{ padding: "0px" }}
+                    placement="right"
+                    trigger={"click"}
+                    content={
+                      <UserCard
+                        account={item.user.account}
+                        width="300px"
+                      ></UserCard>
+                    }
+                  >
+                    <div
+                      className="img"
+                      style={{ backgroundImage: `url(${item.user.img})` }}
+                    ></div>
+                  </Popover>
+                </div>
+                <div className="time">
+                  创建时间：{getDateString(item.createTime)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ) : (
+      <div className="listContainer">
+        <Empty></Empty>
+      </div>
+    )
   ) : (
     <Loading></Loading>
   );

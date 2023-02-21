@@ -14,7 +14,6 @@ type nowType = "project" | "video" | "algorithm";
 
 export function Works(props: { account: string }) {
   const account = props.account;
-  console.log("DEBUG: ", account);
   const [projectList, setProjectList] = useState<Project[] | null>(null);
   const [videoList, setVideoList] = useState<Video[] | null>(null);
   const [algorithmList, setAlgorithmList] = useState<Algorithm[] | null>(null);
@@ -56,13 +55,16 @@ export function Works(props: { account: string }) {
         onClick={(info) => {
           setNow(info.key as nowType);
         }}
+        defaultActiveFirst
       ></Menu>
       <div className="blank"></div>
-      {now === "project" && <ProjectList list={projectList}></ProjectList>}
-      {now === "video" && <VideoList list={videoList}></VideoList>}
-      {now === "algorithm" && (
-        <AlgorithmList list={algorithmList}></AlgorithmList>
-      )}
+      <div className="list">
+        {now === "project" && <ProjectList list={projectList}></ProjectList>}
+        {now === "video" && <VideoList list={videoList}></VideoList>}
+        {now === "algorithm" && (
+          <AlgorithmList list={algorithmList}></AlgorithmList>
+        )}
+      </div>
     </div>
   );
 }

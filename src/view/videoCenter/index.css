@@ -50,19 +50,24 @@
 .videoCenter .videoCenterContent .right {
   flex: 1;
 
-  padding: 20px 0px 0px 20px;
+  padding: 20px 0px 20px 20px;
   box-sizing: border-box;
+}
+
+.listcontainer {
+  width: 100%;
+  height: 100%;
 
   overflow-x: hidden;
   overflow-y: scroll;
 }
 
-.videoCenter .videoCenterContent .right::-webkit-scrollbar {
+.listcontainer::-webkit-scrollbar {
   display: none;
 }
 
 .videoList {
-  width: 100%;
+  height: 0;
 }
 
 .videoList:after {

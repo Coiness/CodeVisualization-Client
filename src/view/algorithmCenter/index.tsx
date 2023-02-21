@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
+import { Empty } from "../../components/empty";
 
 export type Algorithm = {
   id: string;
@@ -125,64 +126,72 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
   let algorithms = props.list;
   const navigate = useNavigate();
   return algorithms ? (
-    <div className="algorithmList">
-      {algorithms.map((item) => {
-        return (
-          <div
-            className="algorithm"
-            key={item.id}
-            style={{
-              backgroundImage: item.bgi,
-            }}
-          >
-            <div className="name">{item.name}</div>
-            <div className="control">
-              <div className="btns">
-                <Button
-                  shape="circle"
-                  size="large"
-                  icon={<EditOutlined />}
-                  onClick={() => {
-                    navigate(`/algorithmEdit?id=${item.id}`);
-                  }}
-                ></Button>
-                <Button
-                  shape="circle"
-                  size="large"
-                  icon={<DownloadOutlined />}
-                ></Button>
-                <Button
-                  shape="circle"
-                  size="large"
-                  icon={<DeleteOutlined />}
-                ></Button>
-              </div>
-            </div>
-            <div className="user">
-              <Popover
-                overlayInnerStyle={{ padding: "0px" }}
-                placement="right"
-                trigger={"click"}
-                content={
-                  <UserCard
-                    account={item.user.account}
-                    width="300px"
-                  ></UserCard>
-                }
+    algorithms.length > 0 ? (
+      <div className="listContainer">
+        <div className="algorithmList">
+          {algorithms.map((item) => {
+            return (
+              <div
+                className="algorithm"
+                key={item.id}
+                style={{
+                  backgroundImage: item.bgi,
+                }}
               >
-                <div
-                  className="img"
-                  style={{ backgroundImage: `url(${item.user.img})` }}
-                ></div>
-              </Popover>
-            </div>
-            <div className="time">
-              最近修改：{getDateString(item.modifyTime)}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+                <div className="name">{item.name}</div>
+                <div className="control">
+                  <div className="btns">
+                    <Button
+                      shape="circle"
+                      size="large"
+                      icon={<EditOutlined />}
+                      onClick={() => {
+                        navigate(`/algorithmEdit?id=${item.id}`);
+                      }}
+                    ></Button>
+                    <Button
+                      shape="circle"
+                      size="large"
+                      icon={<DownloadOutlined />}
+                    ></Button>
+                    <Button
+                      shape="circle"
+                      size="large"
+                      icon={<DeleteOutlined />}
+                    ></Button>
+                  </div>
+                </div>
+                <div className="user">
+                  <Popover
+                    overlayInnerStyle={{ padding: "0px" }}
+                    placement="right"
+                    trigger={"click"}
+                    content={
+                      <UserCard
+                        account={item.user.account}
+                        width="300px"
+                      ></UserCard>
+                    }
+                  >
+                    <div
+                      className="img"
+                      style={{ backgroundImage: `url(${item.user.img})` }}
+                    ></div>
+                  </Popover>
+                </div>
+                <div className="time">
+                  最近修改：{getDateString(item.modifyTime)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ) : (
+      <div className="listContainer">
+        <Empty></Empty>
+      </div>
+    )
   ) : (
     <Loading></Loading>
   );

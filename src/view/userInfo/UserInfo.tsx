@@ -6,10 +6,11 @@ import { getAccount } from "../../net/token";
 import { getLocationQuery } from "../../common/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as userAPI from "../../net/userAPI";
-import { Button, Menu } from "antd";
+import { Menu } from "antd";
 import { Follow } from "../../components/follow";
 import { UserCard } from "../../components/userCard";
 import { Works } from "./Works";
+import { Empty } from "../../components/empty";
 
 export function UserInfo() {
   return (
@@ -87,7 +88,7 @@ function Content() {
     {
       label: (
         <>
-          <div style={{ height: "24px", lineHeight: "24px" }}>关注</div>
+          <div style={{ height: "24px", lineHeight: "24px" }}>粉丝</div>
           <div style={{ height: "24px", lineHeight: "15px", fontSize: "12px" }}>
             {info.fansList.length}
           </div>
@@ -119,7 +120,9 @@ function Content() {
             onClick={(info) => {
               setFriendNow(info.key);
             }}
+            defaultActiveFirst
           ></Menu>
+          <div className="blank"></div>
           {friendNow === "follow" && (
             <UserList list={info.followList}></UserList>
           )}
@@ -133,11 +136,15 @@ function Content() {
 
 function UserList(props: { list: UserList }) {
   const list = props.list;
-  return (
+  return list.length > 0 ? (
     <div className="userList">
       {list.map((item) => {
         return <UserCard account={item.account}></UserCard>;
       })}
+    </div>
+  ) : (
+    <div style={{ flex: 1 }}>
+      <Empty></Empty>
     </div>
   );
 }
