@@ -103,7 +103,7 @@ export function VideoPlay() {
 
   function handleSelectChange(v: number) {
     if (vInfo) {
-      videoAPI.changePermission(vInfo.id, v).then((flag) => {
+      videoAPI.changeVideoPermission(vInfo.id, v).then((flag) => {
         if (flag) {
           setInfo({
             ...vInfo,

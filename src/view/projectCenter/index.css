@@ -61,11 +61,11 @@
   display: none;
 }
 
-.projectCenter .projectCenterContent .right .projectList {
+.projectList {
   width: 100%;
 }
 
-.projectCenter .projectCenterContent .right .projectList:after {
+.projectList:after {
   content: "";
   display: block;
   height: 0;
@@ -73,7 +73,7 @@
   visibility: hidden;
 }
 
-.projectCenter .projectCenterContent .right .projectList .project {
+.projectList .project {
   position: relative;
   float: left;
 
@@ -87,7 +87,7 @@
   background-color: #fff;
 }
 
-.projectCenter .projectCenterContent .right .projectList .project .name {
+.projectList .project .name {
   position: absolute;
   top: 80px;
   left: 50%;
@@ -95,7 +95,7 @@
   transform: translate(-50%, -50%);
 }
 
-.projectCenter .projectCenterContent .right .projectList .project .control {
+.projectList .project .control {
   position: absolute;
   top: 0;
   left: 0;
@@ -111,22 +111,11 @@
   transition: opacity 0.3s;
 }
 
-.projectCenter
-  .projectCenterContent
-  .right
-  .projectList
-  .project:hover
-  .control {
+.projectList .project:hover .control {
   opacity: 1;
 }
 
-.projectCenter
-  .projectCenterContent
-  .right
-  .projectList
-  .project
-  .control
-  .btns {
+.projectList .project .control .btns {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
@@ -142,7 +131,7 @@
   transform: translate(-50%, -50%);
 }
 
-.projectCenter .projectCenterContent .right .projectList .project .user {
+.projectList .project .user {
   position: absolute;
   bottom: 5px;
   left: 5px;
@@ -152,7 +141,7 @@
   cursor: pointer;
 }
 
-.projectCenter .projectCenterContent .right .projectList .project .user .img {
+.projectList .project .user .img {
   width: 100%;
   height: 100%;
   border-radius: 1000px;
@@ -162,7 +151,7 @@
   background-size: cover;
 }
 
-.projectCenter .projectCenterContent .right .projectList .project .time {
+.projectList .project .time {
   position: absolute;
   bottom: 0;
   right: 0;

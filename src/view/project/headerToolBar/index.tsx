@@ -48,7 +48,7 @@ export function HeaderToolBar(props: {
 
   function handleSelectChange(v: number) {
     if (info) {
-      projectAPI.changePermission(info.id, v).then((flag) => {
+      projectAPI.changeProjectPermission(info.id, v).then((flag) => {
         if (flag) {
           props.change("permission", v);
         }

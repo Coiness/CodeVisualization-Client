@@ -27,7 +27,7 @@ export type Algorithm = {
   bgi: string;
 };
 
-function constructList(algorithms: any[]): Algorithm[] {
+export function constructAlgorithmList(algorithms: any[]): Algorithm[] {
   return algorithms.map((item: any) => {
     let deg = getIntRandom(0, 180);
     let c1 = randomColor(180, 220);
@@ -66,7 +66,7 @@ export function AlgorithmCenter() {
       let res = await algorithmAPI.getMyAlgorithm();
       list = res.algorithms;
     }
-    setList(constructList(list));
+    setList(constructAlgorithmList(list));
   }
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export function AlgorithmCenter() {
   );
 }
 
-function AlgorithmList(props: { list: Algorithm[] | null }) {
+export function AlgorithmList(props: { list: Algorithm[] | null }) {
   let algorithms = props.list;
   const navigate = useNavigate();
   return algorithms ? (
@@ -163,7 +163,12 @@ function AlgorithmList(props: { list: Algorithm[] | null }) {
                 overlayInnerStyle={{ padding: "0px" }}
                 placement="right"
                 trigger={"click"}
-                content={<UserCard account={item.user.account} width='300px'></UserCard>}
+                content={
+                  <UserCard
+                    account={item.user.account}
+                    width="300px"
+                  ></UserCard>
+                }
               >
                 <div
                   className="img"

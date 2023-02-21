@@ -26,6 +26,25 @@ export type Video = {
   bgi: string;
 };
 
+export function constructVideoList(videos: any[]): Video[] {
+  return videos.map((item: any) => {
+    let deg = getIntRandom(0, 180);
+    let c1 = randomColor(180, 220);
+    let c2 = randomColor(180, 220);
+    return {
+      id: item.id,
+      name: item.name,
+      user: {
+        account: item.account,
+        img: item.user.img,
+        name: item.user.username,
+      },
+      createTime: parseInt(item.createTime),
+      bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
+    };
+  });
+}
+
 export function VideoCenter() {
   const [videoList, setList] = useState<Video[] | null>(null);
   const navigate = useNavigate();
@@ -57,6 +76,24 @@ export function VideoCenter() {
     }
   }, []);
 
+  async function getVideoList(
+    type: "all" | "search" | "mine",
+    search?: string
+  ) {
+    let list: any[] = [];
+    if (type === "all") {
+      let res = await videoAPI.searchVideo("");
+      list = res.videos;
+    } else if (type === "search") {
+      let res = await videoAPI.searchVideo(search ?? "");
+      list = res.videos;
+    } else if (type === "mine") {
+      let res = await videoAPI.getMyVideo();
+      list = res.videos;
+    }
+    setList(constructVideoList(list));
+  }
+
   return (
     <div className="videoCenter">
       <Header
@@ -69,13 +106,21 @@ export function VideoCenter() {
       <div className="videoCenterContent">
         <div className="left">
           <div className="search">
-            <Input.Search></Input.Search>
+            <Input.Search
+              onSearch={(e) => {
+                getVideoList("search", e);
+              }}
+            ></Input.Search>
           </div>
           <div className="all">
-            <Button type="text">全部录像</Button>
+            <Button type="text" onClick={() => getVideoList("all")}>
+              全部录像
+            </Button>
           </div>
           <div className="mine">
-            <Button type="text">我的录像</Button>
+            <Button type="text" onClick={() => getVideoList("mine")}>
+              我的录像
+            </Button>
           </div>
           <div className="blank"></div>
         </div>
@@ -87,7 +132,7 @@ export function VideoCenter() {
   );
 }
 
-function VideoList(props: { list: Video[] | null }) {
+export function VideoList(props: { list: Video[] | null }) {
   let videos = props.list;
   const navigate = useNavigate();
   return videos ? (

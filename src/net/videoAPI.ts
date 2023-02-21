@@ -16,7 +16,7 @@ export async function renameVideo(id: string, name: string) {
   return r.flag;
 }
 
-export async function changePermission(id: string, permission: number) {
+export async function changeVideoPermission(id: string, permission: number) {
   let r = await post("/video/updatePermission", { id, permission });
   return r.flag;
 }
@@ -40,4 +40,15 @@ export async function searchVideo(name: string) {
 export async function getMyVideo() {
   let r = await get("/video/mine", {});
   return r.data;
+}
+
+export async function searchVideoByUser(account: string) {
+  let self = getAccount();
+  let r;
+  if (account !== self) {
+    r = (await get("/video/searchByUser", { account })).data;
+  } else {
+    r = await getMyVideo();
+  }
+  return r;
 }

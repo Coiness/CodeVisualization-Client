@@ -9,6 +9,7 @@ import * as userAPI from "../../net/userAPI";
 import { Button, Menu } from "antd";
 import { Follow } from "../../components/follow";
 import { UserCard } from "../../components/userCard";
+import { Works } from "./Works";
 
 export function UserInfo() {
   return (
@@ -56,8 +57,6 @@ function Content() {
       const followList = await userAPI.getFollowList(account);
       const fansList = await userAPI.getFansList(account);
 
-      console.log("DEBUG: ", info, followList, fansList);
-
       setInfo({
         account,
         name: info.username,
@@ -66,7 +65,7 @@ function Content() {
         fansList,
       });
     });
-  }, []);
+  }, [location, navigate]);
   if (info === null) {
     return null;
   }
@@ -126,7 +125,7 @@ function Content() {
           )}
           {friendNow === "fans" && <UserList list={info.fansList}></UserList>}
         </div>
-        <div className="works"></div>
+        <Works account={info.account}></Works>
       </div>
     </div>
   );

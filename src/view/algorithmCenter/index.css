@@ -61,11 +61,11 @@
   display: none;
 }
 
-.algorithmCenter .algorithmCenterContent .right .algorithmList {
+.algorithmList {
   width: 100%;
 }
 
-.algorithmCenter .algorithmCenterContent .right .algorithmList:after {
+.algorithmList:after {
   content: "";
   display: block;
   height: 0;
@@ -73,7 +73,7 @@
   visibility: hidden;
 }
 
-.algorithmCenter .algorithmCenterContent .right .algorithmList .algorithm {
+.algorithmList .algorithm {
   position: relative;
   float: left;
 
@@ -87,12 +87,7 @@
   background-color: #fff;
 }
 
-.algorithmCenter
-  .algorithmCenterContent
-  .right
-  .algorithmList
-  .algorithm
-  .name {
+.algorithmList .algorithm .name {
   position: absolute;
   top: 80px;
   left: 50%;
@@ -100,12 +95,7 @@
   transform: translate(-50%, -50%);
 }
 
-.algorithmCenter
-  .algorithmCenterContent
-  .right
-  .algorithmList
-  .algorithm
-  .control {
+.algorithmList .algorithm .control {
   position: absolute;
   top: 0;
   left: 0;
@@ -121,22 +111,11 @@
   transition: opacity 0.3s;
 }
 
-.algorithmCenter
-  .algorithmCenterContent
-  .right
-  .algorithmList
-  .algorithm:hover
-  .control {
+.algorithmList .algorithm:hover .control {
   opacity: 1;
 }
 
-.algorithmCenter
-  .algorithmCenterContent
-  .right
-  .algorithmList
-  .algorithm
-  .control
-  .btns {
+.algorithmList .algorithm .control .btns {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
@@ -152,12 +131,7 @@
   transform: translate(-50%, -50%);
 }
 
-.algorithmCenter
-  .algorithmCenterContent
-  .right
-  .algorithmList
-  .algorithm
-  .user {
+.algorithmList .algorithm .user {
   position: absolute;
   bottom: 5px;
   left: 5px;
@@ -167,13 +141,7 @@
   cursor: pointer;
 }
 
-.algorithmCenter
-  .algorithmCenterContent
-  .right
-  .algorithmList
-  .algorithm
-  .user
-  .img {
+.algorithmList .algorithm .user .img {
   width: 100%;
   height: 100%;
   border-radius: 1000px;
@@ -183,12 +151,7 @@
   background-size: cover;
 }
 
-.algorithmCenter
-  .algorithmCenterContent
-  .right
-  .algorithmList
-  .algorithm
-  .time {
+.algorithmList .algorithm .time {
   position: absolute;
   bottom: 0;
   right: 0;

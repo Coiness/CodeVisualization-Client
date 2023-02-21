@@ -27,6 +27,26 @@ export type Project = {
   bgi: string;
 };
 
+export function constructProjectList(videos: any[]): Project[] {
+  return videos.map((item: any) => {
+    let deg = getIntRandom(0, 180);
+    let c1 = randomColor(180, 220);
+    let c2 = randomColor(180, 220);
+    return {
+      id: item.id,
+      name: item.name,
+      user: {
+        account: item.account,
+        img: item.user.img,
+        name: item.user.username,
+      },
+      createTime: parseInt(item.createTime),
+      modifyTime: parseInt(item.modifyTime),
+      bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
+    };
+  });
+}
+
 export function ProjectCenter() {
   const [projectList, setList] = useState<Project[] | null>(null);
   const navigate = useNavigate();
@@ -58,6 +78,24 @@ export function ProjectCenter() {
       });
     }
   }, []);
+
+  async function getVideoList(
+    type: "all" | "search" | "mine",
+    search?: string
+  ) {
+    let list: any[] = [];
+    if (type === "all") {
+      let res = await projectAPI.searchProject("");
+      list = res.projects;
+    } else if (type === "search") {
+      let res = await projectAPI.searchProject(search ?? "");
+      list = res.projects;
+    } else if (type === "mine") {
+      let res = await projectAPI.getMyProject();
+      list = res.projects;
+    }
+    setList(constructProjectList(list));
+  }
 
   return (
     <div className="projectCenter">
@@ -99,7 +137,7 @@ export function ProjectCenter() {
   );
 }
 
-function ProjectList(props: { list: Project[] | null }) {
+export function ProjectList(props: { list: Project[] | null }) {
   let projects = props.list;
   const navigate = useNavigate();
   return projects ? (

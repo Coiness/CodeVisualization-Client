@@ -16,7 +16,7 @@ export async function renameProject(id: string, name: string) {
   return r.flag;
 }
 
-export async function changePermission(id: string, permission: number) {
+export async function changeProjectPermission(id: string, permission: number) {
   let r = await post("/project/updatePermission", { id, permission });
   return r.flag;
 }
@@ -40,4 +40,15 @@ export async function searchProject(name: string) {
 export async function getMyProject() {
   let r = await get("/project/mine", {});
   return r.data;
+}
+
+export async function searchProjectByUser(account: string) {
+  let self = getAccount();
+  let r;
+  if (account !== self) {
+    r = (await get("/project/searchByUser", { account })).data;
+  } else {
+    r = await getMyProject();
+  }
+  return r;
 }

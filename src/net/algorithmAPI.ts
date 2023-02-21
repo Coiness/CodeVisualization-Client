@@ -16,7 +16,10 @@ export async function renameAlgorithm(id: string, name: string) {
   return r.flag;
 }
 
-export async function changePermission(id: string, permission: number) {
+export async function changeAlgorithmPermission(
+  id: string,
+  permission: number
+) {
   let r = await post("/algorithm/updatePermission", { id, permission });
   return r.flag;
 }
@@ -40,4 +43,15 @@ export async function searchAlgorithm(name: string) {
 export async function getMyAlgorithm() {
   let r = await get("/algorithm/mine", {});
   return r.data;
+}
+
+export async function searchAlgorithmByUser(account: string) {
+  let self = getAccount();
+  let r;
+  if (account !== self) {
+    r = (await get("/algorithm/searchByUser", { account })).data;
+  } else {
+    r = await getMyAlgorithm();
+  }
+  return r;
 }

@@ -61,11 +61,11 @@
   display: none;
 }
 
-.videoCenter .videoCenterContent .right .videoList {
+.videoList {
   width: 100%;
 }
 
-.videoCenter .videoCenterContent .right .videoList:after {
+.videoList:after {
   content: "";
   display: block;
   height: 0;
@@ -73,7 +73,7 @@
   visibility: hidden;
 }
 
-.videoCenter .videoCenterContent .right .videoList .video {
+.videoList .video {
   position: relative;
   float: left;
 
@@ -87,7 +87,7 @@
   background-color: #fff;
 }
 
-.videoCenter .videoCenterContent .right .videoList .video .name {
+.videoList .video .name {
   position: absolute;
   top: 80px;
   left: 50%;
@@ -95,7 +95,7 @@
   transform: translate(-50%, -50%);
 }
 
-.videoCenter .videoCenterContent .right .videoList .video .control {
+.videoList .video .control {
   position: absolute;
   top: 0;
   left: 0;
@@ -111,11 +111,11 @@
   transition: opacity 0.3s;
 }
 
-.videoCenter .videoCenterContent .right .videoList .video:hover .control {
+.videoList .video:hover .control {
   opacity: 1;
 }
 
-.videoCenter .videoCenterContent .right .videoList .video .control .btns {
+.videoList .video .control .btns {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
@@ -131,7 +131,7 @@
   transform: translate(-50%, -50%);
 }
 
-.videoCenter .videoCenterContent .right .videoList .video .user {
+.videoList .video .user {
   position: absolute;
   bottom: 5px;
   left: 5px;
@@ -141,7 +141,7 @@
   cursor: pointer;
 }
 
-.videoCenter .videoCenterContent .right .videoList .video .user .img {
+.videoList .video .user .img {
   width: 100%;
   height: 100%;
   border-radius: 1000px;
@@ -151,7 +151,7 @@
   background-size: cover;
 }
 
-.videoCenter .videoCenterContent .right .videoList .video .time {
+.videoList .video .time {
   position: absolute;
   bottom: 0;
   right: 0;

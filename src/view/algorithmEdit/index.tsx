@@ -103,7 +103,7 @@ export function AlgorithmEdit() {
 
   function handleSelectChange(v: number) {
     if (alInfo) {
-      algorithmAPI.changePermission(alInfo.id, v).then((flag) => {
+      algorithmAPI.changeAlgorithmPermission(alInfo.id, v).then((flag) => {
         if (flag) {
           setInfo({
             ...alInfo,
