@@ -62,7 +62,7 @@ export function AlgorithmEdit() {
       setCode1(info.content.showCode);
       setCode2(info.content.runCode);
     });
-  }, [setInfo, setCode1, setCode2, id]);
+  }, [id]);
 
   useEffect(load, [id, load]);
 
