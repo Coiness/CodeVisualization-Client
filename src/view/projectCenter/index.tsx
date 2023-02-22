@@ -125,9 +125,12 @@ export function ProjectCenter() {
 }
 
 export function ProjectList(props: { list: Project[] | null }) {
-  let projects = props.list;
+  const [projects, setProjects] = useState<Project[] | null>(null);
   const navigate = useNavigate();
   const account = useAccount();
+  useEffect(() => {
+    setProjects(props.list);
+  }, [props.list]);
   return projects ? (
     projects.length > 0 ? (
       <div className="listContainer">
@@ -168,6 +171,18 @@ export function ProjectList(props: { list: Project[] | null }) {
                         shape="circle"
                         size="large"
                         icon={<DeleteOutlined />}
+                        onClick={async () => {
+                          let res = await projectAPI.removeProject(item.id);
+                          if (res && projects) {
+                            let newArr = [];
+                            for (let i = 0; i < projects.length; i++) {
+                              if (projects[i].id !== item.id) {
+                                newArr.push(projects[i]);
+                              }
+                            }
+                            setProjects(newArr);
+                          }
+                        }}
                       ></Button>
                     )}
                   </div>

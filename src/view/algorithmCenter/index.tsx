@@ -128,9 +128,12 @@ export function AlgorithmCenter() {
 }
 
 export function AlgorithmList(props: { list: Algorithm[] | null }) {
-  let algorithms = props.list;
+  const [algorithms, setAlgorithms] = useState<Algorithm[] | null>(null);
   const navigate = useNavigate();
   const account = useAccount();
+  useEffect(() => {
+    setAlgorithms(props.list);
+  }, [props.list]);
   return algorithms ? (
     algorithms.length > 0 ? (
       <div className="listContainer">
@@ -180,6 +183,18 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                         shape="circle"
                         size="large"
                         icon={<DeleteOutlined />}
+                        onClick={async () => {
+                          let res = await algorithmAPI.removeAlgorithm(item.id);
+                          if (res && algorithms) {
+                            let newArr = [];
+                            for (let i = 0; i < algorithms.length; i++) {
+                              if (algorithms[i].id !== item.id) {
+                                newArr.push(algorithms[i]);
+                              }
+                            }
+                            setAlgorithms(newArr);
+                          }
+                        }}
                       ></Button>
                     )}
                   </div>

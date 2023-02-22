@@ -114,9 +114,13 @@ export function VideoCenter() {
 }
 
 export function VideoList(props: { list: Video[] | null }) {
-  let videos = props.list;
+  const [videos, setVideos] = useState<Video[] | null>(null);
   const navigate = useNavigate();
   const account = useAccount();
+
+  useEffect(() => {
+    setVideos(props.list);
+  }, [props.list]);
 
   return videos ? (
     videos.length > 0 ? (
@@ -158,6 +162,18 @@ export function VideoList(props: { list: Video[] | null }) {
                         shape="circle"
                         size="large"
                         icon={<DeleteOutlined />}
+                        onClick={async () => {
+                          let res = await videoAPI.removeVideo(item.id);
+                          if (res && videos) {
+                            let newArr = [];
+                            for (let i = 0; i < videos.length; i++) {
+                              if (videos[i].id !== item.id) {
+                                newArr.push(videos[i]);
+                              }
+                            }
+                            setVideos(newArr);
+                          }
+                        }}
                       ></Button>
                     )}
                   </div>
