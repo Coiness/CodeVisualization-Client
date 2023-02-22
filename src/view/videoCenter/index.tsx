@@ -9,11 +9,13 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   EditOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
+import { useAccount } from "../../components/header/userInfo";
 
 export type Video = {
   id: string;
@@ -25,6 +27,7 @@ export type Video = {
   };
   createTime: number;
   bgi: string;
+  permission: number;
 };
 
 export function constructVideoList(videos: any[]): Video[] {
@@ -42,40 +45,13 @@ export function constructVideoList(videos: any[]): Video[] {
       },
       createTime: parseInt(item.createTime),
       bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
+      permission: item.permission,
     };
   });
 }
 
 export function VideoCenter() {
   const [videoList, setList] = useState<Video[] | null>(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (videoList === null) {
-      videoAPI.searchVideo("").then((res) => {
-        if (videoList === null) {
-          setList(
-            res.videos.map((item: any) => {
-              let deg = getIntRandom(0, 180);
-              let c1 = randomColor(180, 220);
-              let c2 = randomColor(180, 220);
-              return {
-                id: item.id,
-                name: item.name,
-                user: {
-                  account: item.account,
-                  img: item.user.img,
-                  name: item.user.username,
-                },
-                createTime: parseInt(item.createTime),
-                bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
-              };
-            })
-          );
-        }
-      });
-    }
-  }, []);
 
   async function getVideoList(
     type: "all" | "search" | "mine",
@@ -94,6 +70,10 @@ export function VideoCenter() {
     }
     setList(constructVideoList(list));
   }
+
+  useEffect(() => {
+    getVideoList("all");
+  }, []);
 
   return (
     <div className="videoCenter">
@@ -136,11 +116,15 @@ export function VideoCenter() {
 export function VideoList(props: { list: Video[] | null }) {
   let videos = props.list;
   const navigate = useNavigate();
+  const account = useAccount();
+
   return videos ? (
     videos.length > 0 ? (
       <div className="listContainer">
         <div className="videoList">
           {videos.map((item) => {
+            const editable = item.user.account === account;
+            const readable = true;
             return (
               <div
                 className="video"
@@ -152,24 +136,30 @@ export function VideoList(props: { list: Video[] | null }) {
                 <div className="name">{item.name}</div>
                 <div className="control">
                   <div className="btns">
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<EditOutlined />}
-                      onClick={() => {
-                        navigate(`/videoPlay?id=${item.id}`);
-                      }}
-                    ></Button>
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<DownloadOutlined />}
-                    ></Button>
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<DeleteOutlined />}
-                    ></Button>
+                    {readable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<EyeOutlined />}
+                        onClick={() => {
+                          navigate(`/videoPlay?id=${item.id}`);
+                        }}
+                      ></Button>
+                    )}
+                    {readable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<DownloadOutlined />}
+                      ></Button>
+                    )}
+                    {editable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<DeleteOutlined />}
+                      ></Button>
+                    )}
                   </div>
                 </div>
                 <div className="user">

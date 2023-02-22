@@ -32,7 +32,6 @@ export function useAccount(): string | null {
   useEffect(() => {
     let sub = nowAccount.subscribe((ac) => {
       setAccount(ac);
-      console.log("DEBUG: ", ac);
     });
     return sub.unsubscribe;
   }, []);

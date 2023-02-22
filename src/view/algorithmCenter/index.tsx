@@ -9,11 +9,14 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   EditOutlined,
+  EyeOutlined,
+  PlaySquareOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
+import { useAccount } from "../../components/header/userInfo";
 
 export type Algorithm = {
   id: string;
@@ -26,6 +29,7 @@ export type Algorithm = {
   createTime: number;
   modifyTime: number;
   bgi: string;
+  permission: number;
 };
 
 export function constructAlgorithmList(algorithms: any[]): Algorithm[] {
@@ -44,6 +48,7 @@ export function constructAlgorithmList(algorithms: any[]): Algorithm[] {
       createTime: parseInt(item.createTime),
       modifyTime: parseInt(item.modifyTime),
       bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
+      permission: item.permission,
     };
   });
 }
@@ -125,11 +130,15 @@ export function AlgorithmCenter() {
 export function AlgorithmList(props: { list: Algorithm[] | null }) {
   let algorithms = props.list;
   const navigate = useNavigate();
+  const account = useAccount();
   return algorithms ? (
     algorithms.length > 0 ? (
       <div className="listContainer">
         <div className="algorithmList">
           {algorithms.map((item) => {
+            const editable = item.user.account === account;
+            const readable = editable || item.permission >= 2;
+            const useble = readable || item.permission >= 1;
             return (
               <div
                 className="algorithm"
@@ -141,24 +150,38 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                 <div className="name">{item.name}</div>
                 <div className="control">
                   <div className="btns">
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<EditOutlined />}
-                      onClick={() => {
-                        navigate(`/algorithmEdit?id=${item.id}`);
-                      }}
-                    ></Button>
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<DownloadOutlined />}
-                    ></Button>
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<DeleteOutlined />}
-                    ></Button>
+                    {readable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={editable ? <EditOutlined /> : <EyeOutlined />}
+                        onClick={() => {
+                          navigate(`/algorithmEdit?id=${item.id}`);
+                        }}
+                      ></Button>
+                    )}
+                    {useble && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<PlaySquareOutlined />}
+                        onClick={() => {}}
+                      ></Button>
+                    )}
+                    {readable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<DownloadOutlined />}
+                      ></Button>
+                    )}
+                    {editable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<DeleteOutlined />}
+                      ></Button>
+                    )}
                   </div>
                 </div>
                 <div className="user">

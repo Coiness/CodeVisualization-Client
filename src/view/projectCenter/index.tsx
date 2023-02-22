@@ -9,11 +9,13 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   EditOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
+import { useAccount } from "../../components/header/userInfo";
 
 export type Project = {
   id: string;
@@ -26,6 +28,7 @@ export type Project = {
   createTime: number;
   modifyTime: number;
   bgi: string;
+  permission: number;
 };
 
 export function constructProjectList(videos: any[]): Project[] {
@@ -44,6 +47,7 @@ export function constructProjectList(videos: any[]): Project[] {
       createTime: parseInt(item.createTime),
       modifyTime: parseInt(item.modifyTime),
       bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
+      permission: item.permission,
     };
   });
 }
@@ -51,34 +55,6 @@ export function constructProjectList(videos: any[]): Project[] {
 export function ProjectCenter() {
   const [projectList, setList] = useState<Project[] | null>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (projectList === null) {
-      projectAPI.searchProject("").then((res) => {
-        if (projectList === null) {
-          setList(
-            res.projects.map((item: any) => {
-              let deg = getIntRandom(0, 180);
-              let c1 = randomColor(180, 220);
-              let c2 = randomColor(180, 220);
-              return {
-                id: item.id,
-                name: item.name,
-                user: {
-                  account: item.account,
-                  img: item.user.img,
-                  name: item.user.username,
-                },
-                createTime: parseInt(item.createTime),
-                modifyTime: parseInt(item.modifyTime),
-                bgi: `linear-gradient(${deg}deg, ${c1}, ${c2})`,
-              };
-            })
-          );
-        }
-      });
-    }
-  }, []);
 
   async function getProjectList(
     type: "all" | "search" | "mine",
@@ -97,6 +73,10 @@ export function ProjectCenter() {
     }
     setList(constructProjectList(list));
   }
+
+  useEffect(() => {
+    getProjectList("all");
+  }, []);
 
   return (
     <div className="projectCenter">
@@ -147,11 +127,14 @@ export function ProjectCenter() {
 export function ProjectList(props: { list: Project[] | null }) {
   let projects = props.list;
   const navigate = useNavigate();
+  const account = useAccount();
   return projects ? (
     projects.length > 0 ? (
       <div className="listContainer">
         <div className="projectList">
           {projects.map((item) => {
+            const editable = item.user.account === account;
+            const readable = editable || item.permission >= 1;
             return (
               <div
                 className="project"
@@ -163,24 +146,30 @@ export function ProjectList(props: { list: Project[] | null }) {
                 <div className="name">{item.name}</div>
                 <div className="control">
                   <div className="btns">
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<EditOutlined />}
-                      onClick={() => {
-                        navigate(`/project?id=${item.id}`);
-                      }}
-                    ></Button>
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<DownloadOutlined />}
-                    ></Button>
-                    <Button
-                      shape="circle"
-                      size="large"
-                      icon={<DeleteOutlined />}
-                    ></Button>
+                    {readable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={editable ? <EditOutlined /> : <EyeOutlined />}
+                        onClick={() => {
+                          navigate(`/project?id=${item.id}`);
+                        }}
+                      ></Button>
+                    )}
+                    {readable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<DownloadOutlined />}
+                      ></Button>
+                    )}
+                    {editable && (
+                      <Button
+                        shape="circle"
+                        size="large"
+                        icon={<DeleteOutlined />}
+                      ></Button>
+                    )}
                   </div>
                 </div>
                 <div className="user">
