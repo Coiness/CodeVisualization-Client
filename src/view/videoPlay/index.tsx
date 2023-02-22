@@ -121,7 +121,7 @@ export function VideoPlay() {
           vInfo ? (
             <div className="videoPlayHeader">
               <div>{vInfo.name}</div>
-              <Button onClick={save}>保存</Button>
+              {vInfo.name === "" && <Button onClick={save}>保存</Button>}
               {vInfo.name !== "" && (
                 <Select
                   value={vInfo.permission}
