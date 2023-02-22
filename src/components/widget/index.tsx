@@ -27,6 +27,7 @@ export interface WidgetRendererModel extends CommonModel {
 
 export interface WidgetRendererProps {
   model: WidgetRendererModel;
+  editable: boolean;
 }
 
 export interface createWidgetParams {
@@ -167,6 +168,7 @@ export function Widget(props: WidgetProps) {
     useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
   const dom = useWidgetAnimation(model);
+  const editable = props.editable;
   if (!checkNil({ x, y, width, height, color })) {
     console.log("DEBUG: ", "参数缺失");
     return null;
@@ -175,11 +177,13 @@ export function Widget(props: WidgetProps) {
     <div
       className="widget"
       onClick={() => {
-        setActiveWidget({
-          type: model.type,
-          id: model.id,
-          widget: WidgetModel,
-        });
+        if (editable) {
+          setActiveWidget({
+            type: model.type,
+            id: model.id,
+            widget: WidgetModel,
+          });
+        }
       }}
       style={{ left: x, top: y, width, height, backgroundColor: color }}
       ref={dom}
@@ -222,6 +226,13 @@ export function Widget(props: WidgetProps) {
 export function WidgetRenderer(props: WidgetRendererProps) {
   const model = useModelChange(props.model);
   const { widgets, width, height, color } = model;
+  const [activeWidgetValue, setActiveWidget] =
+    useStore<WidgetInfo>(activeWidget);
+  useEffect(() => {
+    if (!props.editable) {
+      setActiveWidget(null);
+    }
+  }, [props.editable]);
 
   return (
     <div
@@ -238,7 +249,13 @@ export function WidgetRenderer(props: WidgetRendererProps) {
       }}
     >
       {widgets.map((widgetModel) => {
-        return <Widget key={widgetModel.id} model={widgetModel}></Widget>;
+        return (
+          <Widget
+            key={widgetModel.id}
+            model={widgetModel}
+            editable={props.editable}
+          ></Widget>
+        );
       })}
     </div>
   );

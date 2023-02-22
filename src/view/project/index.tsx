@@ -2,7 +2,7 @@ import { getLocationQuery } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
 import { modelSwitcher } from "../../core";
 import { useUndo } from "../../core/undo";
-import { initProjectInfo, snapshot, useStore } from "../../store";
+import { activeWidget, initProjectInfo, snapshot, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
 import { WidgetPanel } from "./widgetPanel";
 import "./index.css";
@@ -13,6 +13,8 @@ import { useCallback, useEffect, useState } from "react";
 import { HeaderToolBar } from "./headerToolBar";
 import { ProjectInfo, ProjectInfoKey } from "./types";
 import { useLocation } from "react-router-dom";
+import { useAccount } from "../../components/header/userInfo";
+import { WidgetInfo } from "../../components/widget/widgets";
 export * from "./types";
 
 function getProjectId(search: string) {
@@ -43,12 +45,7 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
   }
 }
 
-// type MainCanvasProps = {
-//   snapshot: Snapshot;
-// };
-
-// function MainCanvas(props: MainCanvasProps) {
-function MainCanvas() {
+function MainCanvas(props: { editable: boolean }) {
   const [data] = useStore(snapshot);
 
   useUndo();
@@ -71,7 +68,10 @@ function MainCanvas() {
     <div className="main" onWheel={handelMouseWhell}>
       <div className="zoom" style={{ zoom }}>
         {data && (
-          <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
+          <WidgetRenderer
+            model={data.widgetManagerModel}
+            editable={props.editable}
+          ></WidgetRenderer>
         )}
       </div>
     </div>
@@ -82,11 +82,16 @@ export function Project() {
   const location = useLocation();
   const id = getProjectId(location.search);
   const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
+  const account = useAccount();
+  const editable = account !== null && projectInfo?.account === account;
+  const [activeWidgetValue, setActiveWidget] =
+    useStore<WidgetInfo>(activeWidget);
 
   useEffect(() => {
     getProjectData(id).then((info) => {
       setProjectInfo(info);
       modelSwitcher.setModel(info.snapshot);
+      setActiveWidget(null);
     });
   }, [id]);
 
@@ -110,10 +115,9 @@ export function Project() {
           }
         ></Header>
         <div className="projectDSContent">
-          <WidgetPanel></WidgetPanel>
-          {/* <MainCanvas snapshot={projectInfo.snapshot}></MainCanvas> */}
-          <MainCanvas></MainCanvas>
-          <ControlPanel></ControlPanel>
+          {editable && <WidgetPanel></WidgetPanel>}
+          <MainCanvas editable={editable}></MainCanvas>
+          {editable && <ControlPanel></ControlPanel>}
         </div>
       </div>
     )

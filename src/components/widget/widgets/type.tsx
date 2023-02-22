@@ -18,6 +18,7 @@ export type WidgetModel = BaseModel;
 
 export interface WidgetProps {
   model: WidgetModel;
+  editable: boolean;
 }
 
 export interface IWidget {

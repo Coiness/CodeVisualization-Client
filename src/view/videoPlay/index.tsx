@@ -167,7 +167,10 @@ function MainCanvas() {
     <div className="mainCanvas" onWheel={handelMouseWhell}>
       <div className="zoom" style={{ zoom }}>
         {data && (
-          <WidgetRenderer model={data.widgetManagerModel}></WidgetRenderer>
+          <WidgetRenderer
+            model={data.widgetManagerModel}
+            editable={false}
+          ></WidgetRenderer>
         )}
       </div>
     </div>

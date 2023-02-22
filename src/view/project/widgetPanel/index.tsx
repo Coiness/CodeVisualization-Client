@@ -1,4 +1,5 @@
 import { Button } from "antd";
+import { useCallback } from "react";
 import {
   BaseModel,
   numberWidgetDefaultInfo,
@@ -20,7 +21,7 @@ const widgetDefaultInfos: WidgetDefaultInfo[] = [
 ];
 
 export function WidgetPanel() {
-  function createWidget(info: WidgetDefaultInfo) {
+  const createWidget = useCallback((info: WidgetDefaultInfo) => {
     const action = WidgetRendererAction.create(
       snapshot.get()!.widgetManagerModel,
       {
@@ -28,7 +29,7 @@ export function WidgetPanel() {
       }
     );
     commitAction(action);
-  }
+  }, []);
 
   return (
     <div className="widgetPanel">
