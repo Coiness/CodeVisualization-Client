@@ -85,8 +85,7 @@ export function Project() {
   const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
   const account = useAccount();
   const editable = account !== null && projectInfo?.account === account;
-  const [activeWidgetValue, setActiveWidget] =
-    useStore<WidgetInfo>(activeWidget);
+  const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
 
   useEffect(() => {
     let close: () => void = () => {};
@@ -109,7 +108,7 @@ export function Project() {
       closed = true;
       close();
     };
-  }, [id]);
+  }, [id, setActiveWidget]);
 
   const change = useCallback(
     (key: ProjectInfoKey, value: any) => {
