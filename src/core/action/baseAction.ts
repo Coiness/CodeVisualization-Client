@@ -1,6 +1,6 @@
 import { createOnlyId, Subject } from "../../common/utils";
 import { ChangeSet } from "../diff/objDiff";
-import { execDo } from "../undo";
+import { execDo, execRedo, execUndo } from "../undo";
 import { WS } from "../../net";
 
 export interface Action {
@@ -87,6 +87,10 @@ export class IO {
         if (this.handlerActioin !== null) {
           this.handlerActioin(data.action as Action);
         }
+      } else if (data.type === "undo") {
+        execUndo();
+      } else if (data.type === "redo") {
+        execRedo();
       }
     };
   }
@@ -96,15 +100,27 @@ export class IO {
   }
 
   submitAction(action: Action) {
-    if (this.ws === null) {
-      return;
-    }
-    this.ws.send(
+    this.submit(
       JSON.stringify({
         type: "newAction",
         action: action,
       })
     );
+  }
+
+  submitOrder(type: "undo" | "redo") {
+    this.submit(
+      JSON.stringify({
+        type,
+      })
+    );
+  }
+
+  private submit(data: string) {
+    if (this.ws === null) {
+      return;
+    }
+    this.ws.send(data);
   }
 }
 
@@ -116,4 +132,14 @@ export const actionIO = io;
 export function sendAction(action: Action) {
   // 发送 action
   actionIO.submitAction(action);
+}
+
+export function commitUndo() {
+  execUndo();
+  actionIO.submitOrder("undo");
+}
+
+export function commitRedo() {
+  execRedo();
+  actionIO.submitOrder("redo");
 }

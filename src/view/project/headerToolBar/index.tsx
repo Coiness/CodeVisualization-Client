@@ -10,7 +10,13 @@ import {
   RedoOutlined,
   UndoOutlined,
 } from "@ant-design/icons";
-import { execRedo, execUndo, Recorder } from "../../../core";
+import {
+  commitRedo,
+  commitUndo,
+  execRedo,
+  execUndo,
+  Recorder,
+} from "../../../core";
 import { initVideoInfo } from "../../../store";
 import { useNavigate } from "react-router-dom";
 
@@ -77,7 +83,7 @@ export function HeaderToolBar(props: {
       <Button
         icon={<UndoOutlined />}
         onClick={() => {
-          execUndo();
+          commitUndo();
         }}
       >
         撤销
@@ -85,7 +91,7 @@ export function HeaderToolBar(props: {
       <Button
         icon={<RedoOutlined />}
         onClick={() => {
-          execRedo();
+          commitRedo();
         }}
       >
         重做

@@ -1,6 +1,7 @@
 import { message } from "antd";
 import { Subject } from "../../common/utils";
 import { Snapshot } from "../../view/project";
+import { commitUndo } from "../action";
 import { modelSwitcher } from "../modelSwitcher";
 import { execUndo } from "../undo";
 import { Step, Video } from "./type";
@@ -48,7 +49,7 @@ export class Player {
     }
     const len = this.steps[this.index - 1].actions.length;
     for (let i = 0; i < len; i++) {
-      execUndo();
+      commitUndo();
     }
     this.index--;
     this.progress.next(this.index);

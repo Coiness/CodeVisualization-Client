@@ -2,6 +2,7 @@ import { message } from "antd";
 import { useEffect } from "react";
 import { CommonModel } from "../../components/widget/widgets";
 import { historyInfo, snapshot } from "../../store";
+import { commitRedo, commitUndo } from "../action";
 import { ChangeSet, doChange, doInvertedChange } from "../diff/objDiff";
 import { Obj } from "../types";
 
@@ -20,13 +21,13 @@ export function useUndo() {
         (e.key === "z" || e.key === "Z") &&
         !e.shiftKey
       ) {
-        execUndo();
+        commitUndo();
       } else if (
         (e.ctrlKey || e.metaKey) &&
         (e.key === "z" || e.key === "Z") &&
         e.shiftKey
       ) {
-        execRedo();
+        commitRedo();
       }
     };
     document.addEventListener("keydown", fun);
