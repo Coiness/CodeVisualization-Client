@@ -35,7 +35,7 @@ export function WidgetPanel() {
     <div className="widgetPanel">
       <div className="list">
         {widgetDefaultInfos.map((info) => (
-          <div className="widgetItem">
+          <div className="widgetItem" key={info.name}>
             <Button
               onClick={() => {
                 createWidget(info);

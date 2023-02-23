@@ -68,7 +68,6 @@ export class StringWidget implements IWidget {
   }
 
   setValue = (value: unknown) => {
-    console.log("DEBUG: ", value);
     const action = ValueAction.create(this.model, { value });
     commitAction(action);
   };

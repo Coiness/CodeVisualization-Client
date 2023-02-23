@@ -1,6 +1,7 @@
 import { createOnlyId, Subject } from "../../common/utils";
 import { ChangeSet } from "../diff/objDiff";
 import { execDo } from "../undo";
+import { WS } from "../../net";
 
 export interface Action {
   type: string;
@@ -64,12 +65,55 @@ export function commitAction(action: BaseAction) {
   sendAction(action);
 }
 
-export function sendAction(action: Action) {
-  // 发送 action
-}
-
 export function awaitAction(action: Action): Promise<boolean> {
   return new Promise((resolve) => {
     resolve(true);
   });
+}
+
+export interface IO {
+  setWS(ws: WS): void;
+}
+
+export class IO {
+  private ws: WS | null = null;
+  private handlerActioin: ((action: Action) => void) | null = null;
+
+  setWS(ws: WS) {
+    this.ws = ws;
+    ws.onMessage = (str: string) => {
+      let data = JSON.parse(str);
+      if (data.type === "newAction") {
+        if (this.handlerActioin !== null) {
+          this.handlerActioin(data.action as Action);
+        }
+      }
+    };
+  }
+
+  setHandlerAction(handlerAction: (action: Action) => void) {
+    this.handlerActioin = handlerAction;
+  }
+
+  submitAction(action: Action) {
+    if (this.ws === null) {
+      return;
+    }
+    this.ws.send(
+      JSON.stringify({
+        type: "newAction",
+        action: action,
+      })
+    );
+  }
+}
+
+const io = new IO();
+io.setHandlerAction(applyAction);
+
+export const actionIO = io;
+
+export function sendAction(action: Action) {
+  // 发送 action
+  actionIO.submitAction(action);
 }

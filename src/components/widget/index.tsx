@@ -17,6 +17,7 @@ import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
 import { widgetActionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
 import { checkNil, linearAnimation } from "../../common/utils";
+import { message } from "antd";
 
 export interface WidgetRendererModel extends CommonModel {
   widgets: WidgetModel[];
@@ -170,7 +171,7 @@ export function Widget(props: WidgetProps) {
   const dom = useWidgetAnimation(model);
   const editable = props.editable;
   if (!checkNil({ x, y, width, height, color })) {
-    console.log("DEBUG: ", "参数缺失");
+    console.log("ERROR: ", "参数缺失");
     return null;
   }
   return (
@@ -238,12 +239,6 @@ export function WidgetRenderer(props: WidgetRendererProps) {
     <div
       className="widgetRenderer"
       style={{ width, height, backgroundColor: color }}
-      onAuxClick={(e) => {
-        // e.preventDefault();
-        // e.nativeEvent.preventDefault();
-        // e.nativeEvent.returnValue = false;
-        // console.log("DEBUG: ", e);
-      }}
       onDoubleClick={(e) => {
         activeWidget.set(null);
       }}

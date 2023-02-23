@@ -6,6 +6,7 @@ export enum WSType {
 
 export interface WS {
   type: WSType;
+  onMessage(data: string): void;
   send(data: string): void;
   close(): void;
 }
@@ -13,8 +14,6 @@ export interface WS {
 const WS_HOST = "ws://localhost:3001";
 
 export function testWS() {
-  console.log("DEBUG: ", "testWS");
-
   // 浏览器提供 WebSocket 对象
   var ws = new WebSocket(WS_HOST);
 
@@ -31,14 +30,10 @@ export function testWS() {
   };
 }
 
-export async function createWS(
-  type: WSType,
-  onMessage: (data: string) => void,
-  data: Obj
-): Promise<WS> {
+export async function createWS(type: WSType, data: Obj): Promise<WS> {
   const websocket = new WebSocket(WS_HOST);
   websocket.onopen = function () {
-    ws.send(
+    websocket.send(
       JSON.stringify({
         type: "init",
         data: {
@@ -53,25 +48,26 @@ export async function createWS(
 
   const ws: WS = {
     type,
+    onMessage: (data: string) => {},
     send(data: string) {
-      ws.send(
-        JSON.stringify({
-          type: "message",
-          data,
-        })
-      );
+      let s = JSON.stringify({
+        type: "message",
+        data,
+      });
+      websocket.send(s);
     },
     close() {
-      ws.close();
+      websocket.close();
     },
   };
 
   websocket.onmessage = function (msg) {
     let data = JSON.parse(msg.data);
+    (window as any).str = msg.data;
     if (data.type === "ready") {
       resolve(ws);
     } else if (data.type === "message") {
-      onMessage(data.data);
+      ws.onMessage(data.data);
     }
   };
 

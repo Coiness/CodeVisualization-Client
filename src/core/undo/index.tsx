@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { useEffect } from "react";
 import { CommonModel } from "../../components/widget/widgets";
 import { historyInfo, snapshot } from "../../store";
@@ -76,7 +77,7 @@ export function execUndo() {
     const { cs } = historyInfoValue.history[historyInfoValue.index];
     doInvertedChange(data as Obj, cs);
   } else {
-    console.log("DEBUG: ", "undo empty");
+    message.info("已经撤销到头了！");
   }
 }
 
@@ -88,7 +89,7 @@ export function execRedo() {
     doChange(data as Obj, cs);
     historyInfoValue.index++;
   } else {
-    console.log("DEBUG: ", "redo empty");
+    message.info("已经重做到头了！");
   }
 }
 

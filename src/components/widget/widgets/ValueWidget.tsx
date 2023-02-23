@@ -24,11 +24,8 @@ export function useValueWidget(widget: ValueWidget, model: ValueWidgetModel) {
 
   // 监听 widgetModel 变化
   useEffect(() => {
-    // console.log("DEBUG: ", "effect", widget.getValue());
-    // setValue(widget.getValue() as Value);
     setValue(widget.getValue() as Value);
     const subscription = widget.value$.subscribe((value) => {
-      // model.value = value;
       setValue(value);
     });
     return () => {

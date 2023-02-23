@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { test } from "./core/diff/objDiff";
 import "./index.css";
 import App from "./view/App";
-import { testWS } from "./net";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -24,5 +23,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-testWS();

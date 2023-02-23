@@ -1,6 +1,6 @@
 import { getLocationQuery } from "../../common/utils";
 import { WidgetRenderer } from "../../components/widget";
-import { modelSwitcher } from "../../core";
+import { actionIO, modelSwitcher } from "../../core";
 import { useUndo } from "../../core/undo";
 import { activeWidget, initProjectInfo, snapshot, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
@@ -15,6 +15,7 @@ import { ProjectInfo, ProjectInfoKey } from "./types";
 import { useLocation } from "react-router-dom";
 import { useAccount } from "../../components/header/userInfo";
 import { WidgetInfo } from "../../components/widget/widgets";
+import { createWS, WSType } from "../../net";
 export * from "./types";
 
 function getProjectId(search: string) {
@@ -88,11 +89,26 @@ export function Project() {
     useStore<WidgetInfo>(activeWidget);
 
   useEffect(() => {
-    getProjectData(id).then((info) => {
+    let close: () => void = () => {};
+    let closed = false;
+    getProjectData(id).then(async (info) => {
+      let ws = await createWS(WSType.Project, { id });
+      if (closed) {
+        ws.close();
+        return;
+      }
+      actionIO.setWS(ws);
       setProjectInfo(info);
       modelSwitcher.setModel(info.snapshot);
       setActiveWidget(null);
+      close = () => {
+        ws.close();
+      };
     });
+    return () => {
+      closed = true;
+      close();
+    };
   }, [id]);
 
   const change = useCallback(

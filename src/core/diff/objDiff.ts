@@ -29,7 +29,7 @@ export function getModelByPath(obj: Obj, path: string): CommonModel {
 }
 
 export function doChange(obj: Obj, cs: ChangeSet) {
-	// 防止 cs 中 create 的对象被修改，导致影响 cs
+  // 防止 cs 中 create 的对象被修改，导致影响 cs
   cs = cloneDeep(cs);
   cs.forEach((change) => {
     const path = change.p.split(".");
@@ -40,7 +40,6 @@ export function doChange(obj: Obj, cs: ChangeSet) {
       o = get(obj, p);
     }
     if (!o || !attr) {
-      console.log("DEBUG: ", o, attr, change);
       throw new Error("doChange error, o or attr is undefined");
     }
     if (change.t === "u") {

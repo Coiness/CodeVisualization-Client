@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { Subject } from "../../common/utils";
 import { Snapshot } from "../../view/project";
 import { modelSwitcher } from "../modelSwitcher";
@@ -21,7 +22,7 @@ export class Player {
 
   next() {
     if (this.index === this.steps.length) {
-      console.log("DEBUG: ", "next end");
+      message.info("已经是最后一帧了！");
       return;
     }
     // 执行新动画时，停止之前的动画
@@ -42,7 +43,7 @@ export class Player {
 
   last() {
     if (this.index === 0) {
-      console.log("DEBUG: ", "last end");
+      message.info("已经是第一帧了！");
       return;
     }
     const len = this.steps[this.index - 1].actions.length;
