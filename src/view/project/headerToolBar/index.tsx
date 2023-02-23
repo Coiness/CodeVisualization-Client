@@ -25,11 +25,17 @@ const recorder = new Recorder();
 export function HeaderToolBar(props: {
   info: ProjectInfo;
   change: (key: ProjectInfoKey, value: any) => void;
+  editable: boolean;
 }) {
   const info = props.info;
   const nameRef = useRef<string>(info.name);
   const [recording, setRecording] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [editable, setEditable] = useState<boolean>(props.editable);
+
+  useEffect(() => {
+    setEditable(props.editable);
+  }, [props.editable]);
 
   async function save() {
     if (nameRef.current === "") {
@@ -65,11 +71,13 @@ export function HeaderToolBar(props: {
   return (
     <div className="projectHeader">
       <div className="projectName">{nameRef.current}</div>
-      <Button type="default" onClick={save}>
-        保存
-      </Button>
+      {editable && (
+        <Button type="default" onClick={save}>
+          保存
+        </Button>
+      )}
       <Button icon={<CloudDownloadOutlined />}>下载到本地</Button>
-      {info.name !== "" && (
+      {editable && info.name !== "" && (
         <Select
           value={info.permission}
           onChange={handleSelectChange}
@@ -80,22 +88,26 @@ export function HeaderToolBar(props: {
         />
       )}
       <div className="blank"></div>
-      <Button
-        icon={<UndoOutlined />}
-        onClick={() => {
-          commitUndo();
-        }}
-      >
-        撤销
-      </Button>
-      <Button
-        icon={<RedoOutlined />}
-        onClick={() => {
-          commitRedo();
-        }}
-      >
-        重做
-      </Button>
+      {editable && (
+        <Button
+          icon={<UndoOutlined />}
+          onClick={() => {
+            commitUndo();
+          }}
+        >
+          撤销
+        </Button>
+      )}
+      {editable && (
+        <Button
+          icon={<RedoOutlined />}
+          onClick={() => {
+            commitRedo();
+          }}
+        >
+          重做
+        </Button>
+      )}
       {!recording && (
         <Button
           onClick={() => {

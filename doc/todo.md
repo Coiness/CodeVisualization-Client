@@ -1,12 +1,12 @@
 - 算法 IO API
 - 展示代码 API
-- 演示页面协同
 - 算法权限管理
 - 布尔类型
 - 新增 Widget 栈
 - 新增 Widget 树节点
 - 首页引导
 - API 文档
+- 服务端数据协同
 - Web 编辑器 API 代码提示
 - 信息通知栏
 - add widget action 增加回放动画

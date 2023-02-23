@@ -13,8 +13,11 @@ export type HistoryInfo = {
   index: number;
 };
 
-export function useUndo() {
+export function useUndo(enable: boolean) {
   useEffect(() => {
+    if (!enable) {
+      return;
+    }
     const fun = (e: KeyboardEvent) => {
       if (
         (e.ctrlKey || e.metaKey) &&
@@ -34,7 +37,7 @@ export function useUndo() {
     return () => {
       document.removeEventListener("keydown", fun);
     };
-  }, []);
+  }, [enable]);
 }
 
 function initPath(obj: any) {

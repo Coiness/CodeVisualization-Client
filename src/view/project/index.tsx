@@ -49,7 +49,7 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
 function MainCanvas(props: { editable: boolean }) {
   const [data] = useStore(snapshot);
 
-  useUndo();
+  useUndo(props.editable);
 
   const [zoom, setZoom] = useState<number>(1);
 
@@ -127,7 +127,11 @@ export function Project() {
       <div className="projectDS">
         <Header
           content={
-            <HeaderToolBar info={projectInfo} change={change}></HeaderToolBar>
+            <HeaderToolBar
+              info={projectInfo}
+              change={change}
+              editable={editable}
+            ></HeaderToolBar>
           }
         ></Header>
         <div className="projectDSContent">
