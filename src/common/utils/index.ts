@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export function sleep(time: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
@@ -151,4 +153,11 @@ export function getDateString(date: number) {
   const m = dateObj.getMinutes();
   res += m < 10 ? "0" + m : m;
   return res;
+}
+
+export function useReload() {
+  const [flag, setFlag] = useState<boolean>(false);
+  return () => {
+    setFlag(!flag);
+  };
 }

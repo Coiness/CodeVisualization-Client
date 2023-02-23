@@ -22,6 +22,7 @@ import {
   PlayCircleOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import { Console } from "./Console";
 
 export type VideoInfo = {
   id: string;
@@ -139,7 +140,14 @@ export function VideoPlay() {
         }
       ></Header>
       <div className="videoPlayContent">
-        <MainCanvas></MainCanvas>
+        <div className="middle">
+          <div className="left">
+            <MainCanvas></MainCanvas>
+          </div>
+          <div className="right">
+            <Console></Console>
+          </div>
+        </div>
         <Control></Control>
       </div>
     </div>
