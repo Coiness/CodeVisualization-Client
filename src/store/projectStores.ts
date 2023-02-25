@@ -13,13 +13,3 @@ export const historyInfo = createStatus<HistoryInfo>({
 });
 export const mode = createStatus<DisplayMode>("edit");
 export const animateSpeed = createStatus<number>(1);
-
-const stores = {
-  activeWidget,
-  activeWidgetType,
-  snapshot,
-  historyInfo,
-  mode,
-};
-
-(window as any).stores = stores;

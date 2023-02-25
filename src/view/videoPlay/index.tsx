@@ -54,7 +54,7 @@ async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
   }
 }
 
-const player = new Player();
+export const player = new Player();
 
 export function VideoPlay() {
   const location = useLocation();

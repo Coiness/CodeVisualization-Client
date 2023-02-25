@@ -5,7 +5,13 @@ export interface Step {
   actions: BaseAction[];
 }
 
+export interface ConsoleContent {
+  type: "print" | "println";
+  content: string;
+}
+
 export interface Video {
   snapshot: Snapshot;
   steps: Step[];
+  consoles?: (ConsoleContent | null)[];
 }

@@ -1,21 +1,22 @@
+import { useEffect, useState } from "react";
+import { player } from ".";
 import "./console.css";
-import { useEffect, useRef } from "react";
-import { useReload } from "../../common/utils";
 
 export function Console() {
-  const list = useRef<string[]>(["111", "222"]);
-  const reload = useReload();
+  const [list, setList] = useState<string[]>([]);
+
   useEffect(() => {
-    if (!true) {
-      reload();
-    }
-  }, [reload]);
+    player.progress.subscribe(() => {
+      setList(player.getConsoles());
+    });
+  });
+
   return (
     <div className="console">
       <div className="title">输出</div>
       <div className="content">
         <div className="rows">
-          {list.current.map((item, index) => {
+          {list.map((item, index) => {
             return (
               <div className="row" key={index}>
                 {item}
