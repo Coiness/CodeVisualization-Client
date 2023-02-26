@@ -8,6 +8,7 @@ import { getLocationQuery, Subject } from "../../common/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as algorithmAPI from "../../net/algorithmAPI";
 import { ApiDriver } from "../../openAPI/driver";
+import { InputContent, useInputList } from "../../components/inputList";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
 
@@ -18,6 +19,7 @@ export type AlgorithmInfo = {
   content: {
     showCode: string;
     runCode: string;
+    inputList?: InputContent[];
   };
   permission: number;
 };
@@ -48,8 +50,14 @@ async function getAlInfo(id: string | null) {
 
 export function AlgorithmEdit() {
   const [showCodeEnable] = useState<boolean>(false);
+  const [inputEnable, setInputEnable] = useState<boolean>(false);
   const { el: editor1, getCode: getCode1, setCode: setCode1 } = useCodeEditor();
   const { el: editor2, getCode: getCode2, setCode: setCode2 } = useCodeEditor();
+  const {
+    el: InputList,
+    getData: getInputListData,
+    setData: setInputListData,
+  } = useInputList(true);
   const [alInfo, setInfo] = useState<AlgorithmInfo | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,6 +67,10 @@ export function AlgorithmEdit() {
   const load = useCallback(() => {
     getAlInfo(id).then((info: AlgorithmInfo) => {
       setInfo(info);
+      if (info.content.inputList) {
+        setInputListData(info.content.inputList);
+        setInputEnable(true);
+      }
       setCode1(info.content.showCode);
       setCode2(info.content.runCode);
     });
@@ -74,6 +86,7 @@ export function AlgorithmEdit() {
       const content = {
         showCode: getCode1(),
         runCode: getCode2(),
+        inputList: inputEnable ? getInputListData() : undefined,
       };
       return await algorithmAPI.createAlgorithm(
         nameRef.current,
@@ -95,6 +108,9 @@ export function AlgorithmEdit() {
 
   async function run() {
     let code = getCode2();
+    if (inputEnable) {
+      console.log("DEBUG: ", "input !!!");
+    }
     if (code) {
       await ApiDriver.start(code);
       navigate("/videoPlay");
@@ -142,14 +158,33 @@ export function AlgorithmEdit() {
       ></Header>
       <div className="algorithmEditContent">
         <div className="left">
-          {!showCodeEnable && <div className="mask"></div>}
-          {!showCodeEnable && (
-            <div className="container">
-              <Button>启用展示代码</Button>
-            </div>
-          )}
-          {editor1}
+          <div className="top">
+            {!showCodeEnable && <div className="mask"></div>}
+            {!showCodeEnable && (
+              <div className="container">
+                <Button>启用展示代码</Button>
+              </div>
+            )}
+            {editor1}
+          </div>
+          <div className="line"></div>
+          <div className="bottom">
+            {!inputEnable && <div className="mask"></div>}
+            {!inputEnable && (
+              <div className="container">
+                <Button
+                  onClick={() => {
+                    setInputEnable(true);
+                  }}
+                >
+                  启用自定义输入
+                </Button>
+              </div>
+            )}
+            {InputList}
+          </div>
         </div>
+        <div className="middle"></div>
         <div className="right">{editor2}</div>
       </div>
     </div>

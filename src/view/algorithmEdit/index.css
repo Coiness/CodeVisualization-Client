@@ -11,11 +11,18 @@
 
 .algorithmEditContent > .left {
   flex: 1;
-  position: relative;
+
+  display: flex;
+  flex-flow: column nowrap;
+
   height: 100%;
 }
 
-.algorithmEditContent > .left > .mask {
+.algorithmEditContent > .left > * {
+  position: relative;
+}
+
+.algorithmEditContent > .left .mask {
   position: absolute;
   top: 0;
   left: 0;
@@ -23,16 +30,35 @@
 
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: #999;
 }
 
-.algorithmEditContent > .left > .container {
+.algorithmEditContent > .left .container {
   position: absolute;
   top: 50%;
   left: 50%;
   z-index: 1;
 
   transform: translate(-50%, -50%);
+}
+
+.algorithmEditContent > .left > .top {
+  flex: 1;
+}
+
+.algorithmEditContent > .left > .line {
+  height: 2px;
+  background-color: rgb(122, 162, 255);
+}
+
+.algorithmEditContent > .left > .bottom {
+  height: 200px;
+}
+
+.algorithmEditContent > .middle {
+  width: 3px;
+  height: 100%;
+  background-color: rgb(122, 162, 255);
 }
 
 .algorithmEditContent > .right {
