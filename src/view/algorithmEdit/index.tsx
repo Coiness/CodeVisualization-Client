@@ -8,7 +8,11 @@ import { getLocationQuery, Subject } from "../../common/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as algorithmAPI from "../../net/algorithmAPI";
 import { ApiDriver } from "../../openAPI/driver";
-import { InputContent, useInputList } from "../../components/inputList";
+import {
+  InputContent,
+  inputListDialogSub,
+  useInputList,
+} from "../../components/inputList";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
 
@@ -109,7 +113,21 @@ export function AlgorithmEdit() {
   async function run() {
     let code = getCode2();
     if (inputEnable) {
-      console.log("DEBUG: ", "input !!!");
+      let data = getInputListData();
+      openDialog("inputListDialog", data);
+      data = await (async function () {
+        return new Promise((resolve) => {
+          let sub = inputListDialogSub.subscribe((d) => {
+            resolve(d);
+            sub.unsubscribe();
+          });
+        });
+      })();
+
+      if (code) {
+        await ApiDriver.start(code, data);
+        navigate("/videoPlay");
+      }
     }
     if (code) {
       await ApiDriver.start(code);
@@ -181,7 +199,7 @@ export function AlgorithmEdit() {
                 </Button>
               </div>
             )}
-            {InputList}
+            <div className="inputListContainer">{InputList}</div>
           </div>
         </div>
         <div className="middle"></div>

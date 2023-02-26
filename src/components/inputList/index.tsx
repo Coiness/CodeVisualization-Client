@@ -1,7 +1,9 @@
 import "./index.css";
-import { Button, Input } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { Button, Input, Modal } from "antd";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CloseCircleOutlined } from "@ant-design/icons";
+import { closeDialog } from "../../view/dialogs/dialog";
+import { Subject } from "../../common/utils";
 
 export interface InputContent {
   key: string;
@@ -57,15 +59,18 @@ export function useInputList(editable: boolean) {
               return (
                 <div className="inputContent" key={item.id}>
                   <div className="key">
-                    <Input
-                      placeholder="字段名"
-                      defaultValue={item.key}
-                      onChange={(e) => {
-                        item.key = e.currentTarget.value;
-                        setInputData([...data]);
-                      }}
-                      disabled={!editable}
-                    ></Input>
+                    {editable ? (
+                      <Input
+                        placeholder="字段名"
+                        defaultValue={item.key}
+                        onChange={(e) => {
+                          item.key = e.currentTarget.value;
+                          setInputData([...data]);
+                        }}
+                      ></Input>
+                    ) : (
+                      item.key
+                    )}
                   </div>
                   <div className="value">
                     <Input
@@ -113,4 +118,44 @@ export function useInputList(editable: boolean) {
     getData,
     setData,
   };
+}
+
+export const inputListDialogSub = new Subject<InputContent[]>();
+
+export function InputListDialog(visible: boolean, data: InputContent[]) {
+  const { el, getData, setData } = useInputList(false);
+  const closePanel = useCallback(() => {
+    closeDialog("inputListDialog");
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setData(data);
+    }
+  }, data);
+
+  function submit() {
+    inputListDialogSub.next(getData());
+    closePanel();
+  }
+
+  return (
+    <Modal
+      open={visible}
+      maskClosable={true}
+      onCancel={closePanel}
+      footer={null}
+      width={400}
+      closable={false}
+    >
+      <div className="inputListDialog">
+        {el}
+        <div className="submit">
+          <Button type="primary" onClick={submit}>
+            确定
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
 }

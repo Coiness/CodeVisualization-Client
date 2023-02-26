@@ -1,11 +1,12 @@
 import { consoleSub } from "../common/console";
+import { ApiDriver } from "../driver";
 
 export const ioApi = {
   getParam(name: string): any {
-    return;
+    return ApiDriver.initData?.[name] ?? undefined;
   },
   getParams(): { [key: string]: any } {
-    return [];
+    return ApiDriver.initData ?? {};
   },
   print(str: string): void {
     consoleSub.next({
