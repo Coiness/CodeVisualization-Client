@@ -30,15 +30,6 @@ export function useCodeEditor(theme: "show" | "vs") {
 
   function setHeightLine(row: number) {
     editor.current?.setSelection(new monaco.Selection(row, 0, row, 0));
-
-    // startColumn: 0,
-    // endColumn: 0,
-    // startLineNumber: 2,
-    // endLineNumber: 2,
-    // positionLineNumber: 2,
-    // positionColumn: 0,
-    // selectionStartColumn: 0,
-    // selectionStartLineNumber: 2,
   }
 
   useEffect(() => {
