@@ -23,6 +23,8 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import { Console } from "./Console";
+import { ShowCode } from "./ShowCode";
+import { info } from "console";
 
 export type VideoInfo = {
   id: string;
@@ -145,7 +147,14 @@ export function VideoPlay() {
             <MainCanvas></MainCanvas>
           </div>
           <div className="right">
-            <Console></Console>
+            {vInfo?.video.showCode && (
+              <div className="top">
+                <ShowCode code={vInfo.video.showCode}></ShowCode>
+              </div>
+            )}
+            <div className="bottom">
+              <Console></Console>
+            </div>
           </div>
         </div>
         <Control></Control>

@@ -53,10 +53,18 @@ async function getAlInfo(id: string | null) {
 }
 
 export function AlgorithmEdit() {
-  const [showCodeEnable] = useState<boolean>(false);
+  const [showCodeEnable, setShowCodeEnable] = useState<boolean>(false);
   const [inputEnable, setInputEnable] = useState<boolean>(false);
-  const { el: editor1, getCode: getCode1, setCode: setCode1 } = useCodeEditor();
-  const { el: editor2, getCode: getCode2, setCode: setCode2 } = useCodeEditor();
+  const {
+    el: editor1,
+    getCode: getCode1,
+    setCode: setCode1,
+  } = useCodeEditor("vs");
+  const {
+    el: editor2,
+    getCode: getCode2,
+    setCode: setCode2,
+  } = useCodeEditor("vs");
   const {
     el: InputList,
     getData: getInputListData,
@@ -75,7 +83,10 @@ export function AlgorithmEdit() {
         setInputListData(info.content.inputList);
         setInputEnable(true);
       }
-      setCode1(info.content.showCode);
+      if (info.content.showCode) {
+        setCode1(info.content.showCode);
+        setShowCodeEnable(true);
+      }
       setCode2(info.content.runCode);
     });
   }, [id]);
@@ -88,7 +99,7 @@ export function AlgorithmEdit() {
       return null;
     } else {
       const content = {
-        showCode: getCode1(),
+        showCode: showCodeEnable ? getCode1() : null,
         runCode: getCode2(),
         inputList: inputEnable ? getInputListData() : undefined,
       };
@@ -111,6 +122,7 @@ export function AlgorithmEdit() {
   });
 
   async function run() {
+    let showCode = getCode1();
     let code = getCode2();
     if (inputEnable) {
       let data = getInputListData();
@@ -125,12 +137,12 @@ export function AlgorithmEdit() {
       })();
 
       if (code) {
-        await ApiDriver.start(code, data);
+        await ApiDriver.start(code, showCode, data);
         navigate("/videoPlay");
       }
     }
     if (code) {
-      await ApiDriver.start(code);
+      await ApiDriver.start(code, showCode);
       navigate("/videoPlay");
     }
   }
@@ -180,7 +192,13 @@ export function AlgorithmEdit() {
             {!showCodeEnable && <div className="mask"></div>}
             {!showCodeEnable && (
               <div className="container">
-                <Button>启用展示代码</Button>
+                <Button
+                  onClick={() => {
+                    setShowCodeEnable(true);
+                  }}
+                >
+                  启用展示代码
+                </Button>
               </div>
             )}
             {editor1}

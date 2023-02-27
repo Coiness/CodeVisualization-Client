@@ -10,6 +10,7 @@ export class Player {
   private snapshot: Snapshot = {} as Snapshot;
   private steps: Step[] = [];
   private consoles: (ConsoleContent | null)[] | undefined = undefined;
+  private heightlines: number[] | undefined = undefined;
   private index: number = 0;
 
   progress = new Subject<number>();
@@ -18,6 +19,7 @@ export class Player {
     this.snapshot = video.snapshot;
     this.steps = video.steps;
     this.consoles = video.consoles;
+    this.heightlines = video.heightlines;
     this.index = 0;
     this.progress.next(this.index);
     modelSwitcher.pushModel(this.snapshot);
@@ -105,6 +107,10 @@ export class Player {
       }
     }
     return res;
+  }
+
+  getHeightLine(): number {
+    return this.heightlines?.[this.index] ?? 0;
   }
 
   end() {}

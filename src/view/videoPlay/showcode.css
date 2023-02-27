@@ -1,0 +1,19 @@
+.showCode {
+  display: flex;
+  flex-flow: column nowrap;
+
+  width: 100%;
+  height: 100%;
+}
+
+.showCode .title {
+  height: 30px;
+  font-weight: 700;
+  line-height: 30px;
+  padding-left: 8px;
+  background-color: #ccc;
+}
+
+.showCode > .content {
+  flex: 1;
+}

@@ -10,8 +10,13 @@ import { defaultSnapshot } from "../common/snapshot";
 export class APIDriver {
   r: (value: unknown) => void = () => {};
   initData: { [key: string]: string } | undefined = undefined;
+  showCode: string | null = null;
 
-  start(code: string, initData?: InputContent[]): Promise<unknown> {
+  start(
+    code: string,
+    showCode: string | undefined,
+    initData?: InputContent[]
+  ): Promise<unknown> {
     modelSwitcher.pushModel(cloneDeep(defaultSnapshot));
     this.initData = {};
     initData?.forEach((item) => {
@@ -19,6 +24,8 @@ export class APIDriver {
         this.initData[item.key] = item.value;
       }
     });
+
+    this.showCode = showCode ?? null;
 
     // eslint-disable-next-line
     eval(`
@@ -34,6 +41,8 @@ export class APIDriver {
   }
   end(v: Video) {
     modelSwitcher.popModel();
+    v.showCode = this.showCode;
+
     initVideoInfo.set({
       id: "",
       account: "",

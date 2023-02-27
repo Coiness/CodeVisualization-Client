@@ -14,4 +14,6 @@ export interface Video {
   snapshot: Snapshot;
   steps: Step[];
   consoles?: (ConsoleContent | null)[];
+  heightlines?: number[];
+  showCode?: string | null;
 }
