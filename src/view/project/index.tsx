@@ -52,8 +52,14 @@ export function Project() {
   const id = getProjectId(location.search);
   const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
   const account = useAccount();
-  const editable = account !== null && projectInfo?.account === account;
+  const editable =
+    (projectInfo && projectInfo?.name === "") ||
+    (account !== null && projectInfo?.account === account);
   const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
+
+  useEffect(() => {
+    setActiveWidget(null);
+  }, []);
 
   useEffect(() => {
     let close: () => void = () => {};
@@ -67,7 +73,6 @@ export function Project() {
       actionIO.setWS(ws);
       setProjectInfo(info);
       modelSwitcher.setModel(info.snapshot);
-      setActiveWidget(null);
       close = () => {
         ws.close();
       };
@@ -76,7 +81,7 @@ export function Project() {
       closed = true;
       close();
     };
-  }, [id, setActiveWidget]);
+  }, [id]);
 
   const change = useCallback(
     (key: ProjectInfoKey, value: any) => {
