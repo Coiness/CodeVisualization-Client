@@ -1,13 +1,6 @@
 import { getLocationQuery, Subject } from "../../common/utils";
-import { WidgetRenderer } from "../../components/widget";
 import { cloneAction, Player, Video } from "../../core";
-import {
-  animateSpeed,
-  initVideoInfo,
-  initProjectInfo,
-  snapshot,
-  useStore,
-} from "../../store";
+import { animateSpeed, initVideoInfo, initProjectInfo } from "../../store";
 import "./index.css";
 import { Header } from "../../components/header";
 import * as videoAPI from "../../net/videoAPI";
@@ -24,7 +17,6 @@ import {
 } from "@ant-design/icons";
 import { Console } from "./Console";
 import { ShowCode } from "./ShowCode";
-import { info } from "console";
 import { MainCanvas } from "../../components/mainCanvas/MainCanvas";
 
 export type VideoInfo = {

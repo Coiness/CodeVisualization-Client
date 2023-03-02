@@ -1,15 +1,13 @@
 import { getLocationQuery } from "../../common/utils";
-import { WidgetRenderer } from "../../components/widget";
 import { actionIO, modelSwitcher } from "../../core";
-import { useUndo } from "../../core/undo";
-import { activeWidget, initProjectInfo, snapshot, useStore } from "../../store";
+import { activeWidget, initProjectInfo, useStore } from "../../store";
 import { ControlPanel } from "./controlPanel";
 import { WidgetPanel } from "./widgetPanel";
 import "./index.css";
 import { getInitSnapshot } from "../../common/const";
 import { Header } from "../../components/header";
 import * as projectAPI from "../../net/projectAPI";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { HeaderToolBar } from "./headerToolBar";
 import { ProjectInfo, ProjectInfoKey } from "./types";
 import { useLocation } from "react-router-dom";
@@ -56,10 +54,14 @@ export function Project() {
     (projectInfo && projectInfo?.name === "") ||
     (account !== null && projectInfo?.account === account);
   const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
+  const inited = useRef<boolean>(false);
 
   useEffect(() => {
-    setActiveWidget(null);
-  }, []);
+    if (!inited.current) {
+      inited.current = true;
+      setActiveWidget(null);
+    }
+  }, [inited, setActiveWidget]);
 
   useEffect(() => {
     let close: () => void = () => {};

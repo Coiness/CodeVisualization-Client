@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import {
   BaseModel,
   numberWidgetDefaultInfo,
-  WidgetType,
 } from "../../../components/widget/widgets";
 import { stringWidgetDefaultInfo } from "../../../components/widget/widgets/stringWidget";
 import { commitAction, WidgetRendererAction } from "../../../core";
