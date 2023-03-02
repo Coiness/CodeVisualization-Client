@@ -18,6 +18,7 @@ import {
 import { Console } from "./Console";
 import { ShowCode } from "./ShowCode";
 import { MainCanvas } from "../../components/mainCanvas/MainCanvas";
+import { cloneDeep } from "lodash";
 
 export type VideoInfo = {
   id: string;
@@ -29,7 +30,7 @@ export type VideoInfo = {
 
 async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
   if (id === null) {
-    let info = initVideoInfo.get();
+    let info = cloneDeep(initVideoInfo.get());
     return info;
   } else {
     let r = await videoAPI.getVideoInfo(id);
@@ -89,7 +90,6 @@ export function VideoPlay() {
       console.log("DEBUG: sub", name);
       nameRef.current = name;
       let newId = await save();
-      console.log("DEBUG: id", newId);
       if (newId) {
         navigate(`/videoPlay?id=${newId}`);
       }
