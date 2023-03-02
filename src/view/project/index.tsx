@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
 import { useAccount } from "../../components/header/userInfo";
 import { WidgetInfo } from "../../components/widget/widgets";
 import { createWS, WSType } from "../../net";
+import { MainCanvas } from "../../components/mainCanvas/MainCanvas";
 export * from "./types";
 
 function getProjectId(search: string) {
@@ -44,39 +45,6 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
       permission: p.permission,
     };
   }
-}
-
-function MainCanvas(props: { editable: boolean }) {
-  const [data] = useStore(snapshot);
-
-  useUndo(props.editable);
-
-  const [zoom, setZoom] = useState<number>(1);
-
-  function handelMouseWhell(e: any) {
-    if (e.deltaY > 0) {
-      if (zoom > 0.2) {
-        setZoom(zoom - 0.05);
-      }
-    } else {
-      if (zoom < 2) {
-        setZoom(zoom + 0.05);
-      }
-    }
-  }
-
-  return (
-    <div className="main" onWheel={handelMouseWhell}>
-      <div className="zoom" style={{ zoom }}>
-        {data && (
-          <WidgetRenderer
-            model={data.widgetManagerModel}
-            editable={props.editable}
-          ></WidgetRenderer>
-        )}
-      </div>
-    </div>
-  );
 }
 
 export function Project() {
@@ -135,7 +103,7 @@ export function Project() {
         ></Header>
         <div className="projectDSContent">
           {editable && <WidgetPanel></WidgetPanel>}
-          <MainCanvas editable={editable}></MainCanvas>
+          <MainCanvas className="main" editable={editable}></MainCanvas>
           {editable && <ControlPanel></ControlPanel>}
         </div>
       </div>

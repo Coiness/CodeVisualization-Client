@@ -25,6 +25,7 @@ import {
 import { Console } from "./Console";
 import { ShowCode } from "./ShowCode";
 import { info } from "console";
+import { MainCanvas } from "../../components/mainCanvas/MainCanvas";
 
 export type VideoInfo = {
   id: string;
@@ -144,7 +145,7 @@ export function VideoPlay() {
       <div className="videoPlayContent">
         <div className="middle">
           <div className="left">
-            <MainCanvas></MainCanvas>
+            <MainCanvas className={"mainCanvas"} editable={false}></MainCanvas>
           </div>
           <div className="right">
             {vInfo?.video.showCode && (
@@ -158,37 +159,6 @@ export function VideoPlay() {
           </div>
         </div>
         <Control></Control>
-      </div>
-    </div>
-  );
-}
-
-function MainCanvas() {
-  const [data] = useStore(snapshot);
-
-  const [zoom, setZoom] = useState<number>(1);
-
-  function handelMouseWhell(e: any) {
-    if (e.deltaY > 0) {
-      if (zoom > 0.2) {
-        setZoom(zoom - 0.05);
-      }
-    } else {
-      if (zoom < 2) {
-        setZoom(zoom + 0.05);
-      }
-    }
-  }
-
-  return (
-    <div className="mainCanvas" onWheel={handelMouseWhell}>
-      <div className="zoom" style={{ zoom }}>
-        {data && (
-          <WidgetRenderer
-            model={data.widgetManagerModel}
-            editable={false}
-          ></WidgetRenderer>
-        )}
       </div>
     </div>
   );
