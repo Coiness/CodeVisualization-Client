@@ -1,6 +1,7 @@
 import { Obj } from "../../../core";
 import { snapshot } from "../../../store";
 import { NumberWidgetControlPanel } from "./numberWidget";
+import { StackWidgetControlPanel } from "./stackWidget";
 import { StringWidgetControlPanel } from "./stringWidget";
 import { BaseModel, WidgetType } from "./type";
 
@@ -36,6 +37,8 @@ export function getWidgetControlPanel(type: WidgetType) {
     return NumberWidgetControlPanel;
   } else if (type === WidgetType.String) {
     return StringWidgetControlPanel;
+  } else if (type === WidgetType.Stack) {
+    return StackWidgetControlPanel;
   } else {
     throw new Error("get widget control panel: widget type error");
   }

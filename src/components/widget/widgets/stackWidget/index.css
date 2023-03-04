@@ -1,0 +1,9 @@
+.stackWidget {
+  position: relative;
+  height: 100%;
+  user-select: none;
+  box-sizing: border-box;
+  border: 2px solid rgb(255, 242, 213);
+  border: 3px solid rgb(236, 118, 0);
+  border-top: 0px;
+}

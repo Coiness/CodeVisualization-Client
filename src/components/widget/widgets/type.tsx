@@ -31,11 +31,13 @@ export interface IWidget {
 export enum WidgetType {
   Number = "Number",
   String = "String",
+  Stack = "Stack",
 }
 
 export const WidgetTypeNameMap = {
   [WidgetType.Number]: "数字",
   [WidgetType.String]: "字符串",
+  [WidgetType.Stack]: "栈",
 };
 
 export interface WidgetRenderProps {

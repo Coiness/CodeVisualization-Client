@@ -4,6 +4,7 @@ import {
   BaseModel,
   numberWidgetDefaultInfo,
 } from "../../../components/widget/widgets";
+import { stackWidgetDefaultInfo } from "../../../components/widget/widgets/stackWidget";
 import { stringWidgetDefaultInfo } from "../../../components/widget/widgets/stringWidget";
 import { commitAction, WidgetRendererAction } from "../../../core";
 import { snapshot } from "../../../store";
@@ -17,6 +18,7 @@ export interface WidgetDefaultInfo {
 const widgetDefaultInfos: WidgetDefaultInfo[] = [
   numberWidgetDefaultInfo,
   stringWidgetDefaultInfo,
+  stackWidgetDefaultInfo,
 ];
 
 export function WidgetPanel() {
