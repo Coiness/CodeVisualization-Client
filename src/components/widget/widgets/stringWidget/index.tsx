@@ -76,6 +76,10 @@ export class StringWidget implements IWidget {
     return this.value;
   };
 
+  toStringValue() {
+    return `"${this.value}"`;
+  }
+
   reverse = () => {
     if (this.value) {
       this.setValue(this.value?.split("").reverse().join(""));

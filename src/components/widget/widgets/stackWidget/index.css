@@ -7,3 +7,18 @@
   border: 3px solid rgb(236, 118, 0);
   border-top: 0px;
 }
+
+.stackWidget .value {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 100%;
+}
+
+.stackWidget .value .item {
+  flex: 1;
+  width: 100%;
+  height: 30px;
+}

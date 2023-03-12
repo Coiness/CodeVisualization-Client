@@ -1,7 +1,7 @@
 import "./incdec.css";
 import { Button } from "antd";
-import { activeWidget, useStore } from "../../../store";
-import { NumberWidget, WidgetType } from "../widgets";
+import { activeWidget, useStore } from "../../../../store";
+import { NumberWidget, WidgetType } from "../../widgets";
 
 export function IncDec() {
   const [activeWidgetValue] = useStore(activeWidget);

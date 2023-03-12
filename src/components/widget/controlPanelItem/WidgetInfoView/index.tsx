@@ -1,6 +1,6 @@
 import "./widgetInfo.css";
-import { activeWidget, useStore } from "../../../store";
-import { WidgetTypeNameMap } from "../widgets";
+import { activeWidget, useStore } from "../../../../store";
+import { WidgetTypeNameMap } from "../../widgets";
 
 export function WidgetInfoView() {
   const [activeWidgetValue] = useStore(activeWidget);

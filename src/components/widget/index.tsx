@@ -18,6 +18,10 @@ import { widgetActionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
 import { checkNil, linearAnimation } from "../../common/utils";
 import { message } from "antd";
+import {
+  needSelectWidget,
+  selectWidget,
+} from "./controlPanelItem/SelectWidget";
 
 export interface WidgetRendererModel extends CommonModel {
   widgets: WidgetModel[];
@@ -179,6 +183,10 @@ export function Widget(props: WidgetProps) {
       className="widget"
       onClick={() => {
         if (editable) {
+          if (needSelectWidget.get()) {
+            selectWidget.next(WidgetModel);
+            return;
+          }
           setActiveWidget({
             type: model.type,
             id: model.id,

@@ -62,7 +62,7 @@ export function commitAction(action: BaseAction) {
   // 应用其中的 cs
   const { cs } = action;
   execDo(cs);
-  // sendAction(action);
+  sendAction(action);
 }
 
 export function awaitAction(action: Action): Promise<boolean> {

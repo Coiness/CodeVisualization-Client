@@ -76,6 +76,10 @@ export class NumberWidget implements IWidget {
     return this.value;
   };
 
+  toStringValue() {
+    return `${this.value}`;
+  }
+
   inc = () => {
     if (this.value !== null) {
       this.setValue(this.value + 1);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function sleep(time: number) {
   return new Promise((resolve) => {
@@ -160,4 +160,28 @@ export function useReload() {
   return () => {
     setFlag(!flag);
   };
+}
+
+export function useDomPropertyListener(
+  dom: HTMLDivElement | null,
+  property: string
+): any {
+  const [value, setValue] = useState(null);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (dom === null) {
+        if (value !== null) {
+          setValue(null);
+        }
+      }
+      let v = (dom as any)[property];
+      if (v !== value) {
+        setValue(v);
+      }
+    }, 60);
+    return () => {
+      clearInterval(timer);
+    };
+  });
+  return value;
 }

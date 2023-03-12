@@ -25,6 +25,7 @@ export interface IWidget {
   setDiscard: (discard: () => void) => void;
   setValue: (value: unknown) => void;
   getValue: () => unknown;
+  toStringValue: () => string;
   value$: Subject<any>;
 }
 
