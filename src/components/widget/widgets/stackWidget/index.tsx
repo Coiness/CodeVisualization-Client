@@ -1,4 +1,4 @@
-import { listenModelChange } from "../..";
+import { listenModelChange, widgetModelManager } from "../..";
 import { cls, Subject, useDomPropertyListener } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
 import { ValueAction } from "../../../../core/action/ValueAction";
@@ -13,7 +13,7 @@ import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import "./index.css";
 
-type Value = IWidget[];
+type Value = WidgetModel[];
 
 export interface StackWidgetModel extends WidgetModel {
   value: Value;
@@ -47,6 +47,10 @@ export class StackWidget implements IWidget {
     this.init();
   }
 
+  getModel() {
+    return this.model;
+  }
+
   init = () => {
     this.closeListen = listenModelChange(this.model, (m) => {
       this.model = m as StackWidgetModel;
@@ -76,12 +80,12 @@ export class StackWidget implements IWidget {
     return this.value;
   };
 
-  push(w: IWidget) {
+  push(w: WidgetModel) {
     this.value.push(w);
     this.setValue([...this.value]);
   }
 
-  pop(): IWidget | null {
+  pop(): WidgetModel | null {
     if (this.value.length) {
       let res = this.value.pop()!;
       this.setValue([...this.value]);
@@ -108,11 +112,14 @@ export function StackWidgetRender(props: WidgetRenderProps) {
   const height =
     useDomPropertyListener(dom.current, "offsetHeight") ?? model.height;
   const count = Math.floor(height / 30);
+  const widgets = value.map((item: WidgetModel) => {
+    return widgetModelManager.getModel(item);
+  });
   const isLittle = count <= 2 && value.length > count;
   let list: (IWidget | null)[] = [];
-  list = [...value];
-  if (value.length > count) {
-    list.splice(1, value.length - count + 1, {
+  list = [...widgets];
+  if (widgets.length > count) {
+    list.splice(1, widgets.length - count + 1, {
       toStringValue: () => "...",
     } as IWidget);
   } else {

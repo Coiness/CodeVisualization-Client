@@ -5,7 +5,13 @@ import { ValueAction } from "../../../../core/action/ValueAction";
 import { snapshot } from "../../../../store";
 import { IncDec, ValueEdit, WidgetInfoView } from "../../controlPanelItem";
 import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
-import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
+import {
+  BaseModel,
+  IWidget,
+  WidgetModel,
+  WidgetRenderProps,
+  WidgetType,
+} from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import "./index.css";
 
@@ -41,6 +47,10 @@ export class NumberWidget implements IWidget {
     this.value$ = new Subject<Value>();
     this.model = model;
     this.init();
+  }
+
+  getModel() {
+    return this.model;
   }
 
   init = () => {

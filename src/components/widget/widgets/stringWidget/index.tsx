@@ -47,6 +47,10 @@ export class StringWidget implements IWidget {
     this.init();
   }
 
+  getModel() {
+    return this.model;
+  }
+
   init = () => {
     this.closeListen = listenModelChange(this.model, (m) => {
       this.model = m as StringWidgetModel;

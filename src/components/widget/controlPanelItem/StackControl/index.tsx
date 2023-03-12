@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import { useState } from "react";
+import { widgetModelManager } from "../..";
 import { activeWidget, useStore } from "../../../../store";
 import { Empty } from "../../../empty";
 import { IWidget, WidgetType } from "../../widgets";
@@ -40,7 +41,7 @@ export function StackControl() {
           style={{ width: "60px" }}
           onClick={() => {
             if (pushWidget !== null) {
-              widget.push(pushWidget);
+              widget.push(pushWidget.getModel());
               setPushWidget(null);
             }
           }}
@@ -58,7 +59,11 @@ export function StackControl() {
         <Button
           style={{ width: "60px" }}
           onClick={() => {
-            let w = widget.pop();
+            let m = widget.pop();
+            if (m === null) {
+              return;
+            }
+            let w = widgetModelManager.getModel(m);
             if (w !== null) {
               setPopWidget(w);
             }

@@ -26,6 +26,7 @@ export interface IWidget {
   setValue: (value: unknown) => void;
   getValue: () => unknown;
   toStringValue: () => string;
+  getModel: () => WidgetModel;
   value$: Subject<any>;
 }
 
