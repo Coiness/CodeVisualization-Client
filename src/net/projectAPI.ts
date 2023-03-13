@@ -16,6 +16,11 @@ export async function renameProject(id: string, name: string) {
   return r.flag;
 }
 
+export async function saveProject(id: string, snapshot: string) {
+  let r = await post("/project/save", { id, snapshot });
+  return r.flag;
+}
+
 export async function changeProjectPermission(id: string, permission: number) {
   let r = await post("/project/updatePermission", { id, permission });
   return r.flag;

@@ -1,6 +1,6 @@
 import "./index.css";
 import { ProjectInfo, ProjectInfoKey } from "../types";
-import { Button, Input, InputRef, Modal, Select } from "antd";
+import { Button, Input, InputRef, message, Modal, Select } from "antd";
 import { closeDialog, openDialog } from "../../dialogs/dialog";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Subject } from "../../../common/utils";
@@ -41,10 +41,22 @@ export function HeaderToolBar(props: {
     if (nameRef.current === "") {
       openDialog("setProjectName");
     } else {
-      return projectAPI.createProject(
-        nameRef.current,
-        JSON.stringify(info.snapshot)
-      );
+      if (info.id) {
+        let res = await projectAPI.saveProject(
+          info.id,
+          JSON.stringify(info.snapshot)
+        );
+        if (res) {
+          message.success("保存成功");
+        } else {
+          message.error("保存失败");
+        }
+      } else {
+        return projectAPI.createProject(
+          nameRef.current,
+          JSON.stringify(info.snapshot)
+        );
+      }
     }
   }
 
