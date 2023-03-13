@@ -63,7 +63,7 @@ export function StackControl() {
             if (m === null) {
               return;
             }
-            let w = widgetModelManager.getModel(m);
+            let w = widgetModelManager.getWidget(m);
             if (w !== null) {
               setPopWidget(w);
             }

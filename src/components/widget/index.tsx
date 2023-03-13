@@ -46,7 +46,7 @@ export class WidgetModelManager {
   constructor() {
     this.widgetModels = {};
   }
-  getModel(model: WidgetModel) {
+  getWidget(model: WidgetModel) {
     if (this.widgetModels.hasOwnProperty(model.id)) {
       return this.widgetModels[model.id];
     }
@@ -165,7 +165,7 @@ export function useWidgetAnimation(model: BaseModel) {
 
 export function Widget(props: WidgetProps) {
   const model = useModelChange(props.model);
-  const WidgetModel = widgetModelManager.getModel(model);
+  const WidgetModel = widgetModelManager.getWidget(model);
   const WidgetCompRender = WidgetRenderMap[model.type];
   const { x, y, width, height, color } = model;
   const [activeWidgetValue, setActiveWidget] =

@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { createOnlyId, Subject } from "../../common/utils";
-import { BaseModel, WidgetModel } from "../../components/widget/widgets";
+import { WidgetModel } from "../../components/widget/widgets";
 import { StackWidgetModel } from "../../components/widget/widgets/stackWidget";
 import { ChangeSet } from "../diff/objDiff";
 import { CSType, getCS } from "../undo";
@@ -66,7 +66,14 @@ export class StackAction extends BaseAction {
           newWidgetModel: newModel,
         },
       };
-      cs = getCS(model.value, [[model.value.length, newModel]], model);
+      cs = getCS(
+        model.value,
+        [
+          ["length", model.value.length + 1], // 改变数组长度
+          [model.value.length, newModel], // 再添加元素
+        ],
+        model
+      );
     } else if (type === "pop") {
       data = {
         id: model.id,
@@ -87,21 +94,20 @@ export class StackAction extends BaseAction {
   }
 
   async play() {
-    // const p: Promise<void> = new Promise((resolve) => {
-    //   this.stoped = false;
-    //   stackWidgetExecer.next({
-    //     action: this,
-    //     setStop: (s: () => void) => {
-    //       this.stoped = true;
-    //       this.stopFun = s;
-    //     },
-    //     end: () => {
-    //       resolve();
-    //     },
-    //   });
-    //   resolve();
-    // });
-    // return p;
+    const p: Promise<void> = new Promise((resolve) => {
+      this.stoped = false;
+      stackWidgetExecer.next({
+        action: this,
+        setStop: (s: () => void) => {
+          this.stoped = true;
+          this.stopFun = s;
+        },
+        end: () => {
+          resolve();
+        },
+      });
+    });
+    return p;
   }
 
   stop() {

@@ -20,6 +20,7 @@
 
 .widgetContainer {
   width: 100px;
+  background-color: rgba(190, 235, 255, 0.3);
   cursor: pointer;
 }
 

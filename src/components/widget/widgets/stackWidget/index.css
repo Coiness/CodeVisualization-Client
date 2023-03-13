@@ -9,6 +9,8 @@
 }
 
 .stackWidget .value {
+  position: relative;
+
   display: flex;
   flex-flow: column-reverse nowrap;
   justify-content: flex-start;
