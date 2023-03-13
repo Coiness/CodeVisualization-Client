@@ -87,28 +87,28 @@ export class StackAction extends BaseAction {
   }
 
   async play() {
-    const p: Promise<void> = new Promise((resolve) => {
-      this.stoped = false;
-      stackWidgetExecer.next({
-        action: this,
-        setStop: (s: () => void) => {
-          this.stoped = true;
-          this.stopFun = s;
-        },
-        end: () => {
-          resolve();
-        },
-      });
-      resolve();
-    });
-    return p;
+    // const p: Promise<void> = new Promise((resolve) => {
+    //   this.stoped = false;
+    //   stackWidgetExecer.next({
+    //     action: this,
+    //     setStop: (s: () => void) => {
+    //       this.stoped = true;
+    //       this.stopFun = s;
+    //     },
+    //     end: () => {
+    //       resolve();
+    //     },
+    //   });
+    //   resolve();
+    // });
+    // return p;
   }
 
   stop() {
-    if (!this.stoped) {
-      this.stoped = true;
-      this.commit();
-    }
-    this.stopFun();
+    // if (!this.stoped) {
+    //   this.stoped = true;
+    //   this.commit();
+    // }
+    // this.stopFun();
   }
 }

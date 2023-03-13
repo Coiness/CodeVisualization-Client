@@ -1,4 +1,5 @@
 import { BaseAction } from "./baseAction";
+import { StackAction } from "./StackAction";
 import { ValueAction } from "./ValueAction";
 import { WidgetAction } from "./WidgetAction";
 import { WidgetRendererAction } from "./WidgetRendererAction";
@@ -15,6 +16,8 @@ export function cloneAction(action: BaseAction): BaseAction {
     return new WidgetAction(action.data as any, action.cs);
   } else if (action.type === "WidgetRenderer") {
     return new WidgetRendererAction(action.data as any, action.cs);
+  } else if (action.type === "Stack") {
+    return new StackAction(action.data as any, action.cs);
   } else {
     throw new Error("clone action: action type error");
   }

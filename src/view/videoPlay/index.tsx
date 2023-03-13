@@ -6,7 +6,7 @@ import { Header } from "../../components/header";
 import * as videoAPI from "../../net/videoAPI";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Input, InputRef, Modal, Select, Slider } from "antd";
+import { Button, Input, InputRef, message, Modal, Select, Slider } from "antd";
 import { closeDialog, openDialog } from "../dialogs/dialog";
 import {
   BackwardOutlined,
@@ -170,9 +170,11 @@ function Control() {
     if (autoPlay) {
       let t = setInterval(() => {
         if (progress === player.getStepCount()) {
+          message.info("录像已经播放结束了！");
           setAutoPlay(false);
+        } else {
+          player.next();
         }
-        player.next();
       }, 400 / animateSpeed.get());
       return () => {
         clearInterval(t);
