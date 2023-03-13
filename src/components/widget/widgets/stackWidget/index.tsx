@@ -128,7 +128,7 @@ export function StackWidgetRender(props: WidgetRenderProps) {
   const isLittle = count <= 2 && value.length > count;
   useStackActionAnimation(
     model,
-    dom.current?.querySelector(".value") ?? null,
+    () => (dom.current?.children[0] as HTMLDivElement) ?? null,
     height
   );
   let list: (IWidget | null)[] = [];
@@ -137,10 +137,6 @@ export function StackWidgetRender(props: WidgetRenderProps) {
     list.splice(1, widgets.length - count + 1, {
       toStringValue: () => "...",
     } as IWidget);
-  } else {
-    while (list.length < count) {
-      list.push(null);
-    }
   }
 
   return (
