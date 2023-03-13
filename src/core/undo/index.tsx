@@ -97,6 +97,10 @@ export function execRedo() {
   }
 }
 
+export enum CSType {
+  DELETE = "DELETE",
+}
+
 export function getCS(
   target: any,
   change: [attr: string | number, value: any][],
@@ -114,7 +118,9 @@ export function getCS(
     } else {
       p = `${path}.${attr}`;
     }
-    if (target.hasOwnProperty(attr)) {
+    if (target.hasOwnProperty(attr) && value === CSType.DELETE) {
+      cs.push({ modelPath: mp, t: "d", p, c: [target[attr]] });
+    } else if (target.hasOwnProperty(attr)) {
       cs.push({ modelPath: mp, t: "u", p, c: [target[attr], value] });
     } else {
       cs.push({ modelPath: mp, t: "c", p, c: [value] });

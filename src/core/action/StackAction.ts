@@ -1,29 +1,33 @@
-import { Subject } from "../../common/utils";
+import { cloneDeep } from "lodash";
+import { createOnlyId, Subject } from "../../common/utils";
 import { BaseModel, WidgetModel } from "../../components/widget/widgets";
+import { StackWidgetModel } from "../../components/widget/widgets/stackWidget";
 import { ChangeSet } from "../diff/objDiff";
-import { getCS } from "../undo";
+import { CSType, getCS } from "../undo";
 import { BaseAction } from "./baseAction";
 
 export type StackActionData =
   | {
       id: string;
-    } & (
-      | {
-          type: "push";
-          info: {
-            fromWidgetId: string;
-            newWidgetModel: WidgetModel;
-          };
-        }
-      | {
-          type: "pop";
-          change: { value: unknown };
-        }
-    );
+      type: "push";
+      info: {
+        fromWidgetId: string;
+        newWidgetModel: WidgetModel;
+      };
+    }
+  | {
+      id: string;
+      type: "pop";
+    };
 
-type CreateStackActionParams = {
-  value: unknown;
-};
+export type CreateStackActionParams =
+  | {
+      type: "push";
+      info: { fromWidgetModel: WidgetModel };
+    }
+  | {
+      type: "pop";
+    };
 
 interface StackWidgetExecerParams {
   action: StackAction;
@@ -41,15 +45,45 @@ export class StackAction extends BaseAction {
     super(data, cs, "Stack");
   }
 
-  static create(model: BaseModel, params: CreateStackActionParams) {
-    const { value } = params;
-    const data = {
-      id: model.id,
-      type: "assignment",
-      change: { value },
-    };
-    let cs = getCS(model, [["value", value]]);
-    return new StackAction(data as StackActionData, cs);
+  static create(model: StackWidgetModel, params: CreateStackActionParams) {
+    const { type } = params;
+    let data: StackActionData;
+    let cs: ChangeSet;
+
+    if (type === "push") {
+      const info = params.info;
+      const newModel = cloneDeep(info.fromWidgetModel);
+
+      newModel.id = createOnlyId("widget");
+      newModel.x = 0;
+      newModel.y = 0;
+
+      data = {
+        id: model.id,
+        type: "push",
+        info: {
+          fromWidgetId: info.fromWidgetModel.id,
+          newWidgetModel: newModel,
+        },
+      };
+      cs = getCS(model.value, [[model.value.length, newModel]], model);
+    } else if (type === "pop") {
+      data = {
+        id: model.id,
+        type: "pop",
+      };
+      cs = getCS(
+        model.value,
+        [
+          [model.value.length - 1, CSType.DELETE], // 先删除元素
+          ["length", model.value.length - 1], // 再改变数组长度
+        ],
+        model
+      );
+    } else {
+      throw new Error("Stack Action: params.type error");
+    }
+    return new StackAction(data, cs);
   }
 
   async play() {

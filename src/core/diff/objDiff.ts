@@ -72,6 +72,7 @@ function getInvertedChangeSet(cs: ChangeSet) {
       change.c[1] = temp;
     }
   });
+  cs.reverse(); // CS 中可能会有先后依赖关系，所以获取反向 CS 后需要将其反转
   return cs;
 }
 

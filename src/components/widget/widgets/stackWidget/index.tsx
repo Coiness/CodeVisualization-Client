@@ -1,6 +1,7 @@
 import { listenModelChange, widgetModelManager } from "../..";
 import { cls, Subject, useDomPropertyListener } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
+import { StackAction } from "../../../../core/action/StackAction";
 import { ValueAction } from "../../../../core/action/ValueAction";
 import { snapshot } from "../../../../store";
 import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
@@ -80,15 +81,23 @@ export class StackWidget implements IWidget {
     return this.value;
   };
 
-  push(w: WidgetModel) {
-    this.value.push(w);
-    this.setValue([...this.value]);
+  push(m: WidgetModel) {
+    const action = StackAction.create(this.model, {
+      type: "push",
+      info: {
+        fromWidgetModel: m,
+      },
+    });
+    commitAction(action);
   }
 
   pop(): WidgetModel | null {
     if (this.value.length) {
-      let res = this.value.pop()!;
-      this.setValue([...this.value]);
+      let res = this.value[this.value.length - 1];
+      const action = StackAction.create(this.model, {
+        type: "pop",
+      });
+      commitAction(action);
       return res;
     } else {
       return null;
@@ -138,9 +147,9 @@ export function StackWidgetRender(props: WidgetRenderProps) {
       )}
       {!isLittle && (
         <div className="value">
-          {list.map((item) => {
+          {list.map((item, index) => {
             return (
-              <div className="item">
+              <div className="item" key={index}>
                 {item && <WidgetContainer widget={item}></WidgetContainer>}
               </div>
             );

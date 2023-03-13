@@ -50,7 +50,6 @@ export class WidgetModelManager {
     if (this.widgetModels.hasOwnProperty(model.id)) {
       return this.widgetModels[model.id];
     }
-
     const widgetModel = WidgetMap[model.type](model);
     this.widgetModels[model.id] = widgetModel;
     widgetModel.setDiscard(() => {
