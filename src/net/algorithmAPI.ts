@@ -16,6 +16,11 @@ export async function renameAlgorithm(id: string, name: string) {
   return r.flag;
 }
 
+export async function saveAlgorithm(id: string, content: string) {
+  let r = await post("/algorithm/save", { id, content });
+  return r.flag;
+}
+
 export async function changeAlgorithmPermission(
   id: string,
   permission: number

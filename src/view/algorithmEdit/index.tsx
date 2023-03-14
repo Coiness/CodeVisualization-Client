@@ -1,6 +1,6 @@
 import "./index.css";
 import { Header } from "../../components/header";
-import { Button, Input, InputRef, Modal, Select } from "antd";
+import { Button, Input, InputRef, message, Modal, Select } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useCodeEditor } from "./Editor";
 import { closeDialog, openDialog } from "../dialogs/dialog";
@@ -94,7 +94,23 @@ export function AlgorithmEdit() {
   useEffect(load, [id, load]);
 
   async function save(): Promise<string | null> {
-    if (nameRef.current === "") {
+    if (alInfo?.id) {
+      const content = {
+        showCode: showCodeEnable ? getCode1() : null,
+        runCode: getCode2(),
+        inputList: inputEnable ? getInputListData() : undefined,
+      };
+      let flag = await algorithmAPI.saveAlgorithm(
+        alInfo.id,
+        JSON.stringify(content)
+      );
+      if (flag) {
+        message.success("保存成功");
+      } else {
+        message.success("保存失败");
+      }
+      return alInfo.id;
+    } else if (nameRef.current === "") {
       openDialog("setAlgorithmName");
       return null;
     } else {
