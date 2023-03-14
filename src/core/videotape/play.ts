@@ -1,4 +1,5 @@
 import { message } from "antd";
+import { cloneDeep } from "lodash";
 import { Subject } from "../../common/utils";
 import { Snapshot } from "../../view/project";
 import { commitUndo } from "../action";
@@ -16,6 +17,7 @@ export class Player {
   progress = new Subject<number>();
 
   start(video: Video) {
+    video = cloneDeep(video);
     this.snapshot = video.snapshot;
     this.steps = video.steps;
     this.consoles = video.consoles;
