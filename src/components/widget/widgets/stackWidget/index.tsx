@@ -169,7 +169,6 @@ export function StackWidgetControlPanel() {
   return (
     <div className="stackControlPanel">
       <WidgetInfoView></WidgetInfoView>
-      <ValueEdit></ValueEdit>
       <StackControl></StackControl>
     </div>
   );

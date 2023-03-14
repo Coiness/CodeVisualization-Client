@@ -30,5 +30,9 @@ export function SelectWidget(props: { setWidget: (widget: IWidget) => void }) {
     return sub.unsubscribe;
   }, [props.setWidget]);
 
-  return <Button onClick={select}>选择元素</Button>;
+  return (
+    <Button onClick={select} style={{ width: "100%" }}>
+      选择元素
+    </Button>
+  );
 }

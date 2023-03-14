@@ -48,12 +48,14 @@ export function StackControl() {
         >
           push
         </Button>
-        {pushWidget !== null && (
-          <WidgetContainer widget={pushWidget}></WidgetContainer>
-        )}
-        {pushWidget === null && (
-          <SelectWidget setWidget={setPushWidget}></SelectWidget>
-        )}
+        <div className="right">
+          {pushWidget !== null && (
+            <WidgetContainer widget={pushWidget}></WidgetContainer>
+          )}
+          {pushWidget === null && (
+            <SelectWidget setWidget={setPushWidget}></SelectWidget>
+          )}
+        </div>
       </div>
       <div className="pop">
         <Button
@@ -71,7 +73,9 @@ export function StackControl() {
         >
           pop
         </Button>
-        <WidgetContainer widget={popWidget}></WidgetContainer>
+        <div className="right">
+          <WidgetContainer widget={popWidget}></WidgetContainer>
+        </div>
       </div>
       {/* <Button
         onClick={() => {

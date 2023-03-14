@@ -11,6 +11,10 @@
   justify-content: space-between;
 }
 
+.stackControl .push .right {
+  width: 100px;
+}
+
 .stackControl .pop {
   display: flex;
   flex-flow: row nowrap;
@@ -18,8 +22,12 @@
   margin-top: 10px;
 }
 
-.widgetContainer {
+.stackControl .pop .right {
   width: 100px;
+}
+
+.widgetContainer {
+  width: 100%;
   background-color: rgba(190, 235, 255, 0.3);
   cursor: pointer;
 }

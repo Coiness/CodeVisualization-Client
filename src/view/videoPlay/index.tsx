@@ -217,7 +217,7 @@ function Control() {
           <Slider
             defaultValue={speed}
             max={5}
-            min={0.5}
+            min={0.1}
             step={0.1}
             onChange={(v) => setSpeed(v)}
             disabled={autoPlay}

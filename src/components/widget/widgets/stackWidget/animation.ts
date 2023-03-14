@@ -6,6 +6,7 @@ import {
   StackActionData,
   stackWidgetExecer,
 } from "../../../../core/action/StackAction";
+import { animateSpeed } from "../../../../store";
 import { WidgetModel } from "../type";
 
 export function useStackActionAnimation(
@@ -54,7 +55,7 @@ export function useStackActionAnimation(
                   },
                 ],
               },
-              400,
+              200 / animateSpeed.get(),
               () => {
                 div.remove();
                 params.end();
@@ -78,7 +79,7 @@ export function useStackActionAnimation(
                     },
                   ],
                 },
-                400,
+                200 / animateSpeed.get(),
                 () => {
                   div.remove();
                   params.end();
@@ -87,25 +88,6 @@ export function useStackActionAnimation(
             } else {
               // 去过空间个数大于 2
               // 则在入口处创建一个 dom 元素，然后给省略号上方所有 dom 元素添加一个向下的线性移动动画
-              div.style.top = "-30px";
-              dom()!.appendChild(div);
-              linearAnimation(
-                div,
-                {
-                  top: [
-                    -30,
-                    0,
-                    (now: number) => {
-                      return `${now}px`;
-                    },
-                  ],
-                },
-                400,
-                () => {
-                  div.remove();
-                  params.end();
-                }
-              );
               for (let i = 2; i < dom()!.children.length; i++) {
                 linearAnimation(
                   dom()!.children[i] as HTMLElement,
@@ -118,13 +100,33 @@ export function useStackActionAnimation(
                       },
                     ],
                   },
-                  400,
+                  200 / animateSpeed.get(),
                   () => {
                     (dom()!.children[i] as HTMLElement).style.transform =
                       "translate(0px , 0px)";
                   }
                 );
               }
+              div.style.bottom = `${(count - 1) * 30}px`;
+              div.style.transform = "translate(0, -30px)";
+              dom()!.appendChild(div);
+              linearAnimation(
+                div,
+                {
+                  transform: [
+                    -30,
+                    0,
+                    (now: number) => {
+                      return `translate(0px, ${now}px)`;
+                    },
+                  ],
+                },
+                200 / animateSpeed.get(),
+                () => {
+                  div.remove();
+                  params.end();
+                }
+              );
             }
           }
         } else {
@@ -143,7 +145,7 @@ export function useStackActionAnimation(
                   },
                 ],
               },
-              400,
+              200 / animateSpeed.get(),
               () => {
                 params.end();
               }
@@ -175,7 +177,7 @@ export function useStackActionAnimation(
                     },
                   ],
                 },
-                400,
+                200 / animateSpeed.get(),
                 () => {
                   div.remove();
                   params.end();
@@ -196,7 +198,7 @@ export function useStackActionAnimation(
                     },
                   ],
                 },
-                400,
+                200 / animateSpeed.get(),
                 () => {
                   div.remove();
                   params.end();
@@ -216,7 +218,7 @@ export function useStackActionAnimation(
                       },
                     ],
                   },
-                  400,
+                  200 / animateSpeed.get(),
                   () => {
                     ch.style.transform = "translate(0px , 0px)";
                   }
