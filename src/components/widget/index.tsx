@@ -234,8 +234,7 @@ export function Widget(props: WidgetProps) {
 export function WidgetRenderer(props: WidgetRendererProps) {
   const model = useModelChange(props.model);
   const { widgets, width, height, color } = model;
-  const [activeWidgetValue, setActiveWidget] =
-    useStore<WidgetInfo>(activeWidget);
+  const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
   useEffect(() => {
     if (!props.editable) {
       setActiveWidget(null);

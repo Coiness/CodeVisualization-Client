@@ -31,7 +31,10 @@ export class WidgetRendererAction extends BaseAction {
     };
     let cs = getCS(
       widgetManagerModel.widgets,
-      [[widgetManagerModel.widgets.length, model]],
+      [
+        ["length", widgetManagerModel.widgets.length + 1],
+        [widgetManagerModel.widgets.length, model],
+      ],
       widgetManagerModel
     );
     return new WidgetRendererAction(data, cs);

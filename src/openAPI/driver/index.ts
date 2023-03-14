@@ -1,8 +1,10 @@
 import { cloneDeep } from "lodash";
 import { API } from "..";
+import { Subject, Subscription } from "../../common/utils";
 import { InputContent } from "../../components/inputList";
-import { modelSwitcher, Video } from "../../core";
+import { actionCommitter, modelSwitcher, Video } from "../../core";
 import { initVideoInfo } from "../../store";
+import { actions } from "../common/actions";
 import { defaultSnapshot } from "../common/snapshot";
 
 // API 驱动
@@ -11,6 +13,7 @@ export class APIDriver {
   r: (value: unknown) => void = () => {};
   initData: { [key: string]: string } | undefined = undefined;
   showCode: string | null = null;
+  sub: Subscription | null = null;
 
   start(
     code: string,
@@ -18,6 +21,9 @@ export class APIDriver {
     initData?: InputContent[]
   ): Promise<unknown> {
     modelSwitcher.pushModel(cloneDeep(defaultSnapshot));
+    this.sub = actionCommitter.subscribe((action) => {
+      actions.push(action);
+    });
     this.initData = {};
     initData?.forEach((item) => {
       if (this.initData) {
@@ -40,6 +46,7 @@ export class APIDriver {
     return res;
   }
   end(v: Video) {
+    this.sub?.unsubscribe();
     modelSwitcher.popModel();
     v.showCode = this.showCode;
 

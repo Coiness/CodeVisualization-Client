@@ -1,4 +1,8 @@
-import { getModelById, WidgetType } from "../../components/widget/widgets";
+import {
+  BaseModel,
+  getModelById,
+  WidgetType,
+} from "../../components/widget/widgets";
 import {
   BaseAction,
   commitAction,
@@ -8,6 +12,7 @@ import {
 import { actions } from "../common/actions";
 import { AnimationApi } from "./types";
 import {
+  BaseWidget,
   BaseWidgetType,
   MoveWidgetParams,
   ResizeWidgetParams,
@@ -15,6 +20,12 @@ import {
 import { AddNumberWidgetParams } from "./types/widget/Number";
 import { AddStringWidgetParams } from "./types/widget/String";
 import { snapshot } from "../../store";
+import { AddStackWidgetParams } from "./types/widget/Stack";
+import { widgetModelManager } from "../../components/widget";
+import { StackWidget } from "../../components/widget/widgets/stackWidget";
+
+const modelKey = Symbol("modelKey");
+const widgets: { [key: string]: BaseWidget } = {};
 
 export const animationApi: AnimationApi = {
   addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]) {
@@ -23,6 +34,7 @@ export const animationApi: AnimationApi = {
       throw new Error("animation api addWidget: snapshot is null");
     }
     let action: BaseAction | null = null;
+    let info: { [ket: string]: any };
     if (params.type === "number") {
       const p = params as AddNumberWidgetParams;
       action = WidgetRendererAction.create(s.widgetManagerModel, {
@@ -37,6 +49,9 @@ export const animationApi: AnimationApi = {
           value: p.numberValue,
         },
       });
+      info = {
+        value: p.numberValue,
+      };
     } else if (params.type === "string") {
       const p = params as AddStringWidgetParams;
       action = WidgetRendererAction.create(s.widgetManagerModel, {
@@ -51,16 +66,56 @@ export const animationApi: AnimationApi = {
           value: p.stringValue,
         },
       });
+      info = {
+        value: p.stringValue,
+      };
+    } else if (params.type === "stack") {
+      const p = params as AddStackWidgetParams;
+      action = WidgetRendererAction.create(s.widgetManagerModel, {
+        model: {
+          id: "",
+          type: WidgetType.Stack,
+          x: p.x,
+          y: p.y,
+          width: p.width ?? 100,
+          height: p.height ?? 400,
+          color: p.color ?? "rgb(255, 242, 213)",
+          value: [],
+        },
+      });
+      const id = (action!.data as any).model.id;
+      info = {
+        size() {
+          return (action!.data as any).model.value.length;
+        },
+        push(widget: BaseWidget) {
+          const model = getModelById(id)!;
+          const stack = widgetModelManager.getWidget(model) as StackWidget;
+          stack.push((widget as any)[modelKey] as BaseModel);
+        },
+        pop(): BaseWidget | null {
+          const model = getModelById(id)!;
+          const stack = widgetModelManager.getWidget(model) as StackWidget;
+          const m = stack.pop();
+          if (m) {
+            return widgets[m.id];
+          }
+          return null;
+        },
+      };
     } else {
       throw new Error("animationApi addWidget: params.type illegal");
     }
     if (action !== null) {
-      actions.push(action);
       commitAction(action);
-      return {
-        id: (action.data as any).model.id,
-        value: (action.data as any).model.value,
+      const id = (action.data as any).model.id;
+      const res = {
+        id,
+        [modelKey]: (action.data as any).model,
+        ...info,
       } as T["addWidgetResult"];
+      widgets[id] = res;
+      return res;
     }
     return {} as T["addWidgetResult"];
   },
@@ -78,7 +133,6 @@ export const animationApi: AnimationApi = {
         y: params.y,
       },
     });
-    actions.push(action);
     commitAction(action);
   },
 
@@ -95,7 +149,6 @@ export const animationApi: AnimationApi = {
         h: params.height,
       },
     });
-    actions.push(action);
     commitAction(action);
   },
 };
