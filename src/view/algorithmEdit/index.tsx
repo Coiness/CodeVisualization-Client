@@ -14,6 +14,7 @@ import {
   useInputList,
 } from "../../components/inputList";
 import { InfoEditDialogParams } from "../../components/infoEdit";
+import { getAccount } from "../../net/token";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
 
@@ -79,6 +80,7 @@ export function AlgorithmEdit() {
   const location = useLocation();
   const id = getLocationQuery("id", location.search);
   const nameRef = useRef<string>(alInfo?.name ?? "");
+  const editable = !alInfo?.id || alInfo?.account === getAccount();
 
   const load = useCallback(() => {
     getAlInfo(id).then((info: AlgorithmInfo) => {
@@ -213,6 +215,7 @@ export function AlgorithmEdit() {
                   onClick={() => {
                     openDialog("infoEditDialog", {
                       initText: alInfo.descrition,
+                      editable: editable,
                       callback: async (str: string) => {
                         let flag = await algorithmAPI.updateAlgorithmDescrition(
                           alInfo.id,
@@ -231,7 +234,7 @@ export function AlgorithmEdit() {
                     } as InfoEditDialogParams);
                   }}
                 >
-                  编辑算法说明
+                  {editable ? "编辑" : "查看"}算法说明
                 </Button>
               )}
             </div>

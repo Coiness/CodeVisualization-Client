@@ -100,6 +100,7 @@ export function HeaderToolBar(props: {
           onClick={() => {
             openDialog("infoEditDialog", {
               initText: info.descrition,
+              editable: editable,
               callback: async (str: string) => {
                 let flag = await projectAPI.updateProjectDescrition(
                   info.id,
@@ -115,7 +116,7 @@ export function HeaderToolBar(props: {
             } as InfoEditDialogParams);
           }}
         >
-          编辑演示说明
+          {editable ? "编辑" : "查看"}演示说明
         </Button>
       )}
       <div className="blank"></div>

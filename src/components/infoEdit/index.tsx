@@ -1,12 +1,20 @@
 import { Button, Modal } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { closeDialog } from "../../view/dialogs/dialog";
 import SimpleMDE from "react-simplemde-editor";
+import showdown from "showdown";
 import "easymde/dist/easymde.min.css";
 import "./index.css";
 
+let converter = new showdown.Converter();
+
+function customMarkdownParser(text: string): string {
+  return converter.makeHtml(text);
+}
+
 export interface InfoEditDialogParams {
   initText: string;
+  editable: boolean;
   callback: (str: string) => void;
 }
 
@@ -19,18 +27,19 @@ export function InfoEditDialog(visible: boolean, params: InfoEditDialogParams) {
     return <></>;
   }
 
-  const { initText, callback } = params;
+  const { initText, callback, editable } = params;
   return (
     <Modal
       open={visible}
       maskClosable={true}
       onCancel={closePanel}
       footer={null}
-      width={400}
+      width={500}
       closable={false}
     >
       <InfoEdit
         text={initText}
+        editable={editable}
         onSave={(text: string) => {
           callback(text);
           closePanel();
@@ -42,49 +51,76 @@ export function InfoEditDialog(visible: boolean, params: InfoEditDialogParams) {
 
 export interface InfoEditParams {
   text: string;
+  editable: boolean;
   onSave: (text: string) => void;
 }
 
 export function InfoEdit(params: InfoEditParams) {
-  const { Comp, setText, getText } = useMarkDownEdit();
+  const { text, editable, onSave } = params;
+  const { Comp, setText, getText } = useMarkDownEdit(editable);
+  const inited = useRef<boolean>(false);
 
   useEffect(() => {
-    setText(params.text);
-  }, [params.text, setText, params]);
+    if (!inited.current) {
+      setText(text);
+      inited.current = true;
+    }
+  }, [text, setText]);
 
   return (
     <div className="infoEdit">
       <div className="editer">{Comp}</div>
-      <div className="save">
-        <Button
-          onClick={() => {
-            params.onSave(getText());
-          }}
-        >
-          保存
-        </Button>
-      </div>
+      {editable && (
+        <div className="save">
+          <Button
+            onClick={() => {
+              onSave(getText());
+            }}
+          >
+            保存
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
 
-export function useMarkDownEdit() {
+export function useMarkDownEdit(editable: boolean) {
   const [value, setValue] = useState<string>("");
 
-  function setText(str: string) {
-    setValue(str);
-  }
+  const setText = useCallback(
+    (str: string) => {
+      setValue(str);
+    },
+    [setValue]
+  );
 
-  function getText(): string {
+  const getText = useCallback(() => {
     return value;
-  }
+  }, [value]);
+
+  const options = useMemo(() => {
+    return {
+      autofocus: true,
+      spellChecker: false,
+      previewRender(text) {
+        return customMarkdownParser(text);
+      },
+    } as EasyMDE.Options;
+  }, []);
 
   return {
     Comp: (
       <SimpleMDE
         value={value}
+        options={options}
         onChange={(v: string) => {
           setValue(v);
+        }}
+        getMdeInstance={(mde: any) => {
+          if (!editable) {
+            mde.togglePreview();
+          }
         }}
       ></SimpleMDE>
     ),

@@ -20,6 +20,7 @@ import { ShowCode } from "./ShowCode";
 import { MainCanvas } from "../../components/mainCanvas/MainCanvas";
 import { cloneDeep } from "lodash";
 import { InfoEditDialogParams } from "../../components/infoEdit";
+import { getAccount } from "../../net/token";
 
 export type VideoInfo = {
   id: string;
@@ -61,6 +62,7 @@ export function VideoPlay() {
   const [vInfo, setInfo] = useState<VideoInfo | null>(null);
   const nameRef = useRef<string>(vInfo?.name ?? "");
   const navigate = useNavigate();
+  const editable = !vInfo?.id || vInfo.account === getAccount();
 
   useEffect(() => {
     getVideoInfo(id).then((info) => {
@@ -136,6 +138,7 @@ export function VideoPlay() {
                   onClick={() => {
                     openDialog("infoEditDialog", {
                       initText: vInfo.descrition,
+                      editable: editable,
                       callback: async (str: string) => {
                         let flag = await videoAPI.updateVideoDescrition(
                           vInfo.id,
@@ -154,7 +157,7 @@ export function VideoPlay() {
                     } as InfoEditDialogParams);
                   }}
                 >
-                  编辑录像说明
+                  {editable ? "编辑" : "查看"}录像说明
                 </Button>
               )}
             </div>
