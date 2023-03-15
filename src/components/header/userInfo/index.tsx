@@ -44,19 +44,21 @@ export function UserInfo() {
   const [img, setImg] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  if (account === null) {
-    if (name !== null || img !== null) {
-      setName(null);
-      setImg(null);
+  useEffect(() => {
+    if (account === null) {
+      if (name !== null || img !== null) {
+        setName(null);
+        setImg(null);
+      }
+    } else {
+      if (name === null || img === null) {
+        getUserInfo(account).then((info: UserInfoData) => {
+          setName(info.username);
+          setImg(info.img);
+        });
+      }
     }
-  } else {
-    if (name === null || img === null) {
-      getUserInfo(account).then((info: UserInfoData) => {
-        setName(info.username);
-        setImg(info.img);
-      });
-    }
-  }
+  }, [setName, setImg, account, img, name]);
 
   function openLoginDialog() {
     openDialog("login");

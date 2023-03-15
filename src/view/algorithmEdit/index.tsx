@@ -297,8 +297,9 @@ export function SetAlgorithmNameDialog(visible: boolean) {
     const name = inp?.current?.input?.value;
     if (name) {
       setAlgorithmName.next(name);
+      closePanel();
     }
-  }, []);
+  }, [closePanel]);
 
   return (
     <Modal

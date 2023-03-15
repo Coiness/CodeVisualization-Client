@@ -186,8 +186,9 @@ export function SetProjectNameDialog(visible: boolean) {
     const name = inp?.current?.input?.value;
     if (name) {
       setProjectName.next(name);
+      closePanel();
     }
-  }, []);
+  }, [closePanel]);
 
   return (
     <Modal

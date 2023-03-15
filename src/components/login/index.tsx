@@ -17,13 +17,22 @@ export function Login(visible: boolean) {
       footer={null}
       width={400}
     >
-      <LoginPanel></LoginPanel>
+      <LoginPanel
+        onSuccess={() => {
+          closePanel();
+        }}
+      ></LoginPanel>
     </Modal>
   );
 }
 
-function LoginPanel() {
+interface LoginPanelParams {
+  onSuccess: () => void;
+}
+
+function LoginPanel(params: LoginPanelParams) {
   const [model, setModel] = useState<"login" | "register">("login");
+  const { onSuccess } = params;
 
   const loginAccount = useRef<InputRef | null>(null);
   const loginPwd = useRef<InputRef | null>(null);
@@ -40,6 +49,7 @@ function LoginPanel() {
     let res = await login(account, pwd);
     if (res) {
       message.success("登录成功");
+      onSuccess();
     } else {
       message.error("登录失败");
     }
@@ -67,6 +77,7 @@ function LoginPanel() {
     let res = await register(account, pwd);
     if (res) {
       message.success("注册成功");
+      setModel("login");
     } else {
       message.error("注册失败");
     }
