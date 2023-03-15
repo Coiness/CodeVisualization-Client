@@ -5,13 +5,7 @@ import { ValueAction } from "../../../../core/action/ValueAction";
 import { snapshot } from "../../../../store";
 import { IncDec, ValueEdit, WidgetInfoView } from "../../controlPanelItem";
 import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
-import {
-  BaseModel,
-  IWidget,
-  WidgetModel,
-  WidgetRenderProps,
-  WidgetType,
-} from "../type";
+import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import "./index.css";
 

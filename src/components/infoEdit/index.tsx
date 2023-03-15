@@ -1,5 +1,5 @@
 import { Button, Modal } from "antd";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { closeDialog } from "../../view/dialogs/dialog";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
@@ -50,7 +50,7 @@ export function InfoEdit(params: InfoEditParams) {
 
   useEffect(() => {
     setText(params.text);
-  }, [params.text]);
+  }, [params.text, setText, params]);
 
   return (
     <div className="infoEdit">

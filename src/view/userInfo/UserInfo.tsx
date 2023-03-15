@@ -124,9 +124,11 @@ function Content() {
           ></Menu>
           <div className="blank"></div>
           {friendNow === "follow" && (
-            <UserList list={info.followList}></UserList>
+            <UserListComp list={info.followList}></UserListComp>
           )}
-          {friendNow === "fans" && <UserList list={info.fansList}></UserList>}
+          {friendNow === "fans" && (
+            <UserListComp list={info.fansList}></UserListComp>
+          )}
         </div>
         <Works account={info.account}></Works>
       </div>
@@ -134,7 +136,7 @@ function Content() {
   );
 }
 
-function UserList(props: { list: UserList }) {
+function UserListComp(props: { list: UserList }) {
   const list = props.list;
   return list.length > 0 ? (
     <div className="userList">

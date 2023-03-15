@@ -29,7 +29,7 @@ export function Works(props: { account: string }) {
     api.searchAlgorithmByUser(account).then((res) => {
       setAlgorithmList(constructAlgorithmList(res.algorithms));
     });
-  }, [props.account]);
+  }, [account]);
 
   const workMenuData = [
     {

@@ -17,7 +17,6 @@ import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
 import { widgetActionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
 import { checkNil, linearAnimation } from "../../common/utils";
-import { message } from "antd";
 import {
   needSelectWidget,
   selectWidget,
@@ -239,7 +238,7 @@ export function WidgetRenderer(props: WidgetRendererProps) {
     if (!props.editable) {
       setActiveWidget(null);
     }
-  }, [props.editable]);
+  }, [props.editable, setActiveWidget]);
 
   return (
     <div

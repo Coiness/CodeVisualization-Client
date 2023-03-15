@@ -9,7 +9,6 @@ import {
   WidgetAction,
   WidgetRendererAction,
 } from "../../core";
-import { actions } from "../common/actions";
 import { AnimationApi } from "./types";
 import {
   BaseWidget,

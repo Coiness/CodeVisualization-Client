@@ -28,7 +28,7 @@ export function SelectWidget(props: { setWidget: (widget: IWidget) => void }) {
       needSelectWidget.set(false);
     });
     return sub.unsubscribe;
-  }, [props.setWidget]);
+  }, [props.setWidget, props]);
 
   return (
     <Button onClick={select} style={{ width: "100%" }}>

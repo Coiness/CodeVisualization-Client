@@ -5,7 +5,7 @@ import { StackAction } from "../../../../core/action/StackAction";
 import { ValueAction } from "../../../../core/action/ValueAction";
 import { snapshot } from "../../../../store";
 import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
-import { ValueEdit, WidgetInfoView } from "../../controlPanelItem";
+import { WidgetInfoView } from "../../controlPanelItem";
 import {
   StackControl,
   WidgetContainer,

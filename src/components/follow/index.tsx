@@ -57,7 +57,7 @@ export function Follow(props: FollowProps) {
         });
       }
     },
-    [info, setInfo]
+    [info, setInfo, props.account]
   );
 
   useEffect(load, [load]);

@@ -2,7 +2,6 @@ import { Button } from "antd";
 import { useState } from "react";
 import { widgetModelManager } from "../..";
 import { activeWidget, useStore } from "../../../../store";
-import { Empty } from "../../../empty";
 import { IWidget, WidgetType } from "../../widgets";
 import { StackWidget } from "../../widgets/stackWidget";
 import { SelectWidget } from "../SelectWidget";

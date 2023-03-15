@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { player } from ".";
 import { useCodeEditor } from "../algorithmEdit/Editor";
 import "./showcode.css";
 
 export function ShowCode(props: { code: string }) {
-  const { el: editor, getCode, setCode, setHeightLine } = useCodeEditor("show");
+  const { el: editor, setCode, setHeightLine } = useCodeEditor("show");
 
   useEffect(() => {
     setCode(props.code);
-  }, [props.code]);
+  }, [props.code, setCode]);
 
   useEffect(() => {
     player.progress.subscribe(() => {

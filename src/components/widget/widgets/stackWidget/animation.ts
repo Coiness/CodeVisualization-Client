@@ -14,6 +14,7 @@ export function useStackActionAnimation(
   dom: () => HTMLDivElement | null,
   height: number
 ) {
+  const d = dom();
   useEffect(() => {
     if (dom() !== null) {
       let sub = stackWidgetExecer.subscribe((params) => {
@@ -231,13 +232,5 @@ export function useStackActionAnimation(
       });
       return sub.unsubscribe;
     }
-  }, [
-    dom,
-    dom(),
-    dom()?.children,
-    height,
-    model.value.length,
-    model.id,
-    model.value,
-  ]);
+  }, [dom, d, d?.children, height, model.value.length, model.id, model.value]);
 }

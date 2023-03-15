@@ -4,7 +4,6 @@ import { Subject } from "../../common/utils";
 import { Snapshot } from "../../view/project";
 import { commitUndo } from "../action";
 import { modelSwitcher } from "../modelSwitcher";
-import { execUndo } from "../undo";
 import { ConsoleContent, Step, Video } from "./type";
 
 export class Player {

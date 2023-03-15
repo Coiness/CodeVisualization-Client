@@ -1,10 +1,10 @@
 import { Empty } from "antd";
 import { getWidgetControlPanel } from "../../../components/widget/widgets";
-import { activeWidget, activeWidgetType, useStore } from "../../../store";
+import { activeWidget, useStore } from "../../../store";
 import "./controlPanel.css";
 
 export function ControlPanel() {
-  let [widget, setWidget] = useStore(activeWidget);
+  let [widget] = useStore(activeWidget);
 
   if (widget) {
     let Comp = getWidgetControlPanel(widget.type);

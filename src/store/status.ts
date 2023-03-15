@@ -1,8 +1,4 @@
 import { Subject, Subscription } from "../common/utils";
-import { WidgetInfo, WidgetType } from "../components/widget/widgets";
-import { DisplayMode } from "../core";
-import { HistoryInfo } from "../core/undo";
-import { Snapshot } from "../view/project";
 
 export interface Status<T> {
   get: () => T;

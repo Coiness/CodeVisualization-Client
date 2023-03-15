@@ -21,10 +21,13 @@ export function TopMenu() {
     { label: "录像中心", key: PageKey.Video },
     { label: "算法中心", key: PageKey.Algorithm },
   ];
-  const handleClick = useCallback((item: any) => {
-    let key: PageKey = item.key;
-    navigate(PageMap[key]);
-  }, []);
+  const handleClick = useCallback(
+    (item: any) => {
+      let key: PageKey = item.key;
+      navigate(PageMap[key]);
+    },
+    [navigate]
+  );
   return (
     <Menu mode={"horizontal"} items={menuData} onClick={handleClick}></Menu>
   );
