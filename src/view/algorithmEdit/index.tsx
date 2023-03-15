@@ -13,6 +13,7 @@ import {
   inputListDialogSub,
   useInputList,
 } from "../../components/inputList";
+import { InfoEditDialogParams } from "../../components/infoEdit";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
 
@@ -26,6 +27,7 @@ export type AlgorithmInfo = {
     inputList?: InputContent[];
   };
   permission: number;
+  descrition: string;
 };
 
 async function getAlInfo(id: string | null) {
@@ -39,6 +41,7 @@ async function getAlInfo(id: string | null) {
         runCode: "",
       },
       permission: 0,
+      descrition: "",
     };
   } else {
     const r = await algorithmAPI.getAlgorithmInfo(id);
@@ -48,6 +51,7 @@ async function getAlInfo(id: string | null) {
       name: r.name,
       content: JSON.parse(r.content),
       permission: r.permission,
+      descrition: r.descrition,
     };
   }
 }
@@ -89,7 +93,15 @@ export function AlgorithmEdit() {
       }
       setCode2(info.content.runCode);
     });
-  }, [id]);
+  }, [
+    id,
+    setInfo,
+    setCode1,
+    setCode2,
+    setInputEnable,
+    setShowCodeEnable,
+    setInputListData,
+  ]);
 
   useEffect(load, [id, load]);
 
@@ -153,12 +165,12 @@ export function AlgorithmEdit() {
       })();
 
       if (code) {
-        await ApiDriver.start(code, showCode, data);
+        await ApiDriver.start(code, showCode, alInfo?.descrition ?? "", data);
         navigate("/videoPlay");
       }
     }
     if (code) {
-      await ApiDriver.start(code, showCode);
+      await ApiDriver.start(code, showCode, alInfo?.descrition ?? "");
       navigate("/videoPlay");
     }
   }
@@ -195,6 +207,32 @@ export function AlgorithmEdit() {
                     { value: 2, label: "所有人可见" },
                   ]}
                 />
+              )}
+              {alInfo.id && (
+                <Button
+                  onClick={() => {
+                    openDialog("infoEditDialog", {
+                      initText: alInfo.descrition,
+                      callback: async (str: string) => {
+                        let flag = await algorithmAPI.updateAlgorithmDescrition(
+                          alInfo.id,
+                          str
+                        );
+                        if (flag) {
+                          setInfo({
+                            ...alInfo,
+                            descrition: str,
+                          });
+                          message.success("修改成功");
+                        } else {
+                          message.error("修改失败");
+                        }
+                      },
+                    } as InfoEditDialogParams);
+                  }}
+                >
+                  编辑算法说明
+                </Button>
               )}
             </div>
           ) : (

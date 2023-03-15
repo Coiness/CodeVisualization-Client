@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Subject } from "../../common/utils";
+import { InfoEditDialog } from "../../components/infoEdit";
 import { InputListDialog } from "../../components/inputList";
 import { Login } from "../../components/login";
 import { SetAlgorithmNameDialog } from "../algorithmEdit";
@@ -12,6 +13,7 @@ const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   setAlgorithmName: SetAlgorithmNameDialog,
   setVideoName: SetVideoNameDialog,
   inputListDialog: InputListDialog,
+  infoEditDialog: InfoEditDialog,
 };
 
 const sub = new Subject<{ key: string; status: boolean; data?: any }>();
@@ -27,7 +29,7 @@ export function Dialogs() {
       setStatus({ ...status });
     });
     return s.unsubscribe;
-  }, []);
+  }, [status, setStatus]);
 
   return (
     <>

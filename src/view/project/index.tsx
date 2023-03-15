@@ -31,6 +31,7 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
         name: "",
         snapshot: getInitSnapshot(),
         permission: 0,
+        descrition: "",
       }
     );
   } else {
@@ -41,6 +42,7 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
       account: p.account,
       snapshot: JSON.parse(p.snapshot),
       permission: p.permission,
+      descrition: p.descrition,
     };
   }
 }

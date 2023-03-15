@@ -19,6 +19,7 @@ import { Console } from "./Console";
 import { ShowCode } from "./ShowCode";
 import { MainCanvas } from "../../components/mainCanvas/MainCanvas";
 import { cloneDeep } from "lodash";
+import { InfoEditDialogParams } from "../../components/infoEdit";
 
 export type VideoInfo = {
   id: string;
@@ -26,6 +27,7 @@ export type VideoInfo = {
   name: string;
   video: Video;
   permission: number;
+  descrition: string;
 };
 
 async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
@@ -46,6 +48,7 @@ async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
       name: r.name,
       video: v,
       permission: r.permission,
+      descrition: r.descrition,
     };
   }
 }
@@ -127,6 +130,32 @@ export function VideoPlay() {
                     { value: 1, label: "所有人可见" },
                   ]}
                 />
+              )}
+              {vInfo.id && (
+                <Button
+                  onClick={() => {
+                    openDialog("infoEditDialog", {
+                      initText: vInfo.descrition,
+                      callback: async (str: string) => {
+                        let flag = await videoAPI.updateVideoDescrition(
+                          vInfo.id,
+                          str
+                        );
+                        if (flag) {
+                          setInfo({
+                            ...vInfo,
+                            descrition: str,
+                          });
+                          message.success("修改成功");
+                        } else {
+                          message.error("修改失败");
+                        }
+                      },
+                    } as InfoEditDialogParams);
+                  }}
+                >
+                  编辑录像说明
+                </Button>
               )}
             </div>
           ) : (
@@ -268,6 +297,7 @@ function Control() {
               name: "",
               snapshot: s,
               permission: 0,
+              descrition: "",
             });
             navigate("/project");
           }}

@@ -21,6 +21,14 @@ export async function saveAlgorithm(id: string, content: string) {
   return r.flag;
 }
 
+export async function updateAlgorithmDescrition(
+  id: string,
+  descrition: string
+) {
+  let r = await post("/algorithm/updateDescrition", { id, descrition });
+  return r.flag;
+}
+
 export async function changeAlgorithmPermission(
   id: string,
   permission: number

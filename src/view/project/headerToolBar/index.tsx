@@ -10,15 +10,10 @@ import {
   RedoOutlined,
   UndoOutlined,
 } from "@ant-design/icons";
-import {
-  commitRedo,
-  commitUndo,
-  execRedo,
-  execUndo,
-  Recorder,
-} from "../../../core";
+import { commitRedo, commitUndo, Recorder } from "../../../core";
 import { initVideoInfo } from "../../../store";
 import { useNavigate } from "react-router-dom";
+import { InfoEditDialogParams } from "../../../components/infoEdit";
 
 const recorder = new Recorder();
 
@@ -54,7 +49,8 @@ export function HeaderToolBar(props: {
       } else {
         return projectAPI.createProject(
           nameRef.current,
-          JSON.stringify(info.snapshot)
+          JSON.stringify(info.snapshot),
+          ""
         );
       }
     }
@@ -99,6 +95,29 @@ export function HeaderToolBar(props: {
           ]}
         />
       )}
+      {info.id && (
+        <Button
+          onClick={() => {
+            openDialog("infoEditDialog", {
+              initText: info.descrition,
+              callback: async (str: string) => {
+                let flag = await projectAPI.updateProjectDescrition(
+                  info.id,
+                  str
+                );
+                if (flag) {
+                  props.change("descrition", str);
+                  message.success("修改成功");
+                } else {
+                  message.error("修改失败");
+                }
+              },
+            } as InfoEditDialogParams);
+          }}
+        >
+          编辑演示说明
+        </Button>
+      )}
       <div className="blank"></div>
       {editable && (
         <Button
@@ -141,6 +160,7 @@ export function HeaderToolBar(props: {
               name: "",
               video,
               permission: 0,
+              descrition: info.descrition,
             });
             navigate("/videoPlay");
           }}

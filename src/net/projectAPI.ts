@@ -1,8 +1,12 @@
 import { get, post } from "./request";
 import { getAccount } from "./token";
 
-export async function createProject(name: string, snapshot: string) {
-  let r = await post("/project/create", { name, snapshot });
+export async function createProject(
+  name: string,
+  snapshot: string,
+  descrition: string
+) {
+  let r = await post("/project/create", { name, snapshot, descrition });
   return r.data.id;
 }
 
@@ -18,6 +22,10 @@ export async function renameProject(id: string, name: string) {
 
 export async function saveProject(id: string, snapshot: string) {
   let r = await post("/project/save", { id, snapshot });
+  return r.flag;
+}
+export async function updateProjectDescrition(id: string, descrition: string) {
+  let r = await post("/project/updateDescrition", { id, descrition });
   return r.flag;
 }
 

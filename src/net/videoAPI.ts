@@ -16,6 +16,11 @@ export async function renameVideo(id: string, name: string) {
   return r.flag;
 }
 
+export async function updateVideoDescrition(id: string, descrition: string) {
+  let r = await post("/video/updateDescrition", { id, descrition });
+  return r.flag;
+}
+
 export async function changeVideoPermission(id: string, permission: number) {
   let r = await post("/video/updatePermission", { id, permission });
   return r.flag;

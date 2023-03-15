@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { API } from "..";
-import { Subject, Subscription } from "../../common/utils";
+import { Subscription } from "../../common/utils";
 import { InputContent } from "../../components/inputList";
 import { actionCommitter, modelSwitcher, Video } from "../../core";
 import { initVideoInfo } from "../../store";
@@ -14,10 +14,12 @@ export class APIDriver {
   initData: { [key: string]: string } | undefined = undefined;
   showCode: string | null = null;
   sub: Subscription | null = null;
+  descrition: string = "";
 
   start(
     code: string,
     showCode: string | undefined,
+    descrition: string,
     initData?: InputContent[]
   ): Promise<unknown> {
     modelSwitcher.pushModel(cloneDeep(defaultSnapshot));
@@ -32,6 +34,7 @@ export class APIDriver {
     });
 
     this.showCode = showCode ?? null;
+    this.descrition = descrition;
 
     // eslint-disable-next-line
     eval(`
@@ -56,6 +59,7 @@ export class APIDriver {
       name: "",
       video: v,
       permission: 0,
+      descrition: "",
     });
     this.r(null);
   }

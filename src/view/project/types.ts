@@ -9,7 +9,8 @@ export type ProjectInfoKey =
   | "name"
   | "account"
   | "snapshot"
-  | "permission";
+  | "permission"
+  | "descrition";
 
 export type ProjectInfo = {
   id: string;
@@ -17,4 +18,5 @@ export type ProjectInfo = {
   name: string;
   snapshot: Snapshot;
   permission: number;
+  descrition: string;
 };
