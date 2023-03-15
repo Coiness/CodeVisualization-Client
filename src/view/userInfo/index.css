@@ -50,7 +50,16 @@
 }
 
 .userInfoContent .baseInfo .username {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
   font-size: 20px;
+}
+
+.userInfoContent .baseInfo .username > .name {
+  margin-right: 10px;
 }
 
 .userInfoContent .baseInfo .blank {

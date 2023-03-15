@@ -29,7 +29,10 @@ export async function getUserInfo(account: string): Promise<UserInfoData> {
   return r.data;
 }
 
-export async function modifyUsername() {}
+export async function modifyUsername(username: string) {
+  let res = await post("/user/modifyUsername", { username });
+  return res.flag;
+}
 
 export async function follow(account: string) {
   let res = await post("/user/follow", { followAccount: account });

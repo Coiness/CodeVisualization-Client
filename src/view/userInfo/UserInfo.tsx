@@ -6,11 +6,12 @@ import { getAccount } from "../../net/token";
 import { getLocationQuery } from "../../common/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as userAPI from "../../net/userAPI";
-import { Menu } from "antd";
+import { Button, Input, Menu, message } from "antd";
 import { Follow } from "../../components/follow";
 import { UserCard } from "../../components/userCard";
 import { Works } from "./Works";
 import { Empty } from "../../components/empty";
+import { EditOutlined } from "@ant-design/icons";
 
 export function UserInfo() {
   return (
@@ -46,6 +47,7 @@ function Content() {
   const location = useLocation();
   const navigate = useNavigate();
   const [friendNow, setFriendNow] = useState<string>("follow");
+  const [usernameMode, setUsernameMode] = useState<"edit" | "view">("view");
 
   useEffect(() => {
     const r = getLocationQuery("account", location.search);
@@ -67,6 +69,7 @@ function Content() {
       });
     });
   }, [location, navigate]);
+
   if (info === null) {
     return null;
   }
@@ -105,7 +108,44 @@ function Content() {
           className="img"
           style={{ backgroundImage: `url(${info.img})` }}
         ></div>
-        <div className="username">{info.name}</div>
+        <div className="username">
+          {usernameMode === "view" && (
+            <>
+              <div className="name">{info.name}</div>
+              <Button
+                shape="circle"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setUsernameMode("edit");
+                }}
+              ></Button>
+            </>
+          )}
+          {usernameMode === "edit" && (
+            <Input
+              defaultValue={info.name}
+              onBlur={() => {
+                setUsernameMode("view");
+              }}
+              onKeyDown={async (e) => {
+                if (e.key === "Enter") {
+                  const text = (e.nativeEvent.target as any).value;
+                  let res = await userAPI.modifyUsername(text);
+                  if (res) {
+                    message.success("修改成功");
+                    setInfo({
+                      ...info,
+                      name: text,
+                    });
+                  } else {
+                    message.error("修改失败");
+                  }
+                  setUsernameMode("view");
+                }
+              }}
+            ></Input>
+          )}
+        </div>
         <div className="blank"></div>
         <div className="follow">
           {!isMe && <Follow account={info.account}></Follow>}
