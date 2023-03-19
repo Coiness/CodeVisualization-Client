@@ -69,17 +69,19 @@ export function Project() {
     let close: () => void = () => {};
     let closed = false;
     getProjectData(id).then(async (info) => {
-      let ws = await createWS(WSType.Project, { id });
-      if (closed) {
-        ws.close();
-        return;
+      if (id !== null) {
+        let ws = await createWS(WSType.Project, { id });
+        if (closed) {
+          ws.close();
+          return;
+        }
+        actionIO.setWS(ws);
+        close = () => {
+          ws.close();
+        };
       }
-      actionIO.setWS(ws);
       setProjectInfo(info);
       modelSwitcher.setModel(info.snapshot);
-      close = () => {
-        ws.close();
-      };
     });
     return () => {
       closed = true;

@@ -128,30 +128,3 @@ export function getCS(
   }
   return cs;
 }
-
-export function xSet(obj: any, change: [attr: string | number, value: any][]) {
-  if (typeof obj === "object") {
-    const cs = getCS(obj, change);
-    execDo(cs);
-  } else {
-    throw new Error("xSet obj not object type");
-  }
-}
-
-export function xRm(obj: any, attr: string | number) {
-  if (typeof obj === "object") {
-    const path = getPath(obj);
-    let p;
-    if (path === "") {
-      p = "attr";
-    } else {
-      p = `${path}.${attr}`;
-    }
-    if (obj.hasOwnProperty(attr)) {
-      const cs = [{ t: "d", p, c: [obj[attr]] }] as ChangeSet;
-      execDo(cs);
-    }
-  } else {
-    throw new Error("xSet obj not object type");
-  }
-}
