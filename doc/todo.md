@@ -1,10 +1,10 @@
-- 服务端数据协同
-  - snapshot 版本
 - 展示代码语言切换
 - 算法执行沙箱环境
+- 增加最佳实践案例
 - 首页引导
 - API 文档
 - 下载 & 上传
+- snapshot 增加版本控制
 - 新增 Delete Widget Action
 - 新增 树节点 Widget 
 - API 增加开始录制节点
