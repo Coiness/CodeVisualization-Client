@@ -98,11 +98,11 @@ export function AlgorithmEdit() {
   }, [
     id,
     setInfo,
-    setCode1,
-    setCode2,
-    setInputEnable,
-    setShowCodeEnable,
-    setInputListData,
+    // setCode1,
+    // setCode2,
+    // setInputEnable,
+    // setShowCodeEnable,
+    // setInputListData,
   ]);
 
   useEffect(load, [id, load]);

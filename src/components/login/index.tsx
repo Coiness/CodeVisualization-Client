@@ -16,6 +16,7 @@ export function Login(visible: boolean) {
       onCancel={closePanel}
       footer={null}
       width={400}
+      className="loginDialog"
     >
       <LoginPanel
         onSuccess={() => {
