@@ -41,6 +41,7 @@ async function getProjectData(id: string | null): Promise<ProjectInfo> {
       name: p.name,
       account: p.account,
       snapshot: JSON.parse(p.snapshot),
+      historyInfo: p.historyInfo ? JSON.parse(p.historyInfo) : undefined,
       permission: p.permission,
       descrition: p.descrition,
     };
@@ -81,7 +82,7 @@ export function Project() {
         };
       }
       setProjectInfo(info);
-      modelSwitcher.setModel(info.snapshot);
+      modelSwitcher.setModel(info.snapshot, info.historyInfo);
     });
     return () => {
       closed = true;

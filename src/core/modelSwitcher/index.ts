@@ -4,8 +4,8 @@ import { Snapshot } from "../../view/project";
 
 export class ModelSwitcher {
   private models: { snapshot: Snapshot; historyInfo: HistoryInfo }[] = [];
-  pushModel(ss: Snapshot) {
-    const hi = { history: [], index: 0 };
+  pushModel(ss: Snapshot, historyInfoData?: HistoryInfo) {
+    const hi = historyInfoData ?? { history: [], index: 0 };
     this.models.push({ snapshot: ss, historyInfo: hi });
     snapshot.set(ss);
     historyInfo.set(hi);
@@ -22,11 +22,11 @@ export class ModelSwitcher {
     snapshot.set(ss);
     historyInfo.set(hi);
   }
-  setModel(ss: Snapshot) {
+  setModel(ss: Snapshot, historyInfo?: HistoryInfo) {
     if (this.models.length !== 0) {
       this.popModel();
     }
-    this.pushModel(ss);
+    this.pushModel(ss, historyInfo);
   }
 }
 

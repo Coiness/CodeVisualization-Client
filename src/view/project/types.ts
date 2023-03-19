@@ -1,4 +1,5 @@
 import { WidgetRendererModel } from "../../components/widget";
+import { HistoryInfo } from "../../core";
 
 export interface Snapshot {
   widgetManagerModel: WidgetRendererModel;
@@ -17,6 +18,7 @@ export type ProjectInfo = {
   account: string;
   name: string;
   snapshot: Snapshot;
+  historyInfo?: HistoryInfo;
   permission: number;
   descrition: string;
 };
