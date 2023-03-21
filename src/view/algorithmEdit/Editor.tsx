@@ -1,9 +1,15 @@
 import "./editor.css";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
+import "monaco-editor/esm/vs/basic-languages/java/java.contribution";
+import "monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution";
 import { useEffect, useRef } from "react";
+import { ShowCodeLanguage } from "./type";
 
-export function useCodeEditor(theme: "show" | "vs") {
+export function useCodeEditor(
+  theme: "show" | "vs",
+  language?: ShowCodeLanguage
+) {
   monaco.editor.defineTheme("show", {
     base: "vs",
     inherit: true,
@@ -13,6 +19,8 @@ export function useCodeEditor(theme: "show" | "vs") {
     },
   });
 
+  language = language ?? ShowCodeLanguage.JS;
+
   let dom = useRef<HTMLDivElement | null>(null);
   let editor = useRef<monaco.editor.IStandaloneCodeEditor>();
 
@@ -20,7 +28,7 @@ export function useCodeEditor(theme: "show" | "vs") {
 
   function getCode() {
     code.current = editor.current?.getValue();
-    return code.current;
+    return code.current ?? "";
   }
 
   function setCode(c: string) {
@@ -37,7 +45,7 @@ export function useCodeEditor(theme: "show" | "vs") {
     if (d) {
       let r = monaco.editor.create(d, {
         value: code.current,
-        language: "javascript",
+        language: language,
         theme: theme,
         readOnly: theme === "show",
       });
@@ -51,7 +59,7 @@ export function useCodeEditor(theme: "show" | "vs") {
         }
       };
     }
-  }, [dom, theme]);
+  }, [dom, dom.current, theme, language]);
 
   return {
     el: <div className="codeEditor" ref={dom}></div>,

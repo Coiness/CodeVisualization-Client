@@ -4,6 +4,7 @@ import { Subscription } from "../../common/utils";
 import { InputContent } from "../../components/inputList";
 import { actionCommitter, modelSwitcher, Video } from "../../core";
 import { initVideoInfo } from "../../store";
+import { ShowCodeInfo } from "../../view/algorithmEdit/ShowCode";
 import { actions } from "../common/actions";
 import { defaultSnapshot } from "../common/snapshot";
 
@@ -12,13 +13,13 @@ import { defaultSnapshot } from "../common/snapshot";
 export class APIDriver {
   r: (value: unknown) => void = () => {};
   initData: { [key: string]: string } | undefined = undefined;
-  showCode: string | null = null;
+  showCode: ShowCodeInfo | null = null;
   sub: Subscription | null = null;
   descrition: string = "";
 
   start(
     code: string,
-    showCode: string | undefined,
+    showCode: ShowCodeInfo | null,
     descrition: string,
     initData?: InputContent[]
   ): Promise<unknown> {

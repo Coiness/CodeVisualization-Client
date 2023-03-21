@@ -15,6 +15,9 @@ import {
 } from "../../components/inputList";
 import { InfoEditDialogParams } from "../../components/infoEdit";
 import { getAccount } from "../../net/token";
+import { ShowCode, ShowCodeInfo } from "./ShowCode";
+import { Loading } from "../../components/loading";
+import { ShowCodeLanguage } from "./type";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
 
@@ -23,7 +26,7 @@ export type AlgorithmInfo = {
   account: string;
   name: string;
   content: {
-    showCode: string;
+    showCode: ShowCodeInfo | null;
     runCode: string;
     inputList?: InputContent[];
   };
@@ -38,7 +41,7 @@ async function getAlInfo(id: string | null) {
       account: "",
       name: "",
       content: {
-        showCode: "",
+        showCode: null,
         runCode: "",
       },
       permission: 0,
@@ -61,14 +64,9 @@ export function AlgorithmEdit() {
   const [showCodeEnable, setShowCodeEnable] = useState<boolean>(false);
   const [inputEnable, setInputEnable] = useState<boolean>(false);
   const {
-    el: editor1,
-    getCode: getCode1,
-    setCode: setCode1,
-  } = useCodeEditor("vs");
-  const {
-    el: editor2,
-    getCode: getCode2,
-    setCode: setCode2,
+    el: runCodeEditor,
+    getCode: getRunCode,
+    setCode: setRunCode,
   } = useCodeEditor("vs");
   const {
     el: InputList,
@@ -90,28 +88,19 @@ export function AlgorithmEdit() {
         setInputEnable(true);
       }
       if (info.content.showCode) {
-        setCode1(info.content.showCode);
         setShowCodeEnable(true);
       }
-      setCode2(info.content.runCode);
+      setRunCode(info.content.runCode);
     });
-  }, [
-    id,
-    setInfo,
-    // setCode1,
-    // setCode2,
-    // setInputEnable,
-    // setShowCodeEnable,
-    // setInputListData,
-  ]);
+  }, [id, setInfo]);
 
   useEffect(load, [id, load]);
 
   async function save(): Promise<string | null> {
     if (alInfo?.id) {
       const content = {
-        showCode: showCodeEnable ? getCode1() : null,
-        runCode: getCode2(),
+        showCode: showCodeEnable ? alInfo.content.showCode : null,
+        runCode: getRunCode(),
         inputList: inputEnable ? getInputListData() : undefined,
       };
       let flag = await algorithmAPI.saveAlgorithm(
@@ -128,9 +117,12 @@ export function AlgorithmEdit() {
       openDialog("setAlgorithmName");
       return null;
     } else {
+      if (!alInfo) {
+        return null;
+      }
       const content = {
-        showCode: showCodeEnable ? getCode1() : null,
-        runCode: getCode2(),
+        showCode: showCodeEnable ? alInfo.content.showCode : null,
+        runCode: getRunCode(),
         inputList: inputEnable ? getInputListData() : undefined,
       };
       return await algorithmAPI.createAlgorithm(
@@ -152,8 +144,8 @@ export function AlgorithmEdit() {
   });
 
   async function run() {
-    let showCode = getCode1();
-    let code = getCode2();
+    let showCode = alInfo?.content.showCode ?? null;
+    let code = getRunCode();
     if (inputEnable) {
       let data = getInputListData();
       openDialog("inputListDialog", data);
@@ -189,6 +181,14 @@ export function AlgorithmEdit() {
       });
     }
   }
+
+  // if (!alInfo) {
+  //   return (
+  //     <div className="algorithmEdit">
+  //       <Loading></Loading>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="algorithmEdit">
@@ -251,6 +251,19 @@ export function AlgorithmEdit() {
               <div className="container">
                 <Button
                   onClick={() => {
+                    if (!alInfo) {
+                      return;
+                    }
+                    let i = {
+                      ...alInfo,
+                    };
+                    i.content = {
+                      ...i.content,
+                      showCode: {
+                        list: [{ lang: ShowCodeLanguage.JS, code: "" }],
+                      },
+                    };
+                    setInfo(i);
                     setShowCodeEnable(true);
                   }}
                 >
@@ -258,7 +271,21 @@ export function AlgorithmEdit() {
                 </Button>
               </div>
             )}
-            {editor1}
+            {showCodeEnable && alInfo?.content.showCode && (
+              <ShowCode
+                info={alInfo.content.showCode}
+                setInfo={(info: ShowCodeInfo) => {
+                  let i = {
+                    ...alInfo,
+                  };
+                  i.content = {
+                    ...i.content,
+                    showCode: info,
+                  };
+                  setInfo(i);
+                }}
+              ></ShowCode>
+            )}
           </div>
           <div className="line"></div>
           <div className="bottom">
@@ -278,7 +305,7 @@ export function AlgorithmEdit() {
           </div>
         </div>
         <div className="middle"></div>
-        <div className="right">{editor2}</div>
+        <div className="right">{runCodeEditor}</div>
       </div>
     </div>
   );

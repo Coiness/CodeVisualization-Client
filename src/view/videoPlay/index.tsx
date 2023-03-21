@@ -174,7 +174,8 @@ export function VideoPlay() {
           <div className="right">
             {vInfo?.video.showCode && (
               <div className="top">
-                <ShowCode code={vInfo.video.showCode}></ShowCode>
+                {/* TODO 增加多语言显示代码显示器 */}
+                <ShowCode code={vInfo.video.showCode.list[0].code}></ShowCode>
               </div>
             )}
             <div className="bottom">

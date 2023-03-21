@@ -1,3 +1,4 @@
+import { ShowCodeInfo } from "../../view/algorithmEdit/ShowCode";
 import { Snapshot } from "../../view/project";
 import { BaseAction } from "../action";
 
@@ -15,5 +16,5 @@ export interface Video {
   steps: Step[];
   consoles?: (ConsoleContent | null)[];
   heightlines?: number[];
-  showCode?: string | null;
+  showCode?: ShowCodeInfo | null;
 }
