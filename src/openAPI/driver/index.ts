@@ -37,6 +37,12 @@ export class APIDriver {
     this.showCode = showCode ?? null;
     this.descrition = descrition;
 
+    if (this.showCode) {
+      API.commonApi.start(this.showCode.list.map((item) => item.lang));
+    } else {
+      API.commonApi.start();
+    }
+
     // eslint-disable-next-line
     eval(`
 			window.execApi = function(API) {

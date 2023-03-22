@@ -15,7 +15,7 @@ import {
 } from "../../components/inputList";
 import { InfoEditDialogParams } from "../../components/infoEdit";
 import { getAccount } from "../../net/token";
-import { ShowCode, ShowCodeInfo } from "./ShowCode";
+import { ShowCodeInfo, useShowCode } from "./ShowCode";
 import { Loading } from "../../components/loading";
 import { ShowCodeLanguage } from "./type";
 
@@ -63,6 +63,9 @@ async function getAlInfo(id: string | null) {
 export function AlgorithmEdit() {
   const [showCodeEnable, setShowCodeEnable] = useState<boolean>(false);
   const [inputEnable, setInputEnable] = useState<boolean>(false);
+  const [alInfo, setInfo] = useState<AlgorithmInfo | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
   const {
     el: runCodeEditor,
     getCode: getRunCode,
@@ -73,9 +76,10 @@ export function AlgorithmEdit() {
     getData: getInputListData,
     setData: setInputListData,
   } = useInputList(true);
-  const [alInfo, setInfo] = useState<AlgorithmInfo | null>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { el: ShowCode, getInfo: getShowCodeInfo } = useShowCode({
+    info: alInfo?.content.showCode ?? null,
+  });
+
   const id = getLocationQuery("id", location.search);
   const nameRef = useRef<string>(alInfo?.name ?? "");
   const editable = !alInfo?.id || alInfo?.account === getAccount();
@@ -99,7 +103,7 @@ export function AlgorithmEdit() {
   async function save(): Promise<string | null> {
     if (alInfo?.id) {
       const content = {
-        showCode: showCodeEnable ? alInfo.content.showCode : null,
+        showCode: showCodeEnable ? getShowCodeInfo() : null,
         runCode: getRunCode(),
         inputList: inputEnable ? getInputListData() : undefined,
       };
@@ -121,7 +125,7 @@ export function AlgorithmEdit() {
         return null;
       }
       const content = {
-        showCode: showCodeEnable ? alInfo.content.showCode : null,
+        showCode: showCodeEnable ? getShowCodeInfo() : null,
         runCode: getRunCode(),
         inputList: inputEnable ? getInputListData() : undefined,
       };
@@ -144,7 +148,7 @@ export function AlgorithmEdit() {
   });
 
   async function run() {
-    let showCode = alInfo?.content.showCode ?? null;
+    let showCode = getShowCodeInfo() ?? null;
     let code = getRunCode();
     if (inputEnable) {
       let data = getInputListData();
@@ -271,21 +275,7 @@ export function AlgorithmEdit() {
                 </Button>
               </div>
             )}
-            {showCodeEnable && alInfo?.content.showCode && (
-              <ShowCode
-                info={alInfo.content.showCode}
-                setInfo={(info: ShowCodeInfo) => {
-                  let i = {
-                    ...alInfo,
-                  };
-                  i.content = {
-                    ...i.content,
-                    showCode: info,
-                  };
-                  setInfo(i);
-                }}
-              ></ShowCode>
-            )}
+            {showCodeEnable && alInfo?.content.showCode && ShowCode}
           </div>
           <div className="line"></div>
           <div className="bottom">

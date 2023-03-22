@@ -37,6 +37,9 @@ export class Recorder {
     return {
       snapshot: this.snapshot,
       steps: this.steps,
+      consoles: null,
+      heightlines: null,
+      showCode: null,
     };
   }
 }

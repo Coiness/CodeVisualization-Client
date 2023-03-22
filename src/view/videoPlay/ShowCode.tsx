@@ -1,25 +1,62 @@
-import { useEffect } from "react";
+import { Button } from "antd";
+import { useEffect, useState } from "react";
 import { player } from ".";
 import { useCodeEditor } from "../algorithmEdit/Editor";
+import { ShowCodeInfo, ShowCodeItem } from "../algorithmEdit/ShowCode";
 import "./showcode.css";
 
-export function ShowCode(props: { code: string }) {
-  const { el: editor, setCode, setHeightLine } = useCodeEditor("show");
+export interface ShowCodeViewProps {
+  info: ShowCodeInfo;
+}
+
+export function ShowCodeView(props: ShowCodeViewProps) {
+  const info = props.info;
+  const [nowItem, setItem] = useState<ShowCodeItem>(props.info.list[0]);
+  const { setCode, el, setHeightLine } = useCodeEditor(
+    "show",
+    nowItem?.lang ?? undefined
+  );
 
   useEffect(() => {
-    setCode(props.code);
-  }, [props.code, setCode]);
+    setItem(props.info.list[0]);
+  }, [props.info]);
 
   useEffect(() => {
-    player.progress.subscribe(() => {
-      setHeightLine(player.getHeightLine());
+    if (nowItem !== null) {
+      setCode(nowItem.code);
+      setHeightLine(player.getHeightLine(nowItem.lang));
+    }
+  }, [nowItem, setCode]);
+
+  useEffect(() => {
+    let sub = player.progress.subscribe(() => {
+      setHeightLine(player.getHeightLine(nowItem.lang));
     });
-  });
+    return sub.unsubscribe;
+  }, [setHeightLine]);
 
   return (
-    <div className="showCode">
-      <div className="title">演示代码</div>
-      <div className="content">{editor}</div>
+    <div className="showCodeManager">
+      <div className="tab">
+        <div className="tabContent">
+          <div className="scroll">
+            {info.list.map((item) => {
+              return (
+                <Button
+                  className="tabItem"
+                  key={item.lang}
+                  onClick={() => {
+                    setItem(item);
+                  }}
+                >
+                  {item.lang}
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div className="codeEditor">{el}</div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { message } from "antd";
 import { cloneDeep } from "lodash";
 import { Subject } from "../../common/utils";
+import { ShowCodeLanguage } from "../../view/algorithmEdit/type";
 import { Snapshot } from "../../view/project";
 import { commitUndo } from "../action";
 import { modelSwitcher } from "../modelSwitcher";
@@ -9,8 +10,8 @@ import { ConsoleContent, Step, Video } from "./type";
 export class Player {
   private snapshot: Snapshot = {} as Snapshot;
   private steps: Step[] = [];
-  private consoles: (ConsoleContent | null)[] | undefined = undefined;
-  private heightlines: number[] | undefined = undefined;
+  private consoles: (ConsoleContent | null)[] | null = null;
+  private heightlines: { [lang: string]: number[] } | null = null;
   private index: number = 0;
 
   progress = new Subject<number>();
@@ -110,8 +111,8 @@ export class Player {
     return res;
   }
 
-  getHeightLine(): number {
-    return this.heightlines?.[this.index] ?? 0;
+  getHeightLine(lang: ShowCodeLanguage): number {
+    return this.heightlines?.[lang][this.index] ?? 0;
   }
 
   end() {}

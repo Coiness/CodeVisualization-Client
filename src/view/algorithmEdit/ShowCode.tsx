@@ -28,8 +28,7 @@ function findItemByLanguage(
 }
 
 export interface ShowCodeProps {
-  info: ShowCodeInfo;
-  setInfo: (info: ShowCodeInfo) => void;
+  info: ShowCodeInfo | null;
 }
 
 const langsObj: Record<ShowCodeLanguage, 1> = {
@@ -40,7 +39,7 @@ const langsObj: Record<ShowCodeLanguage, 1> = {
 
 const langs: ShowCodeLanguage[] = Object.keys(langsObj) as ShowCodeLanguage[];
 
-export function ShowCode(props: ShowCodeProps) {
+export function useShowCode(props: ShowCodeProps) {
   const [info, setInfo] = useState<ShowCodeInfo | null>(null);
   const [nowItem, setItem] = useState<ShowCodeItem | null>(null);
   const { getCode, setCode, el } = useCodeEditor(
@@ -50,7 +49,7 @@ export function ShowCode(props: ShowCodeProps) {
 
   useEffect(() => {
     setInfo(props.info);
-    setItem(props.info.list[0]);
+    setItem(props.info?.list[0] ?? null);
   }, [props.info]);
 
   useEffect(() => {
@@ -61,6 +60,13 @@ export function ShowCode(props: ShowCodeProps) {
       };
     }
   }, [nowItem]);
+
+  const getInfo = useCallback(() => {
+    if (nowItem !== null) {
+      nowItem.code = getCode();
+    }
+    return info;
+  }, [info, nowItem]);
 
   const addLang = useCallback(
     (lang: ShowCodeLanguage) => {
@@ -77,73 +83,76 @@ export function ShowCode(props: ShowCodeProps) {
 
   const [addPanelVisible, setAddPanelVisible] = useState<boolean>(false);
 
-  return (
-    <div className="showCodeManager">
-      <div className="tab">
-        {!isReady && <Loading></Loading>}
-        {isReady && (
-          <>
-            <div className="tabContent">
-              <div className="scroll">
-                {info.list.map((item) => {
-                  return (
-                    <Button
-                      className="tabItem"
-                      key={item.lang}
-                      onClick={() => {
-                        setItem(item);
-                      }}
-                    >
-                      {item.lang}
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-            <Popover
-              placement="bottom"
-              popupVisible={addPanelVisible}
-              content={
-                <div className="addLangList">
-                  <div className="scroll">
-                    {langs
-                      .filter((item) => {
-                        let r = findItemByLanguage(info, item);
-                        return r === null;
-                      })
-                      .map((item) => {
-                        return (
-                          <Button
-                            type="text"
-                            className="addLangListItem"
-                            onClick={() => {
-                              addLang(item);
-                              setAddPanelVisible(false);
-                            }}
-                          >
-                            {item}
-                          </Button>
-                        );
-                      })}
-                  </div>
+  return {
+    el: (
+      <div className="showCodeManager">
+        <div className="tab">
+          {!isReady && <Loading></Loading>}
+          {isReady && (
+            <>
+              <div className="tabContent">
+                <div className="scroll">
+                  {info.list.map((item) => {
+                    return (
+                      <Button
+                        className="tabItem"
+                        key={item.lang}
+                        onClick={() => {
+                          setItem(item);
+                        }}
+                      >
+                        {item.lang}
+                      </Button>
+                    );
+                  })}
                 </div>
-              }
-            >
-              <Button
-                className="addLangEntry"
-                shape="circle"
-                disabled={info.list.length === langs.length}
-                icon={<PlusOutlined />}
-                type="text"
-                onClick={() => {
-                  setAddPanelVisible(true);
-                }}
-              ></Button>
-            </Popover>
-          </>
-        )}
+              </div>
+              <Popover
+                placement="bottom"
+                visible={addPanelVisible}
+                content={
+                  <div className="addLangList">
+                    <div className="scroll">
+                      {langs
+                        .filter((item) => {
+                          let r = findItemByLanguage(info, item);
+                          return r === null;
+                        })
+                        .map((item) => {
+                          return (
+                            <Button
+                              type="text"
+                              className="addLangListItem"
+                              onClick={() => {
+                                addLang(item);
+                                setAddPanelVisible(false);
+                              }}
+                            >
+                              {item}
+                            </Button>
+                          );
+                        })}
+                    </div>
+                  </div>
+                }
+              >
+                <Button
+                  className="addLangEntry"
+                  shape="circle"
+                  disabled={info.list.length === langs.length}
+                  icon={<PlusOutlined />}
+                  type="text"
+                  onClick={() => {
+                    setAddPanelVisible(true);
+                  }}
+                ></Button>
+              </Popover>
+            </>
+          )}
+        </div>
+        <div className="codeEditor">{el}</div>
       </div>
-      <div className="codeEditor">{el}</div>
-    </div>
-  );
+    ),
+    getInfo,
+  };
 }

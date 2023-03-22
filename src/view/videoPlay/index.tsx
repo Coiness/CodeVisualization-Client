@@ -16,11 +16,11 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import { Console } from "./Console";
-import { ShowCode } from "./ShowCode";
 import { MainCanvas } from "../../components/mainCanvas/MainCanvas";
 import { cloneDeep } from "lodash";
 import { InfoEditDialogParams } from "../../components/infoEdit";
 import { getAccount } from "../../net/token";
+import { ShowCodeView } from "./ShowCode";
 
 export type VideoInfo = {
   id: string;
@@ -174,8 +174,7 @@ export function VideoPlay() {
           <div className="right">
             {vInfo?.video.showCode && (
               <div className="top">
-                {/* TODO 增加多语言显示代码显示器 */}
-                <ShowCode code={vInfo.video.showCode.list[0].code}></ShowCode>
+                <ShowCodeView info={vInfo.video.showCode}></ShowCodeView>
               </div>
             )}
             <div className="bottom">

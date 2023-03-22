@@ -132,7 +132,7 @@ export function InputListDialog(visible: boolean, data: InputContent[]) {
     if (data) {
       setData(data);
     }
-  }, [data, setData]);
+  }, [data]);
 
   function submit() {
     inputListDialogSub.next(getData());
