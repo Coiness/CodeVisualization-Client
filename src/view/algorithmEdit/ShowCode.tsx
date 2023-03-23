@@ -53,6 +53,7 @@ export function useShowCode(props: ShowCodeProps) {
   }, [props.info]);
 
   useEffect(() => {
+    console.log("nowItem change", nowItem);
     if (nowItem !== null) {
       setCode(nowItem.code);
       return () => {
@@ -79,6 +80,29 @@ export function useShowCode(props: ShowCodeProps) {
     [info, setInfo]
   );
 
+  const removeLang = useCallback(
+    (lang: ShowCodeLanguage) => {
+      if (!info) {
+        return;
+      }
+
+      let arr: ShowCodeItem[] = [];
+      info.list.forEach((item) => {
+        if (item.lang !== lang) {
+          arr.push(item);
+        }
+      });
+      info.list = arr;
+      setInfo({ ...info });
+
+      if (nowItem?.lang === lang) {
+        console.log("setItem", info.list[0]);
+        setItem(info.list[0]);
+      }
+    },
+    [info, setInfo, nowItem, setItem]
+  );
+
   const isReady = !(info === null || nowItem === null);
 
   const [addPanelVisible, setAddPanelVisible] = useState<boolean>(false);
@@ -94,15 +118,30 @@ export function useShowCode(props: ShowCodeProps) {
                 <div className="scroll">
                   {info.list.map((item) => {
                     return (
-                      <Button
-                        className="tabItem"
-                        key={item.lang}
-                        onClick={() => {
-                          setItem(item);
-                        }}
-                      >
-                        {item.lang}
-                      </Button>
+                      <div>
+                        <Button
+                          type={nowItem.lang === item.lang ? "link" : "text"}
+                          className="tabItem"
+                          key={item.lang}
+                          onClick={() => {
+                            setItem(item);
+                          }}
+                        >
+                          {item.lang}
+                          <Button
+                            size="small"
+                            type="text"
+                            shape="circle"
+                            className="tableItemRemove"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeLang(item.lang);
+                            }}
+                          >
+                            ×
+                          </Button>
+                        </Button>
+                      </div>
                     );
                   })}
                 </div>
@@ -143,7 +182,7 @@ export function useShowCode(props: ShowCodeProps) {
                   icon={<PlusOutlined />}
                   type="text"
                   onClick={() => {
-                    setAddPanelVisible(true);
+                    setAddPanelVisible(!addPanelVisible);
                   }}
                 ></Button>
               </Popover>

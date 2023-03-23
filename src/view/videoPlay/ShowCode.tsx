@@ -44,7 +44,9 @@ export function ShowCodeView(props: ShowCodeViewProps) {
               return (
                 <Button
                   className="tabItem"
+                  style={{ padding: "0px 15px" }}
                   key={item.lang}
+                  type={nowItem.lang === item.lang ? "link" : "text"}
                   onClick={() => {
                     setItem(item);
                   }}
