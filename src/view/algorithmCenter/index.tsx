@@ -2,7 +2,7 @@ import "./index.css";
 import { Button, Input, Popover } from "antd";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as algorithmAPI from "../../net/algorithmAPI";
 import { getDateString, getIntRandom, randomColor } from "../../common/utils";
 import {
@@ -17,6 +17,10 @@ import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
+import { getAlInfo } from "../algorithmEdit";
+import { openDialog } from "../dialogs/dialog";
+import { InputContent, inputListDialogSub } from "../../components/inputList";
+import { ApiDriver } from "../../openAPI/driver";
 
 export type Algorithm = {
   id: string;
@@ -134,6 +138,42 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
   useEffect(() => {
     setAlgorithms(props.list);
   }, [props.list]);
+
+  const run = useCallback(
+    async function (id: string) {
+      let info = await getAlInfo(id);
+      let showCode = info.content.showCode ?? null;
+      let code = info.content.runCode;
+      let inputList = info.content.inputList;
+      let inputEnable = inputList !== null;
+      let descrition = info.descrition;
+      if (inputEnable) {
+        openDialog("inputListDialog", {
+          descrition: descrition ?? "",
+          inputData: inputList,
+        });
+        let inputData: InputContent[] = await (async function () {
+          return new Promise((resolve) => {
+            let sub = inputListDialogSub.subscribe((d) => {
+              resolve(d);
+              sub.unsubscribe();
+            });
+          });
+        })();
+
+        if (code) {
+          await ApiDriver.start(code, showCode, descrition ?? "", inputData);
+          navigate("/videoPlay");
+        }
+      }
+      if (code) {
+        await ApiDriver.start(code, showCode, descrition ?? "");
+        navigate("/videoPlay");
+      }
+    },
+    [navigate]
+  );
+
   return algorithms ? (
     algorithms.length > 0 ? (
       <div className="listContainer">
@@ -168,7 +208,9 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                         shape="circle"
                         size="large"
                         icon={<PlaySquareOutlined />}
-                        onClick={() => {}}
+                        onClick={() => {
+                          run(item.id);
+                        }}
                       ></Button>
                     )}
                     {readable && (

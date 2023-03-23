@@ -119,7 +119,9 @@ export function useMarkDownEdit(editable: boolean) {
         }}
         getMdeInstance={(mde: any) => {
           if (!editable) {
-            mde.togglePreview();
+            if (!mde.isPreviewActive()) {
+              mde.togglePreview();
+            }
           }
         }}
       ></SimpleMDE>

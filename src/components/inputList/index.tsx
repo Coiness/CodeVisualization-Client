@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { closeDialog } from "../../view/dialogs/dialog";
 import { Subject } from "../../common/utils";
+import { InfoEdit } from "../infoEdit";
 
 export interface InputContent {
   key: string;
@@ -125,7 +126,10 @@ export function useInputList(editable: boolean) {
 
 export const inputListDialogSub = new Subject<InputContent[]>();
 
-export function InputListDialog(visible: boolean, data: InputContent[]) {
+export function InputListDialog(
+  visible: boolean,
+  data?: { inputData: InputContent[]; descrition: string }
+) {
   const { el, getData, setData } = useInputList(false);
   const closePanel = useCallback(() => {
     closeDialog("inputListDialog");
@@ -133,7 +137,7 @@ export function InputListDialog(visible: boolean, data: InputContent[]) {
 
   useEffect(() => {
     if (data) {
-      setData(data);
+      setData(data.inputData);
     }
   }, [data, setData]);
 
@@ -152,6 +156,13 @@ export function InputListDialog(visible: boolean, data: InputContent[]) {
       closable={false}
     >
       <div className="inputListDialog">
+        {data && data.descrition !== "" && (
+          <InfoEdit
+            text={data.descrition}
+            editable={false}
+            onSave={() => {}}
+          ></InfoEdit>
+        )}
         {el}
         <div className="submit">
           <Button type="primary" onClick={submit}>

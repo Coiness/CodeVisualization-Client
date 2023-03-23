@@ -33,7 +33,7 @@ export type AlgorithmInfo = {
   descrition: string;
 };
 
-async function getAlInfo(id: string | null) {
+export async function getAlInfo(id: string | null): Promise<AlgorithmInfo> {
   if (id === null) {
     return {
       id: "",
@@ -155,7 +155,10 @@ export function AlgorithmEdit() {
     let code = getRunCode();
     if (inputEnable) {
       let data = getInputListData();
-      openDialog("inputListDialog", data);
+      openDialog("inputListDialog", {
+        descrition: alInfo?.descrition ?? "",
+        inputData: data,
+      });
       data = await (async function () {
         return new Promise((resolve) => {
           let sub = inputListDialogSub.subscribe((d) => {
