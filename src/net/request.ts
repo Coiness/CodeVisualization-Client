@@ -1,3 +1,4 @@
+import { message } from "antd";
 import axios, { AxiosRequestConfig } from "axios";
 import { getToken } from "./token";
 import { Result, ResultCode } from "./type";
@@ -48,6 +49,7 @@ export async function request(
   let r = res.data;
   if (r.code !== ResultCode.Success) {
     console.log("请求失败", { ...r });
+    message.error(r.message);
   }
   return r;
 }

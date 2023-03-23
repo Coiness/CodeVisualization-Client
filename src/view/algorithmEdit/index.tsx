@@ -196,9 +196,9 @@ export function AlgorithmEdit() {
           alInfo !== null ? (
             <div className="algorithmEditHeader">
               <div className="name">{alInfo.name}</div>
-              <Button onClick={save}>保存</Button>
+              {editable && <Button onClick={save}>保存</Button>}
               <Button onClick={run}>执行</Button>
-              {alInfo.name !== "" && (
+              {alInfo.name !== "" && editable && (
                 <Select
                   value={alInfo.permission}
                   onChange={handleSelectChange}
