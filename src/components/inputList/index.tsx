@@ -20,29 +20,32 @@ export function useInputList(editable: boolean) {
   const nowId = useRef<number>(0);
   const [data, setInputData] = useState<InputContentAndId[]>([]);
 
-  function handleAdd() {
-    setData([...data, { id: nowId.current++, key: "", value: "" }]);
-  }
-
-  function getData() {
+  const getData = useCallback(() => {
     return data.map((item) => {
       return {
         key: item.key,
         value: item.value,
       };
     });
-  }
+  }, [data]);
 
-  function setData(data: InputContent[]) {
-    setInputData(
-      data.map((item) => {
-        return {
-          ...item,
-          id: nowId.current++,
-        };
-      })
-    );
-  }
+  const setData = useCallback(
+    (newData: InputContent[]) => {
+      setInputData(
+        newData.map((item) => {
+          return {
+            ...item,
+            id: nowId.current++,
+          };
+        })
+      );
+    },
+    [setInputData]
+  );
+
+  const handleAdd = useCallback(() => {
+    setData([...data, { id: nowId.current++, key: "", value: "" }]);
+  }, [data, setData]);
 
   useEffect(() => {
     if (data.length === 0) {
@@ -132,7 +135,7 @@ export function InputListDialog(visible: boolean, data: InputContent[]) {
     if (data) {
       setData(data);
     }
-  }, [data]);
+  }, [data, setData]);
 
   function submit() {
     inputListDialogSub.next(getData());

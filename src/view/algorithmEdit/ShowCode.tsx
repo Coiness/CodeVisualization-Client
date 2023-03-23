@@ -59,14 +59,14 @@ export function useShowCode(props: ShowCodeProps) {
         nowItem.code = getCode();
       };
     }
-  }, [nowItem]);
+  }, [nowItem, setCode, getCode]);
 
   const getInfo = useCallback(() => {
     if (nowItem !== null) {
       nowItem.code = getCode();
     }
     return info;
-  }, [info, nowItem]);
+  }, [info, nowItem, getCode]);
 
   const addLang = useCallback(
     (lang: ShowCodeLanguage) => {

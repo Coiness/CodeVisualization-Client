@@ -16,7 +16,6 @@ import {
 import { InfoEditDialogParams } from "../../components/infoEdit";
 import { getAccount } from "../../net/token";
 import { ShowCodeInfo, useShowCode } from "./ShowCode";
-import { Loading } from "../../components/loading";
 import { ShowCodeLanguage } from "./type";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
@@ -80,23 +79,27 @@ export function AlgorithmEdit() {
     info: alInfo?.content.showCode ?? null,
   });
 
+  const lastId = useRef<string>("");
   const id = getLocationQuery("id", location.search);
   const nameRef = useRef<string>(alInfo?.name ?? "");
   const editable = !alInfo?.id || alInfo?.account === getAccount();
 
   const load = useCallback(() => {
-    getAlInfo(id).then((info: AlgorithmInfo) => {
-      setInfo(info);
-      if (info.content.inputList) {
-        setInputListData(info.content.inputList);
-        setInputEnable(true);
-      }
-      if (info.content.showCode) {
-        setShowCodeEnable(true);
-      }
-      setRunCode(info.content.runCode);
-    });
-  }, [id, setInfo]);
+    if (id !== lastId.current) {
+      lastId.current = id ?? "";
+      getAlInfo(id).then((info: AlgorithmInfo) => {
+        setInfo(info);
+        if (info.content.inputList) {
+          setInputListData(info.content.inputList);
+          setInputEnable(true);
+        }
+        if (info.content.showCode) {
+          setShowCodeEnable(true);
+        }
+        setRunCode(info.content.runCode);
+      });
+    }
+  }, [id, setInfo, setInputListData, setRunCode]);
 
   useEffect(load, [id, load]);
 
@@ -185,14 +188,6 @@ export function AlgorithmEdit() {
       });
     }
   }
-
-  // if (!alInfo) {
-  //   return (
-  //     <div className="algorithmEdit">
-  //       <Loading></Loading>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="algorithmEdit">

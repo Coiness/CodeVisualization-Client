@@ -26,14 +26,14 @@ export function ShowCodeView(props: ShowCodeViewProps) {
       setCode(nowItem.code);
       setHeightLine(player.getHeightLine(nowItem.lang));
     }
-  }, [nowItem, setCode]);
+  }, [nowItem, setCode, setHeightLine]);
 
   useEffect(() => {
     let sub = player.progress.subscribe(() => {
       setHeightLine(player.getHeightLine(nowItem.lang));
     });
     return sub.unsubscribe;
-  }, [setHeightLine]);
+  }, [setHeightLine, nowItem]);
 
   return (
     <div className="showCodeManager">
