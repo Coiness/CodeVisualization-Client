@@ -115,6 +115,10 @@ export function VideoPlay() {
     }
   }
 
+  const showCodeVisible = Boolean(vInfo?.video.showCode);
+  const consoleVisible = Boolean(vInfo?.video.consoles);
+  const rightVisible = showCodeVisible || consoleVisible;
+
   return (
     <div className="videoPlay">
       <Header
@@ -171,16 +175,20 @@ export function VideoPlay() {
           <div className="left">
             <MainCanvas className={"mainCanvas"} editable={false}></MainCanvas>
           </div>
-          <div className="right">
-            {vInfo?.video.showCode && (
-              <div className="top">
-                <ShowCodeView info={vInfo.video.showCode}></ShowCodeView>
-              </div>
-            )}
-            <div className="bottom">
-              <Console></Console>
+          {rightVisible && (
+            <div className="right">
+              {showCodeVisible && (
+                <div className="top">
+                  <ShowCodeView info={vInfo!.video.showCode!}></ShowCodeView>
+                </div>
+              )}
+              {consoleVisible && (
+                <div className="bottom">
+                  <Console></Console>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
         <Control></Control>
       </div>
