@@ -108,7 +108,7 @@ export function test() {
   //   { t: "c", p: "b.d", c: [3] },
   //   { t: "d", p: "f", c: [{ g: 6 }] },
   // ];
-  // doChange(o1, d1);
+  doChange(o1, d1);
   doInvertedChange(o2, d1);
   console.log("DEBUG: \n", JSON.stringify(o1), "\n", JSON.stringify(o2));
 }
