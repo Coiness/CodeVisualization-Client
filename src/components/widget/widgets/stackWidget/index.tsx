@@ -1,3 +1,4 @@
+import "./index.css";
 import { listenModelChange, widgetModelManager } from "../..";
 import { cls, Subject, useDomPropertyListener } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
@@ -12,8 +13,8 @@ import {
 } from "../../controlPanelItem/StackControl";
 import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget } from "../ValueWidget";
-import "./index.css";
 import { useStackActionAnimation } from "./animation";
+import { DeleteWidget } from "../../controlPanelItem/DeleteWidget";
 
 type Value = WidgetModel[];
 
@@ -170,6 +171,7 @@ export function StackWidgetControlPanel() {
     <div className="stackControlPanel">
       <WidgetInfoView></WidgetInfoView>
       <StackControl></StackControl>
+      <DeleteWidget></DeleteWidget>
     </div>
   );
 }

@@ -37,6 +37,7 @@ export const animationApi: AnimationApi = {
     if (params.type === "number") {
       const p = params as AddNumberWidgetParams;
       action = WidgetRendererAction.create(s.widgetManagerModel, {
+        type: "create",
         model: {
           id: "",
           type: WidgetType.Number,
@@ -54,6 +55,7 @@ export const animationApi: AnimationApi = {
     } else if (params.type === "string") {
       const p = params as AddStringWidgetParams;
       action = WidgetRendererAction.create(s.widgetManagerModel, {
+        type: "create",
         model: {
           id: "",
           type: WidgetType.String,
@@ -71,6 +73,7 @@ export const animationApi: AnimationApi = {
     } else if (params.type === "stack") {
       const p = params as AddStackWidgetParams;
       action = WidgetRendererAction.create(s.widgetManagerModel, {
+        type: "create",
         model: {
           id: "",
           type: WidgetType.Stack,

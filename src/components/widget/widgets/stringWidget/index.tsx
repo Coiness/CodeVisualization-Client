@@ -1,3 +1,4 @@
+import "./index.css";
 import { listenModelChange } from "../..";
 import { cls, Subject } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
@@ -9,9 +10,9 @@ import {
   ValueEdit,
   WidgetInfoView,
 } from "../../controlPanelItem";
+import { DeleteWidget } from "../../controlPanelItem/DeleteWidget";
 import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
-import "./index.css";
 
 type Value = string | null;
 
@@ -118,6 +119,7 @@ export function StringWidgetControlPanel() {
       <WidgetInfoView></WidgetInfoView>
       <ValueEdit></ValueEdit>
       <StringControl></StringControl>
+      <DeleteWidget></DeleteWidget>
     </div>
   );
 }

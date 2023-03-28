@@ -23,7 +23,7 @@ import {
 } from "./controlPanelItem/SelectWidget";
 
 export interface WidgetRendererModel extends CommonModel {
-  widgets: WidgetModel[];
+  widgets: (WidgetModel | null)[];
   width: number;
   height: number;
   color: string;
@@ -172,6 +172,7 @@ export function Widget(props: WidgetProps) {
   const isActive = activeWidgetValue?.id === model.id;
   const dom = useWidgetAnimation(model);
   const editable = props.editable;
+
   if (!checkNil({ x, y, width, height, color })) {
     console.log("ERROR: ", "参数缺失");
     return null;
@@ -249,6 +250,9 @@ export function WidgetRenderer(props: WidgetRendererProps) {
       }}
     >
       {widgets.map((widgetModel) => {
+        if (widgetModel === null) {
+          return null;
+        }
         return (
           <Widget
             key={widgetModel.id}

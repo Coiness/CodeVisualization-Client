@@ -16,7 +16,6 @@
 - 下载 & 上传
 
 ## P2
-- 新增 Delete Widget Action
 - 新增 树节点 Widget 
 - Web 编辑器 API 代码提示
 - 信息通知栏

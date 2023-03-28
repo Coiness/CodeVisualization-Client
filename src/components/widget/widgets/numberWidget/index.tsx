@@ -1,3 +1,4 @@
+import "./index.css";
 import { listenModelChange, useModelChange } from "../..";
 import { cls, Subject } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
@@ -7,7 +8,7 @@ import { IncDec, ValueEdit, WidgetInfoView } from "../../controlPanelItem";
 import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
 import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
-import "./index.css";
+import { DeleteWidget } from "../../controlPanelItem/DeleteWidget";
 
 type Value = number | null;
 
@@ -124,6 +125,7 @@ export function NumberWidgetControlPanel() {
       <WidgetInfoView></WidgetInfoView>
       <ValueEdit></ValueEdit>
       <IncDec></IncDec>
+      <DeleteWidget></DeleteWidget>
     </div>
   );
 }
