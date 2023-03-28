@@ -3,7 +3,7 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
 import "monaco-editor/esm/vs/basic-languages/java/java.contribution";
 import "monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { ShowCodeLanguage } from "./type";
 
 export function useCodeEditor(
@@ -26,19 +26,25 @@ export function useCodeEditor(
 
   let code = useRef<string>();
 
-  function getCode() {
+  const getCode = useCallback(() => {
     code.current = editor.current?.getValue();
     return code.current ?? "";
-  }
+  }, [code.current, editor.current]);
 
-  function setCode(c: string) {
-    code.current = c;
-    editor.current?.setValue(code.current);
-  }
+  const setCode = useCallback(
+    (c: string) => {
+      code.current = c;
+      editor.current?.setValue(code.current);
+    },
+    [code.current, editor.current]
+  );
 
-  function setHeightLine(row: number) {
-    editor.current?.setSelection(new monaco.Selection(row, 0, row, 0));
-  }
+  const setHeightLine = useCallback(
+    (row: number) => {
+      editor.current?.setSelection(new monaco.Selection(row, 0, row, 0));
+    },
+    [editor.current]
+  );
 
   useEffect(() => {
     const d = dom.current;
@@ -53,6 +59,7 @@ export function useCodeEditor(
 
       return () => {
         if (d) {
+          editor.current?.dispose();
           while (d.children.length > 0) {
             d.removeChild(d.children[0]);
           }
