@@ -17,7 +17,10 @@ export function getModelById(id: string): BaseModel | null {
   return getModelByIdDfs(id, s);
 }
 
-function getModelByIdDfs(id: string, now: Obj): BaseModel | null {
+function getModelByIdDfs(id: string, now: Obj | null): BaseModel | null {
+  if (!now) {
+    return null;
+  }
   if (now["id"] === id) {
     return now as BaseModel;
   }

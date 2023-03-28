@@ -122,6 +122,23 @@ export const animationApi: AnimationApi = {
     return {} as T["addWidgetResult"];
   },
 
+  deleteWidget(params: { id: string }) {
+    const s = snapshot.get();
+    if (s === null) {
+      throw new Error("animation api deleteWidget: snapshot is null");
+    }
+    const model = getModelById(params.id);
+    if (model === null) {
+      // TODO 给用户提示 model id 不存在
+      return;
+    }
+    const action = WidgetRendererAction.create(s.widgetManagerModel, {
+      type: "delete",
+      model,
+    });
+    commitAction(action);
+  },
+
   moveWidget(params: MoveWidgetParams) {
     const model = getModelById(params.id);
     if (model === null) {

@@ -53,7 +53,6 @@ export function useShowCode(props: ShowCodeProps) {
   }, [props.info]);
 
   useEffect(() => {
-    console.log("nowItem change", nowItem);
     if (nowItem !== null) {
       setCode(nowItem.code);
       return () => {
