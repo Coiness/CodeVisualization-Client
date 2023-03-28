@@ -1,9 +1,10 @@
 ## P0
-- 首页引导
-- API 文档
+- 增加 change color action
 - 增加最佳实践案例
+- 首页引导
 - 算法执行沙箱环境
 - snapshot 增加版本控制
+- API 文档
 
 ## P1
 - UI 优化
