@@ -13,6 +13,8 @@ import { AnimationApi } from "./types";
 import {
   BaseWidget,
   BaseWidgetType,
+  ChangeWidgetColorParams,
+  DeleteWidgetParams,
   MoveWidgetParams,
   ResizeWidgetParams,
 } from "./types/widget/Base";
@@ -122,7 +124,7 @@ export const animationApi: AnimationApi = {
     return {} as T["addWidgetResult"];
   },
 
-  deleteWidget(params: { id: string }) {
+  deleteWidget(params: DeleteWidgetParams) {
     const s = snapshot.get();
     if (s === null) {
       throw new Error("animation api deleteWidget: snapshot is null");
@@ -167,6 +169,20 @@ export const animationApi: AnimationApi = {
         w: params.width,
         h: params.height,
       },
+    });
+    commitAction(action);
+  },
+
+  changeWidgetColor(params: ChangeWidgetColorParams) {
+    const model = getModelById(params.id);
+    const color = params.color;
+    if (model === null) {
+      // TODO 给用户提示 model id 不存在
+      return;
+    }
+    const action = WidgetAction.create(model, {
+      type: "changeColor",
+      change: color,
     });
     commitAction(action);
   },

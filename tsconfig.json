@@ -17,5 +17,5 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "types": ["showdown"]
+  "types": ["showdown", "react-color"]
 }

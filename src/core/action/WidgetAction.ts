@@ -20,6 +20,11 @@ export type WidgetActionData =
       id: string;
       type: "move";
       change: { x: number; y: number };
+    }
+  | {
+      id: string;
+      type: "changeColor";
+      change: string;
     };
 
 type CreateWidgetActionParams =
@@ -30,6 +35,10 @@ type CreateWidgetActionParams =
   | {
       type: "move";
       change: { x: number; y: number };
+    }
+  | {
+      type: "changeColor";
+      change: string;
     };
 
 export class WidgetAction extends BaseAction {
@@ -58,6 +67,8 @@ export class WidgetAction extends BaseAction {
         ["width", change.w],
         ["height", change.h],
       ]);
+    } else if (type === "changeColor") {
+      cs = getCS(model, [["color", change]]);
     } else {
       throw new Error("create WidgetAction type error");
     }

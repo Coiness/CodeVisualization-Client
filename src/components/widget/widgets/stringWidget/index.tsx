@@ -13,6 +13,7 @@ import {
 import { DeleteWidget } from "../../controlPanelItem/DeleteWidget";
 import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
+import { ColorEdit } from "../../controlPanelItem/ColorEdit";
 
 type Value = string | null;
 
@@ -119,6 +120,7 @@ export function StringWidgetControlPanel() {
       <WidgetInfoView></WidgetInfoView>
       <ValueEdit></ValueEdit>
       <StringControl></StringControl>
+      <ColorEdit></ColorEdit>
       <DeleteWidget></DeleteWidget>
     </div>
   );

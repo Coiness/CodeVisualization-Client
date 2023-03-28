@@ -151,6 +151,9 @@ export function useWidgetAnimation(model: BaseModel) {
             end
           )
         );
+      } else if (actionData.type === "changeColor") {
+        setStop(() => {});
+        end();
       } else {
         throw new Error("widget exec action: action data type error");
       }

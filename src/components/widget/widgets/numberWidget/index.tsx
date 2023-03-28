@@ -9,6 +9,7 @@ import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
 import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget, ValueWidgetModel } from "../ValueWidget";
 import { DeleteWidget } from "../../controlPanelItem/DeleteWidget";
+import { ColorEdit } from "../../controlPanelItem/ColorEdit";
 
 type Value = number | null;
 
@@ -125,6 +126,7 @@ export function NumberWidgetControlPanel() {
       <WidgetInfoView></WidgetInfoView>
       <ValueEdit></ValueEdit>
       <IncDec></IncDec>
+      <ColorEdit></ColorEdit>
       <DeleteWidget></DeleteWidget>
     </div>
   );

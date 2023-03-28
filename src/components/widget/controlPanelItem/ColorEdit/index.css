@@ -1,0 +1,26 @@
+.colorEdit {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.colorEdit .displayBox {
+  position: relative;
+  width: 100px;
+  height: 32px;
+  border-radius: 5px;
+}
+
+.colorEdit .displayBox .picker {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+}
+
+.colorEdit .displayBox:hover .picker {
+  display: block;
+}

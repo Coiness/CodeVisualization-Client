@@ -10,16 +10,20 @@ export function ControlPanel() {
     let Comp = getWidgetControlPanel(widget.type);
     return (
       <div className="controlPanel">
-        <Comp></Comp>
+        <div className="controlPanelContent">
+          <Comp></Comp>
+        </div>
       </div>
     );
   } else {
     return (
       <div className="controlPanel">
-        <Empty
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description={"未选择元素"}
-        />
+        <div className="controlPanelContent">
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={"未选择元素"}
+          />
+        </div>
       </div>
     );
   }

@@ -15,6 +15,7 @@ import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget } from "../ValueWidget";
 import { useStackActionAnimation } from "./animation";
 import { DeleteWidget } from "../../controlPanelItem/DeleteWidget";
+import { ColorEdit } from "../../controlPanelItem/ColorEdit";
 
 type Value = WidgetModel[];
 
@@ -171,6 +172,7 @@ export function StackWidgetControlPanel() {
     <div className="stackControlPanel">
       <WidgetInfoView></WidgetInfoView>
       <StackControl></StackControl>
+      <ColorEdit></ColorEdit>
       <DeleteWidget></DeleteWidget>
     </div>
   );

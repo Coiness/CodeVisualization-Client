@@ -1,6 +1,13 @@
 .controlPanel {
+  overflow-y: scroll;
+}
+
+.controlPanel::-webkit-scrollbar {
+  display: none;
+}
+
+.controlPanel .controlPanelContent {
   width: 240px;
-  height: 100%;
   box-shadow: 0px 0px 5px 0px #ccc;
   box-sizing: border-box;
   padding: 10px;
