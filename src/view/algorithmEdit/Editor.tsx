@@ -26,26 +26,6 @@ export function useCodeEditor(
 
   let code = useRef<string>();
 
-  const getCode = useCallback(() => {
-    code.current = editor.current?.getValue();
-    return code.current ?? "";
-  }, [code.current, editor.current]);
-
-  const setCode = useCallback(
-    (c: string) => {
-      code.current = c;
-      editor.current?.setValue(code.current);
-    },
-    [code.current, editor.current]
-  );
-
-  const setHeightLine = useCallback(
-    (row: number) => {
-      editor.current?.setSelection(new monaco.Selection(row, 0, row, 0));
-    },
-    [editor.current]
-  );
-
   useEffect(() => {
     const d = dom.current;
     if (d) {
@@ -67,6 +47,26 @@ export function useCodeEditor(
       };
     }
   }, [dom, dom.current, theme, language]);
+
+  const getCode = useCallback(() => {
+    code.current = editor.current?.getValue();
+    return code.current ?? "";
+  }, [code.current, editor.current]);
+
+  const setCode = useCallback(
+    (c: string) => {
+      code.current = c;
+      editor.current?.setValue(code.current);
+    },
+    [code.current, editor.current]
+  );
+
+  const setHeightLine = useCallback(
+    (row: number) => {
+      editor.current?.setSelection(new monaco.Selection(row, 0, row, 0));
+    },
+    [editor.current]
+  );
 
   return {
     el: <div className="codeEditor" ref={dom}></div>,

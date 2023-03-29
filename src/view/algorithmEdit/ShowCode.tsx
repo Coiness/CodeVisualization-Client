@@ -55,9 +55,6 @@ export function useShowCode(props: ShowCodeProps) {
   useEffect(() => {
     if (nowItem !== null) {
       setCode(nowItem.code);
-      return () => {
-        nowItem.code = getCode();
-      };
     }
   }, [nowItem, setCode, getCode]);
 
@@ -123,22 +120,25 @@ export function useShowCode(props: ShowCodeProps) {
                           className="tabItem"
                           key={item.lang}
                           onClick={() => {
+                            nowItem.code = getCode();
                             setItem(item);
                           }}
                         >
                           {item.lang}
-                          <Button
-                            size="small"
-                            type="text"
-                            shape="circle"
-                            className="tableItemRemove"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeLang(item.lang);
-                            }}
-                          >
-                            ×
-                          </Button>
+                          {info.list.length > 1 && (
+                            <Button
+                              size="small"
+                              type="text"
+                              shape="circle"
+                              className="tableItemRemove"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeLang(item.lang);
+                              }}
+                            >
+                              ×
+                            </Button>
+                          )}
                         </Button>
                       </div>
                     );

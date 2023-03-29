@@ -26,7 +26,6 @@ import { widgetModelManager } from "../../components/widget";
 import { StackWidget } from "../../components/widget/widgets/stackWidget";
 
 const modelKey = Symbol("modelKey");
-const widgets: { [key: string]: BaseWidget } = {};
 
 export const animationApi: AnimationApi = {
   addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]) {
@@ -90,7 +89,8 @@ export const animationApi: AnimationApi = {
       const id = (action!.data as any).model.id;
       info = {
         size() {
-          return (action!.data as any).model.value.length;
+          let model = getModelById((action!.data as any).model.id)!;
+          return model.value.length;
         },
         push(widget: BaseWidget) {
           const model = getModelById(id)!;
@@ -102,7 +102,7 @@ export const animationApi: AnimationApi = {
           const stack = widgetModelManager.getWidget(model) as StackWidget;
           const m = stack.pop();
           if (m) {
-            return widgets[m.id];
+            return m;
           }
           return null;
         },
@@ -118,7 +118,6 @@ export const animationApi: AnimationApi = {
         [modelKey]: (action.data as any).model,
         ...info,
       } as T["addWidgetResult"];
-      widgets[id] = res;
       return res;
     }
     return {} as T["addWidgetResult"];
