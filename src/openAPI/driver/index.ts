@@ -25,7 +25,7 @@ function getAllkeys(obj: Object): string[] {
   return arr;
 }
 
-type EL = { error: Error | null; logs: any[][] };
+export type EL = { error: Error | null; logs: any[][] };
 
 function executeSafely(
   code: string,
@@ -59,7 +59,6 @@ function executeSafely(
       logs.push(args);
     },
   };
-  myConsole = console;
   let error: Error | null = null;
 
   try {
@@ -68,7 +67,6 @@ function executeSafely(
 							${new Array(attrs.length).fill("undefined")},
 							${publicAttrsStr},
 							${paramsValueStr},
-							API,
 							myConsole
 						)
 						API.commonApi.end();

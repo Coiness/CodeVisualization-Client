@@ -7,7 +7,6 @@ import { closeDialog, openDialog } from "../dialogs/dialog";
 import { getLocationQuery, Subject } from "../../common/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as algorithmAPI from "../../net/algorithmAPI";
-import { ApiDriver } from "../../openAPI/driver";
 import {
   InputContent,
   inputListDialogSub,
@@ -17,6 +16,7 @@ import { InfoEditDialogParams } from "../../components/infoEdit";
 import { getAccount } from "../../net/token";
 import { ShowCodeInfo, useShowCode } from "./ShowCode";
 import { ShowCodeLanguage } from "./type";
+import { execAlgorithm } from "./execAlgortithm";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
 
@@ -32,22 +32,6 @@ export type AlgorithmInfo = {
   permission: number;
   descrition: string;
 };
-
-export async function execAlgorithm(
-  code: string,
-  showCode: ShowCodeInfo | null,
-  descrition: string,
-  navigate: (url: string) => void,
-  initData?: InputContent[]
-) {
-  let res = await ApiDriver.start(code, showCode, descrition, initData);
-  if (res === true) {
-    navigate("/videoPlay");
-  } else {
-    // todo 增加报错弹框
-    console.log("DEBUG: ", res);
-  }
-}
 
 export async function getAlInfo(id: string | null): Promise<AlgorithmInfo> {
   if (id === null) {

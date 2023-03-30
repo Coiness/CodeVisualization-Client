@@ -17,9 +17,10 @@ import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
-import { execAlgorithm, getAlInfo } from "../algorithmEdit";
+import { getAlInfo } from "../algorithmEdit";
 import { openDialog } from "../dialogs/dialog";
 import { InputContent, inputListDialogSub } from "../../components/inputList";
+import { execAlgorithm } from "../algorithmEdit/execAlgortithm";
 
 export type Algorithm = {
   id: string;

@@ -4,6 +4,7 @@ import { InfoEditDialog } from "../../components/infoEdit";
 import { InputListDialog } from "../../components/inputList";
 import { Login } from "../../components/login";
 import { SetAlgorithmNameDialog } from "../algorithmEdit";
+import { ExecCodeErrorDialog } from "../algorithmEdit/execAlgortithm";
 import { SetProjectNameDialog } from "../project/headerToolBar";
 import { SetVideoNameDialog } from "../videoPlay";
 
@@ -14,6 +15,7 @@ const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   setVideoName: SetVideoNameDialog,
   inputListDialog: InputListDialog,
   infoEditDialog: InfoEditDialog,
+  execCodeErrorDialog: ExecCodeErrorDialog,
 };
 
 const sub = new Subject<{ key: string; status: boolean; data?: any }>();

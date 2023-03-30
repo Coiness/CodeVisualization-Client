@@ -1,0 +1,31 @@
+.execCodeErrorContent {
+  overflow: hidden;
+}
+
+.execCodeErrorContent > h2 {
+  color: #f00;
+}
+
+.execCodeErrorContent > * {
+  margin-top: 12px;
+}
+
+.execCodeErrorContent > * .title {
+  margin-bottom: 10px;
+}
+
+.execCodeErrorContent > * .code {
+  width: 100%;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: #eee;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.execCodeErrorContent > .error > .code {
+  height: 60px;
+}
