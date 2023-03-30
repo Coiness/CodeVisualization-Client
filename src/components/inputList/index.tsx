@@ -152,7 +152,8 @@ export function InputListDialog(
       maskClosable={true}
       onCancel={closePanel}
       footer={null}
-      width={400}
+      width={600}
+      style={{ top: 20 }}
       closable={false}
     >
       <div className="inputListDialog">

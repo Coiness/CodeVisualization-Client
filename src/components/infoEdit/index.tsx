@@ -103,6 +103,7 @@ export function useMarkDownEdit(editable: boolean) {
     return {
       autofocus: true,
       spellChecker: false,
+      maxHeight: "375px",
       previewRender(text) {
         return customMarkdownParser(text);
       },
@@ -120,8 +121,12 @@ export function useMarkDownEdit(editable: boolean) {
         getMdeInstance={(mde: any) => {
           if (!editable) {
             if (!mde.isPreviewActive()) {
+              mde.toolbar_div.style.display = "block";
               mde.togglePreview();
+              mde.toolbar_div.style.display = "none";
             }
+          } else {
+            mde.toolbar_div.style.display = "block";
           }
         }}
       ></SimpleMDE>
