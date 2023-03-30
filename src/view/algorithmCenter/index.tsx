@@ -17,10 +17,9 @@ import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
-import { getAlInfo } from "../algorithmEdit";
+import { execAlgorithm, getAlInfo } from "../algorithmEdit";
 import { openDialog } from "../dialogs/dialog";
 import { InputContent, inputListDialogSub } from "../../components/inputList";
-import { ApiDriver } from "../../openAPI/driver";
 
 export type Algorithm = {
   id: string;
@@ -162,13 +161,18 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
         })();
 
         if (code) {
-          await ApiDriver.start(code, showCode, descrition ?? "", inputData);
-          navigate("/videoPlay");
+          await execAlgorithm(
+            code,
+            showCode,
+            descrition ?? "",
+            navigate,
+            inputData
+          );
         }
-      }
-      if (code) {
-        await ApiDriver.start(code, showCode, descrition ?? "");
-        navigate("/videoPlay");
+      } else {
+        if (code) {
+          await execAlgorithm(code, showCode, descrition ?? "", navigate);
+        }
       }
     },
     [navigate]

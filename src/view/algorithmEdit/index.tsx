@@ -33,6 +33,22 @@ export type AlgorithmInfo = {
   descrition: string;
 };
 
+export async function execAlgorithm(
+  code: string,
+  showCode: ShowCodeInfo | null,
+  descrition: string,
+  navigate: (url: string) => void,
+  initData?: InputContent[]
+) {
+  let res = await ApiDriver.start(code, showCode, descrition, initData);
+  if (res === true) {
+    navigate("/videoPlay");
+  } else {
+    // todo 增加报错弹框
+    console.log("DEBUG: ", res);
+  }
+}
+
 export async function getAlInfo(id: string | null): Promise<AlgorithmInfo> {
   if (id === null) {
     return {
@@ -78,17 +94,14 @@ export function AlgorithmEdit() {
   const { el: ShowCode, getInfo: getShowCodeInfo } = useShowCode({
     info: alInfo?.content.showCode ?? null,
   });
-
   const lastId = useRef<string>("");
   const id = getLocationQuery("id", location.search);
   const nameRef = useRef<string>(alInfo?.name ?? "");
   const editable = !alInfo?.id || alInfo?.account === getAccount();
-
   const load = useCallback(() => {
     if (id !== lastId.current) {
       lastId.current = id ?? "";
       getAlInfo(id).then((info: AlgorithmInfo) => {
-        setInfo(info);
         if (info.content.inputList) {
           setInputListData(info.content.inputList);
           setInputEnable(true);
@@ -97,12 +110,11 @@ export function AlgorithmEdit() {
           setShowCodeEnable(true);
         }
         setRunCode(info.content.runCode);
+        setInfo(info);
       });
     }
   }, [id, setInfo, setInputListData, setRunCode]);
-
   useEffect(load, [id, load]);
-
   async function save(): Promise<string | null> {
     if (alInfo?.id) {
       const content = {
@@ -138,7 +150,6 @@ export function AlgorithmEdit() {
       );
     }
   }
-
   useEffect(() => {
     let sub = setAlgorithmName.subscribe(async (name) => {
       nameRef.current = name;
@@ -149,7 +160,6 @@ export function AlgorithmEdit() {
     });
     return sub.unsubscribe;
   });
-
   async function run() {
     let showCode = getShowCodeInfo() ?? null;
     let code = getRunCode();
@@ -167,18 +177,21 @@ export function AlgorithmEdit() {
           });
         });
       })();
-
       if (code) {
-        await ApiDriver.start(code, showCode, alInfo?.descrition ?? "", data);
-        navigate("/videoPlay");
+        await execAlgorithm(
+          code,
+          showCode,
+          alInfo?.descrition ?? "",
+          navigate,
+          data
+        );
+      }
+    } else {
+      if (code) {
+        await execAlgorithm(code, showCode, alInfo?.descrition ?? "", navigate);
       }
     }
-    if (code) {
-      await ApiDriver.start(code, showCode, alInfo?.descrition ?? "");
-      navigate("/videoPlay");
-    }
   }
-
   function handleSelectChange(v: number) {
     if (alInfo) {
       algorithmAPI.changeAlgorithmPermission(alInfo.id, v).then((flag) => {

@@ -62,13 +62,16 @@ export class CommonApi {
   }
 
   end() {
-    ApiDriver.end({
-      snapshot: defaultSnapshot,
-      steps: cloneDeep(steps),
-      consoles: this.isConsoleEnable ? this.consoles : null,
-      heightlines: this.isShowCodeEnable() ? this.rows : null,
-      showCode: null,
-    });
+    ApiDriver.end(
+      {
+        snapshot: defaultSnapshot,
+        steps: cloneDeep(steps),
+        consoles: this.isConsoleEnable ? this.consoles : null,
+        heightlines: this.isShowCodeEnable() ? this.rows : null,
+        showCode: null,
+      },
+      null
+    );
     steps.length = 0;
     this.console = null;
     this.consoles = [];
