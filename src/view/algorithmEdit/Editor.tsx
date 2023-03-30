@@ -6,6 +6,9 @@ import "monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution";
 import { useEffect, useRef, useCallback } from "react";
 import { ShowCodeLanguage } from "./type";
 
+const EditerLineHeight = 20;
+const ScrollJGRowCount = 1;
+
 export function useCodeEditor(
   theme: "show" | "vs",
   language?: ShowCodeLanguage
@@ -34,6 +37,7 @@ export function useCodeEditor(
         language: language,
         theme: theme,
         readOnly: theme === "show",
+        lineHeight: EditerLineHeight,
       });
       editor.current = r;
 
@@ -63,7 +67,33 @@ export function useCodeEditor(
 
   const setHeightLine = useCallback(
     (row: number) => {
-      editor.current?.setSelection(new monaco.Selection(row, 0, row, 0));
+      if (!dom.current || !editor.current) {
+        return;
+      }
+
+      editor.current.setSelection(new monaco.Selection(row, 0, row, 0));
+      let boxHeight = dom.current.offsetHeight;
+      let nowScroll = editor.current.getScrollTop();
+      let targetTop =
+        Math.max(row - 1 - ScrollJGRowCount, 0) * EditerLineHeight;
+      let targetBottom = (row + ScrollJGRowCount) * EditerLineHeight;
+      let nowViewTop = nowScroll;
+      let nowViewBottom = nowViewTop + boxHeight;
+
+      let targetScroll: number = 0;
+
+      if (targetTop < nowViewTop) {
+        targetScroll = targetTop;
+      } else if (targetBottom > nowViewBottom) {
+        targetScroll = targetBottom - boxHeight;
+      } else {
+        targetScroll = nowScroll;
+      }
+
+      editor.current.setScrollTop(
+        targetScroll,
+        monaco.editor.ScrollType.Smooth
+      );
     },
     [editor.current]
   );

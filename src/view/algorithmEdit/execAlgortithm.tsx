@@ -26,10 +26,6 @@ export function ExecCodeErrorDialog(visible: boolean, data?: EL) {
     closeDialog("execCodeErrorDialog");
   }, []);
 
-  useEffect(() => {
-    console.log("DEBUG: 111", data);
-  }, [data]);
-
   if (!data) {
     return <></>;
   }
