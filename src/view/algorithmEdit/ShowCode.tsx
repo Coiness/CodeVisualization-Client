@@ -114,11 +114,10 @@ export function useShowCode(props: ShowCodeProps) {
                 <div className="scroll">
                   {info.list.map((item) => {
                     return (
-                      <div>
+                      <div key={item.lang}>
                         <Button
                           type={nowItem.lang === item.lang ? "link" : "text"}
                           className="tabItem"
-                          key={item.lang}
                           onClick={() => {
                             nowItem.code = getCode();
                             setItem(item);
@@ -126,10 +125,7 @@ export function useShowCode(props: ShowCodeProps) {
                         >
                           {item.lang}
                           {info.list.length > 1 && (
-                            <Button
-                              size="small"
-                              type="text"
-                              shape="circle"
+                            <span
                               className="tableItemRemove"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -137,7 +133,7 @@ export function useShowCode(props: ShowCodeProps) {
                               }}
                             >
                               ×
-                            </Button>
+                            </span>
                           )}
                         </Button>
                       </div>
@@ -147,7 +143,7 @@ export function useShowCode(props: ShowCodeProps) {
               </div>
               <Popover
                 placement="bottom"
-                visible={addPanelVisible}
+                open={addPanelVisible}
                 content={
                   <div className="addLangList">
                     <div className="scroll">
@@ -161,6 +157,7 @@ export function useShowCode(props: ShowCodeProps) {
                             <Button
                               type="text"
                               className="addLangListItem"
+                              key={item}
                               onClick={() => {
                                 addLang(item);
                                 setAddPanelVisible(false);

@@ -43,7 +43,15 @@
   padding: 0px 5px 0px 15px;
 }
 .showCodeManager .tab .tabContent .scroll .tabItem .tableItemRemove {
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
   margin-left: 2px;
+
+  line-height: 16px;
+}
+.showCodeManager .tab .tabContent .scroll .tabItem .tableItemRemove:hover {
+  background-color: #ddd;
 }
 
 .showCodeManager .tab .addLangEntry {
