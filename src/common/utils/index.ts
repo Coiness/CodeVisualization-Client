@@ -198,3 +198,13 @@ export function downloadString(fileName: string, str: string) {
   aTag.click();
   URL.revokeObjectURL(objectURL);
 }
+
+export async function readUploadFileContent(file: File): Promise<string> {
+  return new Promise((resolve) => {
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function () {
+      resolve(reader.result as string);
+    };
+  });
+}

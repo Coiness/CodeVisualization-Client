@@ -22,6 +22,8 @@ import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
 import { DownloadProjectInfo, getProjectData } from "../project";
+import { openDialog } from "../dialogs/dialog";
+import { FileEndNameMap, FileType } from "../../components/uploadFile";
 
 export type Project = {
   id: string;
@@ -111,6 +113,16 @@ export function ProjectCenter() {
             </Button>
           </div>
           <div className="blank"></div>
+          <div className="upload">
+            <Button
+              type="default"
+              onClick={() => {
+                openDialog("uploadFileDialog", FileType.Project);
+              }}
+            >
+              上传演示
+            </Button>
+          </div>
           <div className="create">
             <Button
               type="default"
@@ -146,7 +158,10 @@ export function ProjectList(props: { list: Project[] | null }) {
       snapshot: data.snapshot,
       descrition: data.descrition,
     } as DownloadProjectInfo;
-    downloadString(`${data.name}.davp`, JSON.stringify(info));
+    downloadString(
+      `${data.name}.${FileEndNameMap[FileType.Project]}`,
+      JSON.stringify(info)
+    );
   }, []);
 
   return projects ? (

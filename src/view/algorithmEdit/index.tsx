@@ -140,7 +140,8 @@ export function AlgorithmEdit() {
       };
       return await algorithmAPI.createAlgorithm(
         nameRef.current,
-        JSON.stringify(content)
+        JSON.stringify(content),
+        ""
       );
     }
   }

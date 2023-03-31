@@ -91,7 +91,8 @@ export function VideoPlay() {
       if (vInfo) {
         return await videoAPI.createVideo(
           nameRef.current,
-          JSON.stringify(vInfo.video)
+          JSON.stringify(vInfo.video),
+          ""
         );
       }
     }

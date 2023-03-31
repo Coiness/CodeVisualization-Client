@@ -26,6 +26,7 @@ import { DownAlgorithmInfo, getAlInfo } from "../algorithmEdit";
 import { openDialog } from "../dialogs/dialog";
 import { InputContent, inputListDialogSub } from "../../components/inputList";
 import { execAlgorithm } from "../algorithmEdit/execAlgortithm";
+import { FileEndNameMap, FileType } from "../../components/uploadFile";
 
 export type Algorithm = {
   id: string;
@@ -117,6 +118,16 @@ export function AlgorithmCenter() {
             </Button>
           </div>
           <div className="blank"></div>
+          <div className="upload">
+            <Button
+              type="default"
+              onClick={() => {
+                openDialog("uploadFileDialog", FileType.Algorithm);
+              }}
+            >
+              上传算法
+            </Button>
+          </div>
           <div className="create">
             <Button
               type="default"
@@ -191,7 +202,10 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
       content: data.content,
       descrition: data.descrition,
     } as DownAlgorithmInfo;
-    downloadString(`${data.name}.dava`, JSON.stringify(info));
+    downloadString(
+      `${data.name}.${FileEndNameMap[FileType.Algorithm]}`,
+      JSON.stringify(info)
+    );
   }, []);
 
   return algorithms ? (

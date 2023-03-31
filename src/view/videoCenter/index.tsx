@@ -21,6 +21,8 @@ import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
 import { DownloadVideoInfo, getVideoInfo } from "../videoPlay";
+import { openDialog } from "../dialogs/dialog";
+import { FileEndNameMap, FileType } from "../../components/uploadFile";
 
 export type Video = {
   id: string;
@@ -109,6 +111,16 @@ export function VideoCenter() {
             </Button>
           </div>
           <div className="blank"></div>
+          <div className="upload">
+            <Button
+              type="default"
+              onClick={() => {
+                openDialog("uploadFileDialog", FileType.Video);
+              }}
+            >
+              上传录像
+            </Button>
+          </div>
         </div>
         <div className="right">
           <VideoList list={videoList}></VideoList>
@@ -138,7 +150,10 @@ export function VideoList(props: { list: Video[] | null }) {
       video: data.video,
       descrition: data.descrition,
     } as DownloadVideoInfo;
-    downloadString(`${data.name}.davv`, JSON.stringify(info));
+    downloadString(
+      `${data.name}.${FileEndNameMap[FileType.Video]}`,
+      JSON.stringify(info)
+    );
   }, []);
 
   return videos ? (

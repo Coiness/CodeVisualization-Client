@@ -47,6 +47,12 @@
   flex: 1;
 }
 
+.projectCenter .projectCenterContent .left > .upload,
+.projectCenter .projectCenterContent .left > .create {
+  height: 50px;
+  margin-top: 10px;
+}
+
 .projectCenter .projectCenterContent .right {
   flex: 1;
 

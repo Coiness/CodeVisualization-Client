@@ -47,6 +47,12 @@
   flex: 1;
 }
 
+.algorithmCenter .algorithmCenterContent .left > .upload,
+.algorithmCenter .algorithmCenterContent .left > .create {
+  height: 50px;
+  margin-top: 10px;
+}
+
 .algorithmCenter .algorithmCenterContent .right {
   flex: 1;
 

@@ -1,8 +1,12 @@
 import { get, post } from "./request";
 import { getAccount } from "./token";
 
-export async function createAlgorithm(name: string, content: string) {
-  let r = await post("/algorithm/create", { name, content });
+export async function createAlgorithm(
+  name: string,
+  content: string,
+  descrition: string
+) {
+  let r = await post("/algorithm/create", { name, content, descrition });
   return r.data.id;
 }
 

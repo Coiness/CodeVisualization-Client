@@ -3,6 +3,7 @@ import { Subject } from "../../common/utils";
 import { InfoEditDialog } from "../../components/infoEdit";
 import { InputListDialog } from "../../components/inputList";
 import { Login } from "../../components/login";
+import { UploadFileDialog } from "../../components/uploadFile";
 import { SetAlgorithmNameDialog } from "../algorithmEdit";
 import { ExecCodeErrorDialog } from "../algorithmEdit/execAlgortithm";
 import { SetProjectNameDialog } from "../project/headerToolBar";
@@ -16,6 +17,7 @@ const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   inputListDialog: InputListDialog,
   infoEditDialog: InfoEditDialog,
   execCodeErrorDialog: ExecCodeErrorDialog,
+  uploadFileDialog: UploadFileDialog,
 };
 
 const sub = new Subject<{ key: string; status: boolean; data?: any }>();

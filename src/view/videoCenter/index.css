@@ -47,6 +47,11 @@
   flex: 1;
 }
 
+.videoCenter .videoCenterContent .left > .upload {
+  height: 50px;
+  margin-top: 10px;
+}
+
 .videoCenter .videoCenterContent .right {
   flex: 1;
 
