@@ -17,6 +17,7 @@ import { getAccount } from "../../net/token";
 import { ShowCodeInfo, useShowCode } from "./ShowCode";
 import { ShowCodeLanguage } from "./type";
 import { execAlgorithm } from "./execAlgortithm";
+import { InputEdit } from "../../components/inputEdit";
 
 export type AlgorithmInfoKey = "id" | "name" | "account" | "snapshot";
 
@@ -206,7 +207,29 @@ export function AlgorithmEdit() {
         content={
           alInfo !== null ? (
             <div className="algorithmEditHeader">
-              <div className="name">{alInfo.name}</div>
+              {alInfo.name !== "" && (
+                <div className="name">
+                  {" "}
+                  <InputEdit
+                    value={alInfo.name}
+                    onChange={async (v: string) => {
+                      let res = await algorithmAPI.renameAlgorithm(
+                        alInfo.id,
+                        v
+                      );
+                      if (res) {
+                        setInfo({
+                          ...alInfo,
+                          name: v,
+                        });
+                      } else {
+                        message.error("修改失败");
+                      }
+                      return res;
+                    }}
+                  ></InputEdit>
+                </div>
+              )}
               {editable && <Button onClick={save}>保存</Button>}
               <Button onClick={run}>执行</Button>
               {alInfo.name !== "" && editable && (

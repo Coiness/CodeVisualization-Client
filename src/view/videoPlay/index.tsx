@@ -21,6 +21,7 @@ import { cloneDeep } from "lodash";
 import { InfoEditDialogParams } from "../../components/infoEdit";
 import { getAccount } from "../../net/token";
 import { ShowCodeView } from "./ShowCode";
+import { InputEdit } from "../../components/inputEdit";
 
 export type VideoInfo = {
   id: string;
@@ -134,7 +135,25 @@ export function VideoPlay() {
         content={
           vInfo ? (
             <div className="videoPlayHeader">
-              <div>{vInfo.name}</div>
+              {vInfo.name !== "" && (
+                <div>
+                  <InputEdit
+                    value={vInfo.name}
+                    onChange={async (v: string) => {
+                      let res = await videoAPI.renameVideo(vInfo.id, v);
+                      if (res) {
+                        setInfo({
+                          ...vInfo,
+                          name: v,
+                        });
+                      } else {
+                        message.error("修改失败");
+                      }
+                      return res;
+                    }}
+                  ></InputEdit>
+                </div>
+              )}
               {vInfo.name === "" && <Button onClick={save}>保存</Button>}
               {vInfo.name !== "" && (
                 <Select

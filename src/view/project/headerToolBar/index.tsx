@@ -14,6 +14,7 @@ import { commitRedo, commitUndo, Recorder } from "../../../core";
 import { initVideoInfo } from "../../../store";
 import { useNavigate } from "react-router-dom";
 import { InfoEditDialogParams } from "../../../components/infoEdit";
+import { InputEdit } from "../../../components/inputEdit";
 
 const recorder = new Recorder();
 
@@ -78,7 +79,22 @@ export function HeaderToolBar(props: {
 
   return (
     <div className="projectHeader">
-      <div className="projectName">{nameRef.current}</div>
+      {nameRef.current !== "" && (
+        <div className="projectName">
+          <InputEdit
+            value={nameRef.current}
+            onChange={async (v: string) => {
+              let res = await projectAPI.renameProject(info.id, v);
+              if (res) {
+                nameRef.current = v;
+              } else {
+                message.error("修改失败");
+              }
+              return res;
+            }}
+          ></InputEdit>
+        </div>
+      )}
       {editable && (
         <Button type="default" onClick={save}>
           保存
