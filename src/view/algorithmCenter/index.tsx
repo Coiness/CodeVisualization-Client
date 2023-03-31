@@ -4,7 +4,12 @@ import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useCallback, useEffect, useState } from "react";
 import * as algorithmAPI from "../../net/algorithmAPI";
-import { getDateString, getIntRandom, randomColor } from "../../common/utils";
+import {
+  downloadString,
+  getDateString,
+  getIntRandom,
+  randomColor,
+} from "../../common/utils";
 import {
   DeleteOutlined,
   DownloadOutlined,
@@ -17,7 +22,7 @@ import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
-import { getAlInfo } from "../algorithmEdit";
+import { DownAlgorithmInfo, getAlInfo } from "../algorithmEdit";
 import { openDialog } from "../dialogs/dialog";
 import { InputContent, inputListDialogSub } from "../../components/inputList";
 import { execAlgorithm } from "../algorithmEdit/execAlgortithm";
@@ -179,6 +184,16 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
     [navigate]
   );
 
+  const downLoadAlgorithm = useCallback(async (id: string) => {
+    let data = await getAlInfo(id);
+    let info = {
+      name: data.name,
+      content: data.content,
+      descrition: data.descrition,
+    } as DownAlgorithmInfo;
+    downloadString(`${data.name}.dava`, JSON.stringify(info));
+  }, []);
+
   return algorithms ? (
     algorithms.length > 0 ? (
       <div className="listContainer">
@@ -223,6 +238,9 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                         shape="circle"
                         size="large"
                         icon={<DownloadOutlined />}
+                        onClick={() => {
+                          downLoadAlgorithm(item.id);
+                        }}
                       ></Button>
                     )}
                     {editable && (

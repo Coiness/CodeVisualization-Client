@@ -21,7 +21,7 @@ function getProjectId(search: string) {
   return getLocationQuery("id", search);
 }
 
-async function getProjectData(id: string | null): Promise<ProjectInfo> {
+export async function getProjectData(id: string | null): Promise<ProjectInfo> {
   if (id === null) {
     let info = initProjectInfo.get();
     return (

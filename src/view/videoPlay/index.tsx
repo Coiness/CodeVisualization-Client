@@ -31,7 +31,15 @@ export type VideoInfo = {
   descrition: string;
 };
 
-async function getVideoInfo(id: string | null): Promise<VideoInfo | null> {
+export type DownloadVideoInfo = {
+  name: string;
+  video: Video;
+  descrition: string;
+};
+
+export async function getVideoInfo(
+  id: string | null
+): Promise<VideoInfo | null> {
   if (id === null) {
     let info = cloneDeep(initVideoInfo.get());
     return info;

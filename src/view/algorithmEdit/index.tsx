@@ -33,6 +33,16 @@ export type AlgorithmInfo = {
   descrition: string;
 };
 
+export type DownAlgorithmInfo = {
+  name: string;
+  content: {
+    showCode: ShowCodeInfo | null;
+    runCode: string;
+    inputList?: InputContent[];
+  };
+  descrition: string;
+};
+
 export async function getAlInfo(id: string | null): Promise<AlgorithmInfo> {
   if (id === null) {
     return {

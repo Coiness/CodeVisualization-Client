@@ -2,9 +2,14 @@ import "./index.css";
 import { Button, Input, Popover } from "antd";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import * as projectAPI from "../../net/projectAPI";
-import { getDateString, getIntRandom, randomColor } from "../../common/utils";
+import {
+  downloadString,
+  getDateString,
+  getIntRandom,
+  randomColor,
+} from "../../common/utils";
 import {
   DeleteOutlined,
   DownloadOutlined,
@@ -16,6 +21,7 @@ import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
+import { DownloadProjectInfo, getProjectData } from "../project";
 
 export type Project = {
   id: string;
@@ -128,9 +134,21 @@ export function ProjectList(props: { list: Project[] | null }) {
   const [projects, setProjects] = useState<Project[] | null>(null);
   const navigate = useNavigate();
   const account = useAccount();
+
   useEffect(() => {
     setProjects(props.list);
   }, [props.list]);
+
+  const downLoadProject = useCallback(async (id: string) => {
+    let data = await getProjectData(id);
+    let info = {
+      name: data.name,
+      snapshot: data.snapshot,
+      descrition: data.descrition,
+    } as DownloadProjectInfo;
+    downloadString(`${data.name}.davp`, JSON.stringify(info));
+  }, []);
+
   return projects ? (
     projects.length > 0 ? (
       <div className="listContainer">
@@ -164,6 +182,9 @@ export function ProjectList(props: { list: Project[] | null }) {
                         shape="circle"
                         size="large"
                         icon={<DownloadOutlined />}
+                        onClick={() => {
+                          downLoadProject(item.id);
+                        }}
                       ></Button>
                     )}
                     {editable && (

@@ -22,3 +22,9 @@ export type ProjectInfo = {
   permission: number;
   descrition: string;
 };
+
+export type DownloadProjectInfo = {
+  name: string;
+  snapshot: Snapshot;
+  descrition: string;
+};

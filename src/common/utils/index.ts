@@ -185,3 +185,16 @@ export function useDomPropertyListener(
   });
   return value;
 }
+
+// 下载字符串到本地文件
+export function downloadString(fileName: string, str: string) {
+  const blob = new Blob([str], {
+    type: "text/plain;charset=utf-8",
+  });
+  const objectURL = URL.createObjectURL(blob);
+  const aTag = document.createElement("a");
+  aTag.href = objectURL;
+  aTag.download = fileName;
+  aTag.click();
+  URL.revokeObjectURL(objectURL);
+}

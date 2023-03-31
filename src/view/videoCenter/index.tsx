@@ -1,10 +1,15 @@
 import "./index.css";
-import { Button, Input, Popover } from "antd";
+import { Button, Input, message, Popover } from "antd";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import * as videoAPI from "../../net/videoAPI";
-import { getDateString, getIntRandom, randomColor } from "../../common/utils";
+import {
+  downloadString,
+  getDateString,
+  getIntRandom,
+  randomColor,
+} from "../../common/utils";
 import {
   DeleteOutlined,
   DownloadOutlined,
@@ -15,6 +20,7 @@ import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
 import { Empty } from "../../components/empty";
 import { useAccount } from "../../components/header/userInfo";
+import { DownloadVideoInfo, getVideoInfo } from "../videoPlay";
 
 export type Video = {
   id: string;
@@ -121,6 +127,20 @@ export function VideoList(props: { list: Video[] | null }) {
     setVideos(props.list);
   }, [props.list]);
 
+  const downloadVideo = useCallback(async (id: string) => {
+    let data = await getVideoInfo(id);
+    if (data === null) {
+      message.error("下载失败");
+      return;
+    }
+    let info = {
+      name: data.name,
+      video: data.video,
+      descrition: data.descrition,
+    } as DownloadVideoInfo;
+    downloadString(`${data.name}.davv`, JSON.stringify(info));
+  }, []);
+
   return videos ? (
     videos.length > 0 ? (
       <div className="listContainer">
@@ -154,6 +174,9 @@ export function VideoList(props: { list: Video[] | null }) {
                         shape="circle"
                         size="large"
                         icon={<DownloadOutlined />}
+                        onClick={() => {
+                          downloadVideo(item.id);
+                        }}
                       ></Button>
                     )}
                     {editable && (
