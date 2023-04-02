@@ -6,7 +6,7 @@ import { actionCommitter, modelSwitcher, Video } from "../../core";
 import { initVideoInfo } from "../../store";
 import { ShowCodeInfo } from "../../view/algorithmEdit/ShowCode";
 import { actions } from "../common/actions";
-import { defaultSnapshot } from "../common/snapshot";
+import { getDefaultSnapshot } from "../common/snapshot";
 import { allowAttrs } from "./allowAttrs";
 
 // 获取对象中除 Symbol 外所有属性
@@ -94,7 +94,7 @@ export class APIDriver {
     descrition: string,
     initData?: InputContent[]
   ): Promise<true | { error: Error | null; logs: any[][] }> {
-    modelSwitcher.pushModel(cloneDeep(defaultSnapshot));
+    modelSwitcher.pushModel(getDefaultSnapshot());
     this.sub = actionCommitter.subscribe((action) => {
       actions.push(action);
     });

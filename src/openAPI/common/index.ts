@@ -1,6 +1,6 @@
 import { steps } from "./steps";
 import { actions } from "./actions";
-import { defaultSnapshot } from "./snapshot";
+import { getDefaultSnapshot } from "./snapshot";
 import { cloneDeep } from "lodash";
 import { ApiDriver } from "../driver";
 import { ConsoleContent } from "../../core";
@@ -64,7 +64,7 @@ export class CommonApi {
   end() {
     ApiDriver.end(
       {
-        snapshot: defaultSnapshot,
+        snapshot: getDefaultSnapshot(),
         steps: cloneDeep(steps),
         consoles: this.isConsoleEnable ? this.consoles : null,
         heightlines: this.isShowCodeEnable() ? this.rows : null,
