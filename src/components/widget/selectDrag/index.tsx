@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import "./index.css";
+import { MainCanvasData } from "../../mainCanvas/MainCanvas";
 
 export type SelectDragProps = {
   dragInfo: {
@@ -21,6 +22,7 @@ export function SelectDrag(props: SelectDragProps) {
   const { width, height, onResize } = resizeInfo;
   const dragStart = useCallback(
     (e: MouseEvent) => {
+      const zoom = MainCanvasData.zoom;
       const parent = dom.current?.parentElement;
       if (!parent) {
         return;
@@ -28,15 +30,18 @@ export function SelectDrag(props: SelectDragProps) {
       const startX = e.clientX;
       const startY = e.clientY;
       const move = (e: MouseEvent) => {
-        parent.style.transform = `translate(${e.clientX - startX}px, ${
-          e.clientY - startY
+        parent.style.transform = `translate(${(e.clientX - startX) / zoom}px, ${
+          (e.clientY - startY) / zoom
         }px)`;
       };
       const up = (e: MouseEvent) => {
         parent.style.transform = "none";
         document.removeEventListener("mousemove", move);
         document.removeEventListener("mouseup", up);
-        onDrag(e.clientX - startX + x, e.clientY - startY + y);
+        onDrag(
+          (e.clientX - startX) / zoom + x,
+          (e.clientY - startY) / zoom + y
+        );
       };
       document.addEventListener("mousemove", move);
       document.addEventListener("mouseup", up);
@@ -47,6 +52,7 @@ export function SelectDrag(props: SelectDragProps) {
   const resizeStart = useCallback(
     (e: MouseEvent) => {
       e.stopPropagation();
+      const zoom = MainCanvasData.zoom;
       const parent = dom.current?.parentElement;
       if (!parent) {
         return;
@@ -55,8 +61,8 @@ export function SelectDrag(props: SelectDragProps) {
       const startY = e.clientY;
       const getWH = (x: number, y: number) => {
         return {
-          w: Math.max(x - startX + width, 50),
-          h: Math.max(y - startY + height, 20),
+          w: Math.max((x - startX) / zoom + width, 30),
+          h: Math.max((y - startY) / zoom + height, 30),
         };
       };
       const move = (e: MouseEvent) => {
