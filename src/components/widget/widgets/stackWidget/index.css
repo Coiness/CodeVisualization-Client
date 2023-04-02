@@ -1,10 +1,13 @@
 .stackWidget {
   position: relative;
   height: 100%;
-  user-select: none;
+
+  /* border: 1px solid #666; */
+  border-radius: 5px;
   box-sizing: border-box;
-  border: 3px solid rgb(236, 118, 0);
-  border-top: 0px;
+  overflow: hidden;
+
+  user-select: none;
 }
 
 .stackWidget .value {
@@ -16,6 +19,11 @@
   align-items: center;
 
   height: 100%;
+
+  box-sizing: border-box;
+  border: 2px solid #666;
+  border-radius: 0px 0px 5px 5px;
+  border-top: 0px;
 }
 
 .stackWidget .value .item {

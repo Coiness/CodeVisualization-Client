@@ -115,7 +115,9 @@ export function Project() {
         ></Header>
         <div className="projectDSContent">
           {editable && <WidgetPanel></WidgetPanel>}
+          <div className="vline"></div>
           <MainCanvas className="main" editable={editable}></MainCanvas>
+          <div className="vline"></div>
           {editable && <ControlPanel></ControlPanel>}
         </div>
       </div>

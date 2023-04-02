@@ -9,7 +9,7 @@ export const getInitSnapshot = () => {
       width,
       height,
       widgets: [],
-      color: "#666",
+      color: "#eee",
     },
   } as Snapshot;
 };

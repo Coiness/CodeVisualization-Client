@@ -4,8 +4,11 @@
   - 录项目介绍视频
 - API 文档
 - UI 优化
-  - WidgetUI 优化
   - CodeEditor 响应式
+- 功能补全
+  - 拖拽创建 Widget
+  - 点击按钮在屏幕中心创建 Widget
+  - 缩放后等比例拖拽
 
 ## P1
 - 安全性、边界处理

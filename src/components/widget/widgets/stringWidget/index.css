@@ -1,6 +1,10 @@
 .stringWidget {
   position: relative;
   height: 100%;
+
+  border: 1px solid #666;
+  border-radius: 5px;
+  box-sizing: border-box;
   user-select: none;
 }
 

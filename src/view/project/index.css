@@ -9,6 +9,11 @@
   box-sizing: border-box;
 }
 
+.projectDSContent .vline {
+  width: 2px;
+  background-color: rgb(122, 162, 255);
+}
+
 .projectDSContent .main {
   position: relative;
   box-sizing: border-box;
