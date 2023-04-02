@@ -3,8 +3,6 @@
 - 首页引导
   - 录项目介绍视频
 - API 文档
-- UI 优化
-  - CodeEditor 响应式
 - 功能补全
   - 拖拽创建 Widget
 

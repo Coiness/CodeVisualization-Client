@@ -3,8 +3,9 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
 import "monaco-editor/esm/vs/basic-languages/java/java.contribution";
 import "monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { ShowCodeLanguage } from "./type";
+import { observeDomSize } from "../../common/utils";
 
 const EditerLineHeight = 20;
 const ScrollJGRowCount = 1;
@@ -26,10 +27,10 @@ export function useCodeEditor(
 
   let dom = useRef<HTMLDivElement | null>(null);
   let editor = useRef<monaco.editor.IStandaloneCodeEditor>();
-
   let code = useRef<string>();
 
   useEffect(() => {
+    console.log("re");
     const d = dom.current;
     if (d) {
       let r = monaco.editor.create(d, {
@@ -38,6 +39,7 @@ export function useCodeEditor(
         theme: theme,
         readOnly: theme === "show",
         lineHeight: EditerLineHeight,
+        automaticLayout: true,
       });
       editor.current = r;
 

@@ -208,3 +208,20 @@ export async function readUploadFileContent(file: File): Promise<string> {
     };
   });
 }
+
+export function observeDomSize(
+  dom: HTMLElement,
+  callback: (width: number, height: number) => void
+) {
+  const myObserver = new ResizeObserver((entries) => {
+    entries.forEach((entry) => {
+      callback(entry.contentRect.width, entry.contentRect.height);
+    });
+  });
+
+  myObserver.observe(dom);
+  return function unobserve() {
+    console.log("un");
+    myObserver.unobserve(dom);
+  };
+}
