@@ -10,6 +10,7 @@ import { stringWidgetDefaultInfo } from "../../../components/widget/widgets/stri
 import { commitAction, WidgetRendererAction } from "../../../core";
 import { snapshot } from "../../../store";
 import "./widgetPanel.css";
+import { cloneDeep } from "lodash";
 
 export interface WidgetDefaultInfo {
   defaultData: BaseModel;
@@ -24,11 +25,15 @@ const widgetDefaultInfos: WidgetDefaultInfo[] = [
 
 export function WidgetPanel() {
   const createWidget = useCallback((info: WidgetDefaultInfo) => {
+    const model = cloneDeep(info.defaultData);
+    const widgetManagerModel = snapshot.get()!.widgetManagerModel;
+    model.x = (widgetManagerModel.width - model.width) / 2;
+    model.y = (widgetManagerModel.height - model.height) / 2;
     const action = WidgetRendererAction.create(
       snapshot.get()!.widgetManagerModel,
       {
         type: "create",
-        model: info.defaultData,
+        model,
       }
     );
     commitAction(action);

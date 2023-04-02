@@ -196,7 +196,14 @@ export function Widget(props: WidgetProps) {
           });
         }
       }}
-      style={{ left: x, top: y, width, height, backgroundColor: color }}
+      style={{
+        left: x,
+        top: y,
+        width,
+        height,
+        backgroundColor: color,
+        zIndex: isActive ? 99999 : 0,
+      }}
       ref={dom}
     >
       <WidgetCompRender

@@ -7,7 +7,6 @@
   - CodeEditor 响应式
 - 功能补全
   - 拖拽创建 Widget
-  - 点击按钮在屏幕中心创建 Widget
   - 缩放后等比例拖拽
 
 ## P1
