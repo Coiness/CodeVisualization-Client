@@ -1,27 +1,138 @@
 .home > .content {
   height: 100%;
+  background-image: linear-gradient(
+    45deg,
+    rgba(135, 207, 235, 0.1),
+    rgba(255, 192, 203, 0.1)
+  );
 }
 
-.newProject {
+.home > .content > .top {
+  display: flex;
+  flex-flow: row nowrap;
+
+  width: 80%;
+  height: 400px;
+  margin: auto;
+}
+
+.home > .content > .top > .left {
+  width: 55%;
+  padding: 50px 0px;
+}
+
+.home > .content > .top > .left > .titles {
+  width: 100%;
+  height: 240px;
+}
+
+.home > .content > .top > .left > .titles > .name {
+  margin-bottom: 20px;
+
+  font-size: 72px;
+  font-weight: 700;
+  color: #4096ff;
+}
+
+.home > .content > .top > .left > .titles > .info1 {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.home > .content > .top > .left > .titles > .info2 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #666;
+}
+
+.home > .content > .top > .left > .btns {
+  width: 100%;
+}
+
+.home > .content > .top > .left > .btns > * {
+  width: 160px;
+  height: 64px;
+  margin-right: 30px;
+  border-radius: 10px;
+  font-size: 24px;
+}
+
+.home > .content > .top > .right {
+  position: relative;
+  width: 45%;
+}
+
+.home > .content > .top > .right > .startNow {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 200px;
-  height: 50px;
-  border-radius: 100px;
-  box-shadow: 0px 1px 3px 0px #999;
+  height: 200px;
+  border-radius: 1000px;
+  box-shadow: 0px 2px 20px -7px #83bbff;
 
   text-align: center;
-  font-size: 24px;
-  line-height: 50px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 200px;
 
+  color: #4096ff;
   background-color: #fff;
 
+  transition: box-shadow 0.3s, background-color 0.3s;
   transform: translate(-50%, -50%);
 
   cursor: pointer;
 }
 
-.newProject:hover {
+.home > .content > .top > .right > .startNow:hover {
+  box-shadow: 0px 5px 50px 0px #83bbff;
   background-color: #fafafa;
+}
+
+.home > .content > .messageList {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 80%;
+  height: 240px;
+  margin: auto;
+}
+
+.home > .content > .messageList > .row {
+  flex: 1;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.home > .content > .messageList > .row:first-child {
+  margin-top: 0px;
+}
+
+.home > .content > .messageList > .row > .item {
+  flex: 1;
+  height: 100%;
+  margin-left: 20px;
+  border-radius: 10px;
+  padding: 20px 20px;
+  box-sizing: border-box;
+
+  box-shadow: 0px 0px 13px -10px #666;
+
+  /* background-color: #fef9ed; */
+}
+
+.home > .content > .messageList > .row > .item:first-child {
+  margin-left: 0px;
+}
+
+.home > .content > .messageList > .row > .item > .title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.home > .content > .messageList > .row > .item > .content {
+  color: #666;
 }
