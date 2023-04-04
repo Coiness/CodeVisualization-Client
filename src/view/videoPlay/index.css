@@ -30,6 +30,12 @@
   width: 100%;
 }
 
+.videoPlayContent > .middle > .vline {
+  width: 2px;
+  height: 100%;
+  background-color: rgb(122, 162, 255);
+}
+
 .videoPlayContent > .middle > .left {
   flex: 1;
   height: 100%;

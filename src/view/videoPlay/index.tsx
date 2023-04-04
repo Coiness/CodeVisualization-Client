@@ -203,6 +203,7 @@ export function VideoPlay() {
           <div className="left">
             <MainCanvas className={"mainCanvas"} editable={false}></MainCanvas>
           </div>
+          {rightVisible && <div className="vline"></div>}
           {rightVisible && (
             <div className="right">
               {showCodeVisible && (
