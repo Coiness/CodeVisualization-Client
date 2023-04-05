@@ -270,6 +270,19 @@ export function AlgorithmEdit() {
                   {editable ? "编辑" : "查看"}算法说明
                 </Button>
               )}
+              <div className="blank"></div>
+              {editable && (
+                <Button
+                  onClick={() => {
+                    window.open(
+                      "https://ypgkszgrlf.feishu.cn/docx/LatgdWfMxoXlpRx2hppctLpxn4e"
+                    );
+                  }}
+                  type="primary"
+                >
+                  API 文档
+                </Button>
+              )}
             </div>
           ) : (
             <></>

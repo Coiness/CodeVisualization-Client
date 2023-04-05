@@ -86,3 +86,7 @@
 .algorithmEditHeader > * {
   margin-right: 10px;
 }
+
+.algorithmEditHeader > .blank {
+  flex: 1;
+}

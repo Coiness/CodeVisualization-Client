@@ -53,7 +53,16 @@ export function Content() {
             <div className="info2">数据结构与算法可视化系统</div>
           </div>
           <div className="btns">
-            <Button type="primary">快速入门</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                window.open(
+                  "https://ypgkszgrlf.feishu.cn/docx/NkXEdYP3voczhixNDs9ce4qVnNe"
+                );
+              }}
+            >
+              快速入门
+            </Button>
             <Button type="default" icon={<PlayCircleOutlined />}>
               视频介绍
             </Button>
