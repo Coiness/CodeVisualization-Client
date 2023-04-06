@@ -106,6 +106,15 @@ export const animationApi: AnimationApi = {
           }
           return null;
         },
+        peek(): BaseWidget | null {
+          const model = getModelById(id)!;
+          const stack = widgetModelManager.getWidget(model) as StackWidget;
+          const m = stack.peek();
+          if (m) {
+            return m;
+          }
+          return null;
+        },
       };
     } else {
       throw new Error("animationApi addWidget: params.type illegal");

@@ -107,6 +107,15 @@ export class StackWidget implements IWidget {
     }
   }
 
+  peek(): WidgetModel | null {
+    if (this.value.length) {
+      let res = this.value[this.value.length - 1];
+      return res;
+    } else {
+      return null;
+    }
+  }
+
   toStringValue() {
     return "";
   }
