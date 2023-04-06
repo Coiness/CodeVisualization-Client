@@ -54,6 +54,7 @@ function executeSafely(
   let publicAttrsStr = publicAttrs.join(",");
 
   let logs: any[][] = [];
+  // let myConsole = console;
   let myConsole = {
     log(...args: any[]) {
       logs.push(args);

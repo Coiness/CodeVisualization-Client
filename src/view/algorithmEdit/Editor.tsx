@@ -30,7 +30,6 @@ export function useCodeEditor(
   let code = useRef<string>();
 
   useEffect(() => {
-    console.log("re");
     const d = dom.current;
     if (d) {
       let r = monaco.editor.create(d, {
