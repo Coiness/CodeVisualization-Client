@@ -63,7 +63,13 @@ export function Content() {
             >
               快速入门
             </Button>
-            <Button type="default" icon={<PlayCircleOutlined />}>
+            <Button
+              type="default"
+              icon={<PlayCircleOutlined />}
+              onClick={() => {
+                window.open("https://www.bilibili.com/video/BV1bT411W7wK/");
+              }}
+            >
               视频介绍
             </Button>
           </div>
@@ -98,16 +104,3 @@ export function Content() {
     </div>
   );
 }
-
-// D&A Visualization
-// 支持自定义算法的                          立即体验
-// 数据结构与算法可视化系统
-
-// 快速入门 观看视频介绍
-
-// 自定义算法：通过调用开放 API 编写算法执行动画代码，执行后即可观看算法执行动画
-// 自定义输入：执行算法动画代码时可输入不同数据生成对应数据的演示动画
-// 动画与代码同步：播放算法演示动画时可同步播放算法代码执行过程
-// 动画控制：可自由调节动画当前进度与动画播放速度
-// 自由演示：可通过简单的拖拽点击等操作无需编写代码也能自由的演示算法
-// 演示录制：可对演示操作进行录制与重播
