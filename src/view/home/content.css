@@ -18,6 +18,7 @@
 
 .home > .content > .top > .left {
   width: 55%;
+  min-width: 625px;
   padding: 50px 0px;
 }
 
@@ -59,7 +60,7 @@
 
 .home > .content > .top > .right {
   position: relative;
-  width: 45%;
+  flex: 1;
 }
 
 .home > .content > .top > .right > .startNow {
