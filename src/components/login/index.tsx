@@ -1,5 +1,5 @@
 import "./index.css";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Input, InputRef, message, Modal } from "antd";
 import { RegisterErrorCode, login, register, sendCheckCode } from "../../net";
 import { closeDialog } from "../../view/dialogs/dialog";
@@ -47,6 +47,12 @@ function LoginPanel(params: LoginPanelParams) {
 
   const loginAccount = useRef<InputRef | null>(null);
   const loginPwd = useRef<InputRef | null>(null);
+
+  useEffect(() => {
+    if (loginAccount.current) {
+      loginAccount.current.focus();
+    }
+  }, [loginAccount.current]);
 
   async function execLogin() {
     let account = loginAccount?.current?.input?.value;
@@ -132,7 +138,14 @@ function LoginPanel(params: LoginPanelParams) {
           <div className="pwd">
             <div className="left">密码</div>
             <div className="right">
-              <Input.Password ref={loginPwd}></Input.Password>
+              <Input.Password
+                ref={loginPwd}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    execLogin();
+                  }
+                }}
+              ></Input.Password>
             </div>
           </div>
           <div className="submit">
