@@ -21,6 +21,7 @@ export function Login(visible: boolean) {
       <LoginPanel
         onSuccess={() => {
           closePanel();
+          window.location.reload();
         }}
       ></LoginPanel>
     </Modal>
