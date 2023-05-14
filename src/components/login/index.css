@@ -1,11 +1,3 @@
-.loginDialog .ant-modal-content {
-  background-image: linear-gradient(
-    45deg,
-    rgba(255, 192, 203, 0.5),
-    rgba(135, 207, 235, 0.5)
-  );
-}
-
 .loginPanel {
   /* width: 400px; */
   /* height: 400px; */
@@ -67,4 +59,8 @@
 
 .loginPanel > * > .footer > .right {
   float: right;
+}
+
+.loginPanel .sendCheckCode {
+  margin-left: 10px;
 }

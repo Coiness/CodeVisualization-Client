@@ -1,9 +1,33 @@
 import { get, post } from "./request";
 import { clear, setAccount, setToken } from "./token";
 
-export async function register(account: string, pwd: string): Promise<boolean> {
-  let r = await post("/user/register", { account, pwd });
+export enum RegisterErrorCode {
+  Success = "success",
+  CheckCodeError = "CheckCodeError", // 验证码错误
+  AccountExist = "AccountExist", // 账号已存在
+  InvitationCodeUsed = "InvitationCodeUsed", // 邀请码已经被使用
+  InvitationCodeInvalid = "InvitationCodeInvalid", // 邀请码无效
+  Other = "other", // 其它未知错误
+}
+
+export async function sendCheckCode(account: string): Promise<boolean> {
+  let r = await post("/user/sendCheckCode", { account });
   return r.flag;
+}
+
+export async function register(
+  account: string,
+  pwd: string,
+  checkCode: string,
+  invitationCode: string
+): Promise<{ flag: boolean; code: RegisterErrorCode }> {
+  let r = await post("/user/register", {
+    account,
+    pwd,
+    checkCode,
+    invitationCode,
+  });
+  return { flag: r.flag, code: r.data.code };
 }
 
 export async function login(account: string, pwd: string): Promise<boolean> {
