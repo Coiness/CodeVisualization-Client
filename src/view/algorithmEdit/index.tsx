@@ -80,7 +80,7 @@ export function AlgorithmEdit() {
     el: runCodeEditor,
     getCode: getRunCode,
     setCode: setRunCode,
-  } = useCodeEditor("vs");
+  } = useCodeEditor("vs", ShowCodeLanguage.JS, true);
   const {
     el: InputList,
     getData: getInputListData,

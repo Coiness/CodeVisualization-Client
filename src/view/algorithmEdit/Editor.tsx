@@ -12,7 +12,8 @@ const ScrollJGRowCount = 1;
 
 export function useCodeEditor(
   theme: "show" | "vs",
-  language?: ShowCodeLanguage
+  language?: ShowCodeLanguage,
+  minimapEnable?: boolean
 ) {
   monaco.editor.defineTheme("show", {
     base: "vs",
@@ -24,6 +25,7 @@ export function useCodeEditor(
   });
 
   language = language ?? ShowCodeLanguage.JS;
+  minimapEnable = minimapEnable ?? false;
 
   let dom = useRef<HTMLDivElement | null>(null);
   let editor = useRef<monaco.editor.IStandaloneCodeEditor>();
@@ -39,6 +41,11 @@ export function useCodeEditor(
         readOnly: theme === "show",
         lineHeight: EditerLineHeight,
         automaticLayout: true,
+        minimap: {
+          enabled: minimapEnable,
+          renderCharacters: false,
+          scale: 2,
+        },
       });
       editor.current = r;
 
