@@ -8,6 +8,7 @@ import { SetAlgorithmNameDialog } from "../algorithmEdit";
 import { ExecCodeErrorDialog } from "../algorithmEdit/execAlgortithm";
 import { SetProjectNameDialog } from "../project/headerToolBar";
 import { SetVideoNameDialog } from "../videoPlay";
+import { UploadImageDialog } from "../userInfo/UserInfo";
 
 const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   login: Login,
@@ -18,6 +19,7 @@ const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   infoEditDialog: InfoEditDialog,
   execCodeErrorDialog: ExecCodeErrorDialog,
   uploadFileDialog: UploadFileDialog,
+  uploadImageDialog: UploadImageDialog,
 };
 
 const sub = new Subject<{ key: string; status: boolean; data?: any }>();

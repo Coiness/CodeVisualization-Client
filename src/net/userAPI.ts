@@ -84,3 +84,10 @@ export async function getFansList(account: string) {
   let res = await get("/user/fansList", { account });
   return res.data.list;
 }
+
+export async function uploadImage(file: File) {
+  const form = new FormData();
+  form.append("file", file);
+  let res = await post("/user/uploadImage", form);
+  return res.flag;
+}

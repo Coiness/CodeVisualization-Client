@@ -27,7 +27,7 @@ export async function request(
   if (method === "GET") {
     config.params = { ...data };
   } else {
-    config.data = { ...data };
+    config.data = data;
   }
 
   let h: { [key: string]: any } = {};
@@ -63,7 +63,7 @@ export async function get(
 
 export async function post(
   url: string,
-  data: { [key: string]: any }
+  data: { [key: string]: any } | FormData
 ): Promise<Result> {
   return request(url, "POST", data);
 }

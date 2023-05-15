@@ -1,17 +1,21 @@
 import "./index.css";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getAccount } from "../../net/token";
 import { getLocationQuery } from "../../common/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as userAPI from "../../net/userAPI";
-import { Button, Input, Menu, message } from "antd";
+import { Button, Input, Menu, Modal, message } from "antd";
 import { Follow } from "../../components/follow";
 import { UserCard } from "../../components/userCard";
 import { Works } from "./Works";
 import { Empty } from "../../components/empty";
 import { EditOutlined } from "@ant-design/icons";
+import { closeDialog, openDialog } from "../dialogs/dialog";
+import Dragger from "antd/es/upload/Dragger";
+import { Loading } from "../../components/loading";
+import { RcFile } from "antd/es/upload";
 
 export function UserInfo() {
   return (
@@ -107,6 +111,9 @@ function Content() {
         <div
           className="img"
           style={{ backgroundImage: `url(${info.img})` }}
+          onClick={() => {
+            openDialog("uploadImageDialog");
+          }}
         ></div>
         <div className="username">
           {usernameMode === "view" && (
@@ -188,5 +195,57 @@ function UserListComp(props: { list: UserList }) {
     <div style={{ flex: 1 }}>
       <Empty></Empty>
     </div>
+  );
+}
+
+export function UploadImageDialog(visible: boolean) {
+  const [uploading, setUploading] = useState<boolean>(false);
+
+  const closePanel = useCallback(() => {
+    closeDialog("uploadImageDialog");
+  }, []);
+
+  const upload = useCallback(
+    async (file: RcFile) => {
+      let res = await userAPI.uploadImage(file);
+      if (res) {
+        message.success("上传成功");
+        window.location.reload();
+      }
+      setUploading(false);
+      if (res) {
+        closePanel();
+      }
+    },
+    [setUploading, closePanel]
+  );
+
+  return (
+    <Modal
+      open={visible}
+      maskClosable={true}
+      onCancel={closePanel}
+      footer={null}
+      width={400}
+      closable={false}
+    >
+      <div className="upload" style={{ height: "200px" }}>
+        {!uploading && (
+          <Dragger
+            name="file"
+            multiple={false}
+            beforeUpload={async (file) => {
+              setUploading(true);
+              upload(file);
+              return false;
+            }}
+            showUploadList={false}
+          >
+            请选择图片或拖拽上传
+          </Dragger>
+        )}
+        {uploading && <Loading></Loading>}
+      </div>
+    </Modal>
   );
 }
