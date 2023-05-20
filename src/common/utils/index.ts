@@ -225,3 +225,7 @@ export function observeDomSize(
     myObserver.unobserve(dom);
   };
 }
+
+export function nav(url: string): void {
+  window.location.href = url;
+}

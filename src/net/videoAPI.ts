@@ -1,5 +1,7 @@
+import { nav } from "../common/utils";
 import { get, post } from "./request";
 import { getAccount } from "./token";
+import { ResultCode } from "./type";
 
 export async function createVideo(
   name: string,
@@ -32,6 +34,9 @@ export async function changeVideoPermission(id: string, permission: number) {
 
 export async function getVideoInfo(id: string) {
   let r = await get("/video/loadInfo", { id });
+  if (r.code === ResultCode.NoPermission) {
+    nav("/videoCenter");
+  }
   return r.data;
 }
 

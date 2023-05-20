@@ -2,6 +2,7 @@ import { message } from "antd";
 import axios, { AxiosRequestConfig } from "axios";
 import { getToken } from "./token";
 import { Result, ResultCode } from "./type";
+import { nav } from "../common/utils";
 
 const model: "dev" | "build" = "dev";
 
@@ -50,6 +51,9 @@ export async function request(
   if (r.code !== ResultCode.Success) {
     console.log("请求失败", { ...r });
     message.error(r.message);
+    if (r.code === ResultCode.NoLogin) {
+      nav("/");
+    }
   }
   return r;
 }

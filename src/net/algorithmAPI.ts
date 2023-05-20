@@ -1,5 +1,7 @@
+import { nav } from "../common/utils";
 import { get, post } from "./request";
 import { getAccount } from "./token";
+import { ResultCode } from "./type";
 
 export async function createAlgorithm(
   name: string,
@@ -43,6 +45,9 @@ export async function changeAlgorithmPermission(
 
 export async function getAlgorithmInfo(id: string) {
   let r = await get("/algorithm/loadInfo", { id });
+  if (r.code === ResultCode.NoPermission) {
+    nav("/algorithmCenter");
+  }
   return r.data;
 }
 

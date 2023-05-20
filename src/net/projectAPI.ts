@@ -1,5 +1,7 @@
+import { nav } from "../common/utils";
 import { get, post } from "./request";
 import { getAccount } from "./token";
+import { ResultCode } from "./type";
 
 export async function createProject(
   name: string,
@@ -36,6 +38,9 @@ export async function changeProjectPermission(id: string, permission: number) {
 
 export async function getProjectInfo(id: string) {
   let r = await get("/project/loadInfo", { id });
+  if (r.code === ResultCode.NoPermission) {
+    nav("/projectCenter");
+  }
   return r.data;
 }
 

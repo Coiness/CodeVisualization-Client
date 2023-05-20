@@ -5,6 +5,7 @@ export enum ResultCode {
   TokenError = 4002, // token 过期
   ParamsError = 4003, // 请求参数有误
   NoPermission = 4004, // 没权限
+  NoLogin = 4005, // 未登录
 }
 
 export interface Result {
