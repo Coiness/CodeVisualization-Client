@@ -1,5 +1,5 @@
 import "./index.css";
-import { Button, Input, Popover } from "antd";
+import { Button, Input, Popover, message } from "antd";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useCallback, useEffect, useState } from "react";
@@ -27,6 +27,7 @@ import { openDialog } from "../dialogs/dialog";
 import { InputContent, inputListDialogSub } from "../../components/inputList";
 import { execAlgorithm } from "../algorithmEdit/execAlgortithm";
 import { FileEndNameMap, FileType } from "../../components/uploadFile";
+import { isLogin } from "../../net/token";
 
 export type Algorithm = {
   id: string;
@@ -79,6 +80,11 @@ export function AlgorithmCenter() {
       let res = await algorithmAPI.searchAlgorithm(search ?? "");
       list = res.algorithms;
     } else if (type === "mine") {
+      if (!isLogin()) {
+        message.info("请先登录");
+        openDialog("login");
+        return;
+      }
       let res = await algorithmAPI.getMyAlgorithm();
       list = res.algorithms;
     }

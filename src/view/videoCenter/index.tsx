@@ -23,6 +23,7 @@ import { useAccount } from "../../components/header/userInfo";
 import { DownloadVideoInfo, getVideoInfo } from "../videoPlay";
 import { openDialog } from "../dialogs/dialog";
 import { FileEndNameMap, FileType } from "../../components/uploadFile";
+import { isLogin } from "../../net/token";
 
 export type Video = {
   id: string;
@@ -72,6 +73,11 @@ export function VideoCenter() {
       let res = await videoAPI.searchVideo(search ?? "");
       list = res.videos;
     } else if (type === "mine") {
+      if (!isLogin()) {
+        message.info("请先登录");
+        openDialog("login");
+        return;
+      }
       let res = await videoAPI.getMyVideo();
       list = res.videos;
     }

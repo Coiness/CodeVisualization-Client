@@ -25,3 +25,7 @@ export function clear() {
   window.localStorage.removeItem(TokenKey);
   nowAccount.set(null);
 }
+
+export function isLogin(): boolean {
+  return getAccount() !== null && getToken() != null;
+}

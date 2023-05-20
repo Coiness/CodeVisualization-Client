@@ -41,6 +41,7 @@ export async function login(account: string, pwd: string): Promise<boolean> {
 
 export function logout() {
   clear();
+  window.location.reload();
 }
 
 export type UserInfoData = {

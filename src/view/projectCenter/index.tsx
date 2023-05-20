@@ -1,5 +1,5 @@
 import "./index.css";
-import { Button, Input, Popover } from "antd";
+import { Button, Input, Popover, message } from "antd";
 import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useEffect, useState, useCallback } from "react";
@@ -24,6 +24,7 @@ import { useAccount } from "../../components/header/userInfo";
 import { DownloadProjectInfo, getProjectData } from "../project";
 import { openDialog } from "../dialogs/dialog";
 import { FileEndNameMap, FileType } from "../../components/uploadFile";
+import { isLogin } from "../../net/token";
 
 export type Project = {
   id: string;
@@ -76,6 +77,11 @@ export function ProjectCenter() {
       let res = await projectAPI.searchProject(search ?? "");
       list = res.projects;
     } else if (type === "mine") {
+      if (!isLogin()) {
+        message.info("请先登录");
+        openDialog("login");
+        return;
+      }
       let res = await projectAPI.getMyProject();
       list = res.projects;
     }
