@@ -111,6 +111,7 @@ export function AlgorithmEdit() {
   }, [id, setInfo, setInputListData, setRunCode]);
   useEffect(load, [id, load]);
   async function save(): Promise<string | null> {
+    const name = nameRef.current.trim();
     if (alInfo?.id) {
       const content = {
         showCode: showCodeEnable ? getShowCodeInfo() : null,
@@ -127,7 +128,7 @@ export function AlgorithmEdit() {
         message.success("保存失败");
       }
       return alInfo.id;
-    } else if (nameRef.current === "") {
+    } else if (name === "") {
       openDialog("setAlgorithmName");
       return null;
     } else {
@@ -140,7 +141,7 @@ export function AlgorithmEdit() {
         inputList: inputEnable ? getInputListData() : undefined,
       };
       return await algorithmAPI.createAlgorithm(
-        nameRef.current,
+        name,
         JSON.stringify(content),
         ""
       );
@@ -213,6 +214,11 @@ export function AlgorithmEdit() {
                   <InputEdit
                     value={alInfo.name}
                     onChange={async (v: string) => {
+                      v = v.trim();
+                      if (v === "") {
+                        message.error("名称不能为空");
+                        return false;
+                      }
                       let res = await algorithmAPI.renameAlgorithm(
                         alInfo.id,
                         v
@@ -353,11 +359,13 @@ export function SetAlgorithmNameDialog(visible: boolean) {
   }, []);
 
   const submit = useCallback(() => {
-    const name = inp?.current?.input?.value;
-    if (name) {
-      setAlgorithmName.next(name);
-      closePanel();
+    const name = inp?.current?.input?.value.trim();
+    if (!name) {
+      message.error("名称不能为空");
+      return;
     }
+    setAlgorithmName.next(name);
+    closePanel();
   }, [closePanel]);
 
   return (

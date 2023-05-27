@@ -34,7 +34,8 @@ export function HeaderToolBar(props: {
   }, [props.editable]);
 
   async function save() {
-    if (nameRef.current === "") {
+    const name = nameRef.current.trim();
+    if (!name) {
       openDialog("setProjectName");
     } else {
       if (info.id) {
@@ -49,7 +50,7 @@ export function HeaderToolBar(props: {
         }
       } else {
         return projectAPI.createProject(
-          nameRef.current,
+          name,
           JSON.stringify(info.snapshot),
           ""
         );
@@ -84,6 +85,11 @@ export function HeaderToolBar(props: {
           <InputEdit
             value={nameRef.current}
             onChange={async (v: string) => {
+              v = v.trim();
+              if (v === "") {
+                message.error("名称不能为空");
+                return false;
+              }
               let res = await projectAPI.renameProject(info.id, v);
               if (res) {
                 nameRef.current = v;
@@ -199,11 +205,13 @@ export function SetProjectNameDialog(visible: boolean) {
   }, []);
 
   const submit = useCallback(() => {
-    const name = inp?.current?.input?.value;
-    if (name) {
-      setProjectName.next(name);
-      closePanel();
+    const name = inp?.current?.input?.value.trim();
+    if (!name) {
+      message.error("名称不能为空");
+      return;
     }
+    setProjectName.next(name);
+    closePanel();
   }, [closePanel]);
 
   return (

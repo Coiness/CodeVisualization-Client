@@ -86,12 +86,13 @@ export function VideoPlay() {
   }, [id, navigate]);
 
   async function save(): Promise<string | null> {
-    if (nameRef.current === "") {
+    const name = nameRef.current.trim();
+    if (!name) {
       openDialog("setVideoName");
     } else {
       if (vInfo) {
         return await videoAPI.createVideo(
-          nameRef.current,
+          name,
           JSON.stringify(vInfo.video),
           ""
         );
@@ -140,6 +141,11 @@ export function VideoPlay() {
                   <InputEdit
                     value={vInfo.name}
                     onChange={async (v: string) => {
+                      v = v.trim();
+                      if (v === "") {
+                        message.error("名称不能为空");
+                        return false;
+                      }
                       let res = await videoAPI.renameVideo(vInfo.id, v);
                       if (res) {
                         setInfo({
@@ -359,12 +365,13 @@ export function SetVideoNameDialog(visible: boolean) {
   }, []);
 
   const submit = useCallback(() => {
-    const name = inp?.current?.input?.value;
-    if (name) {
-      console.log("DEBUG: next", name);
-      setVideoName.next(name);
-      closePanel();
+    const name = inp?.current?.input?.value.trim();
+    if (!name) {
+      message.error("名称不能为空");
+      return;
     }
+    setVideoName.next(name);
+    closePanel();
   }, [closePanel]);
 
   return (

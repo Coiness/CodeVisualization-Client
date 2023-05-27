@@ -136,13 +136,18 @@ function Content() {
               }}
               onKeyDown={async (e) => {
                 if (e.key === "Enter") {
-                  const text = (e.nativeEvent.target as any).value;
-                  let res = await userAPI.modifyUsername(text);
+                  const name = (e.nativeEvent.target as any).value.trim();
+                  if (!name) {
+                    message.error("名称不能为空");
+                    setUsernameMode("view");
+                    return;
+                  }
+                  let res = await userAPI.modifyUsername(name);
                   if (res) {
                     message.success("修改成功");
                     setInfo({
                       ...info,
-                      name: text,
+                      name: name,
                     });
                   } else {
                     message.error("修改失败");
