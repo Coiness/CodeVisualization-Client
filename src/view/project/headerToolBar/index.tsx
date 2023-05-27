@@ -84,6 +84,7 @@ export function HeaderToolBar(props: {
         <div className="projectName">
           <InputEdit
             value={nameRef.current}
+            enable={editable}
             onChange={async (v: string) => {
               v = v.trim();
               if (v === "") {
@@ -117,7 +118,7 @@ export function HeaderToolBar(props: {
           ]}
         />
       )}
-      {info.id && (
+      {info.id && (editable || info.descrition) && (
         <Button
           onClick={() => {
             openDialog("infoEditDialog", {

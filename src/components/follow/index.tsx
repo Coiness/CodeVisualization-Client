@@ -1,6 +1,9 @@
 import { Button, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import * as userAPI from "../../net/userAPI";
+import { useAccount } from "../header/userInfo";
+import { isLogin } from "../../net/token";
+import { openDialog } from "../../view/dialogs/dialog";
 
 export interface FollowProps {
   account: string;
@@ -15,16 +18,28 @@ export function Follow(props: FollowProps) {
   const [info, setInfo] = useState<FollowInfo | null>(null);
 
   const load = useCallback(() => {
-    userAPI.getFollowInfo(props.account).then((r) => {
-      setInfo({
-        ...r,
+    if (isLogin()) {
+      userAPI.getFollowInfo(props.account).then((r) => {
+        setInfo({
+          ...r,
+        });
       });
-    });
+    } else {
+      setInfo({
+        followed: false,
+        reverseFollowed: false,
+      });
+    }
   }, [props.account, setInfo]);
 
   const changeFollow = useCallback(
     (follow: boolean) => {
       if (info === null) {
+        return;
+      }
+      if (!isLogin()) {
+        message.info("请先登录");
+        openDialog("login");
         return;
       }
       if (follow) {

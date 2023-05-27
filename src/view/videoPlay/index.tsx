@@ -140,6 +140,7 @@ export function VideoPlay() {
                 <div>
                   <InputEdit
                     value={vInfo.name}
+                    enable={editable}
                     onChange={async (v: string) => {
                       v = v.trim();
                       if (v === "") {
@@ -161,7 +162,7 @@ export function VideoPlay() {
                 </div>
               )}
               {vInfo.name === "" && <Button onClick={save}>保存</Button>}
-              {vInfo.name !== "" && (
+              {vInfo.name !== "" && editable && (
                 <Select
                   value={vInfo.permission}
                   onChange={handleSelectChange}
@@ -171,7 +172,7 @@ export function VideoPlay() {
                   ]}
                 />
               )}
-              {vInfo.id && (
+              {vInfo.id && (editable || vInfo.descrition) && (
                 <Button
                   onClick={() => {
                     openDialog("infoEditDialog", {

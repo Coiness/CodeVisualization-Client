@@ -289,6 +289,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                     overlayInnerStyle={{ padding: "0px" }}
                     placement="right"
                     trigger={"click"}
+                    zIndex={500}
                     content={
                       <UserCard
                         account={item.user.account}

@@ -112,20 +112,24 @@ function Content() {
           className="img"
           style={{ backgroundImage: `url(${info.img})` }}
           onClick={() => {
-            openDialog("uploadImageDialog");
+            if (isMe) {
+              openDialog("uploadImageDialog");
+            }
           }}
         ></div>
         <div className="username">
           {usernameMode === "view" && (
             <>
               <div className="name">{info.name}</div>
-              <Button
-                shape="circle"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  setUsernameMode("edit");
-                }}
-              ></Button>
+              {isMe && (
+                <Button
+                  shape="circle"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setUsernameMode("edit");
+                  }}
+                ></Button>
+              )}
             </>
           )}
           {usernameMode === "edit" && (

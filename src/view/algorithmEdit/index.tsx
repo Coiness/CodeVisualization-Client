@@ -213,6 +213,7 @@ export function AlgorithmEdit() {
                   {" "}
                   <InputEdit
                     value={alInfo.name}
+                    enable={editable}
                     onChange={async (v: string) => {
                       v = v.trim();
                       if (v === "") {
@@ -249,7 +250,7 @@ export function AlgorithmEdit() {
                   ]}
                 />
               )}
-              {alInfo.id && (
+              {alInfo.id && (editable || alInfo.descrition) && (
                 <Button
                   onClick={() => {
                     openDialog("infoEditDialog", {

@@ -17,6 +17,7 @@ export function Login(visible: boolean) {
       footer={null}
       width={400}
       className="loginDialog"
+      zIndex={1000}
     >
       <LoginPanel
         onSuccess={() => {
