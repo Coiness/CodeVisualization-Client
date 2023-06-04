@@ -27,7 +27,7 @@ export class Player {
     modelSwitcher.pushModel(this.snapshot);
   }
 
-  next() {
+  next(execAnimation = true) {
     if (this.index === this.steps.length) {
       message.info("已经是最后一步了！");
       return;
@@ -40,9 +40,13 @@ export class Player {
     }
     // 执行新动画
     for (let action of this.steps[this.index].actions) {
-      action.play().then(() => {
+      if (execAnimation) {
+        action.play().then(() => {
+          action.commit();
+        });
+      } else {
         action.commit();
-      });
+      }
     }
     this.index++;
     this.progress.next(this.index);
@@ -68,7 +72,7 @@ export class Player {
   go(index: number) {
     while (this.index !== index) {
       if (this.index < index) {
-        this.next();
+        this.next(false);
       } else if (this.index > index) {
         this.last();
       }
