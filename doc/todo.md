@@ -1,8 +1,10 @@
 ## P0
 - 功能完整性
   - 删除作品弹框确认
-- bugfix
-  - 录像快速执行多次 next 动画错乱问题
+- 重构
+  - 动画 next 时，先执行 commit 后执行动画，不在 stop 中 commit
+- 体验优化
+  - 录像直接点击进度条不执行动画，直接 commitAction
 
 ## P1
 - API 扩展

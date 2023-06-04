@@ -21,6 +21,8 @@ type CreateWidgetRendererActionParams = {
 };
 
 export class WidgetRendererAction extends BaseAction {
+  private commited = false;
+
   constructor(data: WidgetRendererActionData, cs: ChangeSet) {
     super(data, cs, "WidgetRenderer");
   }
@@ -70,7 +72,21 @@ export class WidgetRendererAction extends BaseAction {
     }
   }
 
-  async play() {}
+  async play() {
+    this.commited = false;
+  }
 
-  stop() {}
+  commit(): void {
+    if (this.commited) {
+      return;
+    }
+    super.commit();
+    this.commited = true;
+  }
+
+  stop() {
+    if (!this.commited) {
+      this.commit();
+    }
+  }
 }
