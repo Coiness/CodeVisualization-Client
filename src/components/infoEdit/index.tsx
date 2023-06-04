@@ -104,6 +104,7 @@ export function useMarkDownEdit(editable: boolean) {
       autofocus: true,
       spellChecker: false,
       maxHeight: "375px",
+      toolbar: false,
       previewRender(text) {
         return customMarkdownParser(text);
       },
@@ -119,15 +120,15 @@ export function useMarkDownEdit(editable: boolean) {
           setValue(v);
         }}
         getMdeInstance={(mde: any) => {
-          if (!editable) {
-            if (!mde.isPreviewActive()) {
-              mde.toolbar_div.style.display = "block";
-              mde.togglePreview();
-              mde.toolbar_div.style.display = "none";
-            }
-          } else {
-            mde.toolbar_div.style.display = "block";
-          }
+          // if (!editable) {
+          //   if (!mde.isPreviewActive()) {
+          //     mde.toolbar_div.style.display = "block";
+          //     mde.togglePreview();
+          //     mde.toolbar_div.style.display = "none";
+          //   }
+          // } else {
+          //   mde.toolbar_div.style.display = "block";
+          // }
         }}
       ></SimpleMDE>
     ),
