@@ -269,6 +269,14 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                         size="large"
                         icon={<DeleteOutlined />}
                         onClick={async () => {
+                          const confirm = await openDialog("confirmDialog", {
+                            content: "确定要删除该算法吗",
+                            okText: "确定",
+                            cancelText: "取消",
+                          });
+                          if (!confirm) {
+                            return;
+                          }
                           let res = await algorithmAPI.removeAlgorithm(item.id);
                           if (res && algorithms) {
                             let newArr = [];

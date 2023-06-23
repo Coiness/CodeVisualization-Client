@@ -214,6 +214,14 @@ export function ProjectList(props: { list: Project[] | null }) {
                         size="large"
                         icon={<DeleteOutlined />}
                         onClick={async () => {
+                          const confirm = await openDialog("confirmDialog", {
+                            content: "确定要删除该演示吗",
+                            okText: "确定",
+                            cancelText: "取消",
+                          });
+                          if (!confirm) {
+                            return;
+                          }
                           let res = await projectAPI.removeProject(item.id);
                           if (res && projects) {
                             let newArr = [];

@@ -206,6 +206,14 @@ export function VideoList(props: { list: Video[] | null }) {
                         size="large"
                         icon={<DeleteOutlined />}
                         onClick={async () => {
+                          const confirm = await openDialog("confirmDialog", {
+                            content: "确定要删除该录像吗",
+                            okText: "确定",
+                            cancelText: "取消",
+                          });
+                          if (!confirm) {
+                            return;
+                          }
                           let res = await videoAPI.removeVideo(item.id);
                           if (res && videos) {
                             let newArr = [];
