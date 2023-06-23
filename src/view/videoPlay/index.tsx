@@ -103,7 +103,6 @@ export function VideoPlay() {
 
   useEffect(() => {
     let sub = setVideoName.subscribe(async (name) => {
-      console.log("DEBUG: sub", name);
       nameRef.current = name;
       let newId = await save();
       if (newId) {

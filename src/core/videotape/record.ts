@@ -27,7 +27,6 @@ export class Recorder {
   }
 
   end(): Video {
-    console.log("DEBUG: ", "end");
     if (!this.recording) {
       throw new Error("end record: record not start");
     }
