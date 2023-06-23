@@ -229,3 +229,11 @@ export function observeDomSize(
 export function nav(url: string): void {
   window.location.href = url;
 }
+
+export function createPromise(): [Promise<any>, Function] {
+  let resolve: Function = () => {};
+  let promise = new Promise((r) => {
+    resolve = r;
+  });
+  return [promise, resolve];
+}

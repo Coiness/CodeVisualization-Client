@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Subject } from "../../common/utils";
+import { Subject, createPromise } from "../../common/utils";
 import { InfoEditDialog } from "../../components/infoEdit";
 import { InputListDialog } from "../../components/inputList";
 import { Login } from "../../components/login";
@@ -9,6 +9,7 @@ import { ExecCodeErrorDialog } from "../algorithmEdit/execAlgortithm";
 import { SetProjectNameDialog } from "../project/headerToolBar";
 import { SetVideoNameDialog } from "../videoPlay";
 import { UploadImageDialog } from "../userInfo/UserInfo";
+import { ConfirmDialog } from "../../components/confirmDialog";
 
 const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   login: Login,
@@ -20,6 +21,7 @@ const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   execCodeErrorDialog: ExecCodeErrorDialog,
   uploadFileDialog: UploadFileDialog,
   uploadImageDialog: UploadImageDialog,
+  confirmDialog: ConfirmDialog,
 };
 
 const sub = new Subject<{ key: string; status: boolean; data?: any }>();
@@ -50,10 +52,16 @@ export function Dialogs() {
   );
 }
 
-export function openDialog(key: string, data?: any) {
+const dialogPromiseMap = new Map<string, Function>();
+
+export function openDialog<T>(key: string, data?: any): Promise<T> {
+  const [p, r] = createPromise();
+  dialogPromiseMap.set(key, r);
   sub.next({ key, status: true, data });
+  return p;
 }
 
-export function closeDialog(key: string) {
+export function closeDialog(key: string, res?: any) {
   sub.next({ key, status: false });
+  dialogPromiseMap.get(key)?.(res);
 }
