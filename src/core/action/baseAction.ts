@@ -39,6 +39,13 @@ export abstract class BaseAction implements Action {
    * 停止执行动画 (player 使用)
    */
   abstract stop(): void;
+
+  /**
+   * 重新加载 Action
+   */
+  reload() {
+    commitUndo();
+  }
 }
 
 export const actionCommitter = new Subject<BaseAction>();

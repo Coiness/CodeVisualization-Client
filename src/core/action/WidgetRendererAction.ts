@@ -3,7 +3,7 @@ import { WidgetRendererModel } from "../../components/widget";
 import { BaseModel } from "../../components/widget/widgets";
 import { ChangeSet } from "../diff/objDiff";
 import { getCS } from "../undo";
-import { BaseAction } from "./baseAction";
+import { BaseAction, commitUndo } from "./baseAction";
 
 export type WidgetRendererActionData =
   | {
@@ -88,5 +88,10 @@ export class WidgetRendererAction extends BaseAction {
     if (!this.commited) {
       this.commit();
     }
+  }
+
+  reload(): void {
+    this.commited = false;
+    super.reload();
   }
 }
