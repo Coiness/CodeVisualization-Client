@@ -10,8 +10,8 @@
 }
 
 .projectDSContent .vline {
-  width: 2px;
-  background-color: rgb(122, 162, 255);
+  width: 1px;
+  background-color: rgb(226, 226, 226);
 }
 
 .projectDSContent .main {
