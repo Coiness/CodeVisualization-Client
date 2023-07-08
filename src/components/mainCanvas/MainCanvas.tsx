@@ -42,7 +42,7 @@ export function MainCanvas(props: { editable: boolean; className: string }) {
         }
       }}
     >
-      <div className="zoom" style={{ transform: 'scale(' + zoom + ')' }}>
+      <div className="zoom" style={{ transform: `scale(${zoom})` }}>
         {data && (
           <WidgetRenderer
             model={data.widgetManagerModel}
