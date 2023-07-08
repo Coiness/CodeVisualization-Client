@@ -16,14 +16,14 @@
 
 .projectDSContent .main {
   position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
   overflow: hidden;
-  flex: 1;
 }
 
 .projectDSContent .main .zoom {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+
 }

@@ -243,6 +243,7 @@ export function Widget(props: WidgetProps) {
 
 export function WidgetRenderer(props: WidgetRendererProps) {
   const model = useModelChange(props.model);
+  const widgetRendererRef = useRef<HTMLDivElement | null>(null);
   const { widgets, width, height, color } = model;
   const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
   useEffect(() => {
@@ -254,9 +255,12 @@ export function WidgetRenderer(props: WidgetRendererProps) {
   return (
     <div
       className="widgetRenderer"
+      ref={widgetRendererRef}
       style={{ width, height, backgroundColor: color }}
-      onDoubleClick={(e) => {
-        activeWidget.set(null);
+      onClick={(e) => {
+        if(e.target === widgetRendererRef.current){
+          activeWidget.set(null);
+        }
       }}
     >
       {widgets.map((widgetModel) => {
