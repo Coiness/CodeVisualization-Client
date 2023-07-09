@@ -183,7 +183,7 @@ export function Widget(props: WidgetProps) {
   return (
     <div
       className="widget"
-      onClick={() => {
+      onMouseDown={() => {
         if (editable) {
           if (needSelectWidget.get()) {
             selectWidget.next(WidgetModel);
@@ -195,6 +195,9 @@ export function Widget(props: WidgetProps) {
             widget: WidgetModel,
           });
         }
+      }}
+      onClick={(e)=>{
+        e.stopPropagation();
       }}
       style={{
         left: x,
@@ -211,32 +214,31 @@ export function Widget(props: WidgetProps) {
         {...props}
         widget={WidgetModel}
       />
-      {isActive && (
-        <SelectDrag
-          dragInfo={{
-            x,
-            y,
-            onDrag: (nx: number, ny: number) => {
-              const action = WidgetAction.create(model, {
-                type: "move",
-                change: { x: nx, y: ny },
-              });
-              commitAction(action);
-            },
-          }}
-          resizeInfo={{
-            width,
-            height,
-            onResize: (nw: number, nh: number) => {
-              const action = WidgetAction.create(model, {
-                type: "resize",
-                change: { w: nw, h: nh },
-              });
-              commitAction(action);
-            },
-          }}
-        ></SelectDrag>
-      )}
+      <SelectDrag
+        isActive={isActive}
+        dragInfo={{
+          x,
+          y,
+          onDrag: (nx: number, ny: number) => {
+            const action = WidgetAction.create(model, {
+              type: "move",
+              change: { x: nx, y: ny },
+            });
+            commitAction(action);
+          },
+        }}
+        resizeInfo={{
+          width,
+          height,
+          onResize: (nw: number, nh: number) => {
+            const action = WidgetAction.create(model, {
+              type: "resize",
+              change: { w: nw, h: nh },
+            });
+            commitAction(action);
+          },
+        }}
+      ></SelectDrag>
     </div>
   );
 }
@@ -255,9 +257,6 @@ export function WidgetRenderer(props: WidgetRendererProps) {
     <div
       className="widgetRenderer"
       style={{ width, height, backgroundColor: color }}
-      onDoubleClick={(e) => {
-        activeWidget.set(null);
-      }}
     >
       {widgets.map((widgetModel) => {
         if (widgetModel === null) {

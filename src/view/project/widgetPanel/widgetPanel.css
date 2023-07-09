@@ -1,9 +1,8 @@
 .widgetPanel {
   width: 200px;
   height: 100%;
-  background-color: #ccc;
+  background-color: #fff;
   color: #000;
-
   overflow: scroll;
 }
 
@@ -26,7 +25,7 @@
 .widgetPanel > .list > .widgetItem {
   float: left;
   width: 50%;
-  height: 100px;
+  height: 58px;
   padding: 10px;
   box-sizing: border-box;
 }

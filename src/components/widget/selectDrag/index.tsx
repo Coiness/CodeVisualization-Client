@@ -13,11 +13,12 @@ export type SelectDragProps = {
     height: number;
     onResize: (width: number, height: number) => void;
   };
+  isActive: boolean;
 };
 
 export function SelectDrag(props: SelectDragProps) {
   const dom = useRef<HTMLDivElement | null>(null);
-  const { dragInfo, resizeInfo } = props;
+  const { dragInfo, resizeInfo, isActive } = props;
   const { x, y, onDrag } = dragInfo;
   const { width, height, onResize } = resizeInfo;
   const dragStart = useCallback(
@@ -85,8 +86,17 @@ export function SelectDrag(props: SelectDragProps) {
   );
 
   return (
-    <div className="selectDrag" onMouseDown={dragStart as any} ref={dom}>
-      <div className="resize" onMouseDown={resizeStart as any}></div>
+    <div
+      className="selectDrag"
+      onMouseDown={dragStart as any}
+      ref={dom}
+      style={{ border: isActive ? '' : 'none'}}
+    >
+      <div
+        className="resize"
+        onMouseDown={resizeStart as any}
+        style={{ display: isActive ? 'block' : 'none'}}
+      ></div>
     </div>
   );
 }

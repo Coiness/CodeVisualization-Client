@@ -10,20 +10,16 @@
 }
 
 .projectDSContent .vline {
-  width: 2px;
-  background-color: rgb(122, 162, 255);
+  width: 1px;
+  background-color: rgb(226, 226, 226);
 }
 
 .projectDSContent .main {
   position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
   overflow: hidden;
-  flex: 1;
-}
-
-.projectDSContent .main .zoom {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }

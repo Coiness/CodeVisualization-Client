@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUndo } from "../../core";
-import { snapshot, useStore } from "../../store";
+import { snapshot, activeWidget, useStore } from "../../store";
 import { WidgetRenderer } from "../widget";
 
 export const MainCanvasData = {
@@ -31,8 +31,14 @@ export function MainCanvas(props: { editable: boolean; className: string }) {
   }
 
   return (
-    <div className={props.className} onWheel={handelMouseWhell}>
-      <div className="zoom" style={{ zoom }}>
+    <div
+      className={props.className}
+      onWheel={handelMouseWhell}
+      onClick={() => {
+        activeWidget.set(null);
+      }}
+    >
+      <div style={{ transform: `scale(${zoom})` }}>
         {data && (
           <WidgetRenderer
             model={data.widgetManagerModel}
