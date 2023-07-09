@@ -13,7 +13,6 @@ export function MainCanvas(props: { editable: boolean; className: string }) {
   useUndo(props.editable);
 
   const [zoom, setZoom] = useState<number>(1);
-  const mainRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     MainCanvasData.zoom = zoom;
@@ -35,14 +34,11 @@ export function MainCanvas(props: { editable: boolean; className: string }) {
     <div
       className={props.className}
       onWheel={handelMouseWhell}
-      ref={mainRef}
-      onClick={(e) => {
-        if(e.target === mainRef.current){
-          activeWidget.set(null);
-        }
+      onClick={() => {
+        activeWidget.set(null);
       }}
     >
-      <div className="zoom" style={{ transform: `scale(${zoom})` }}>
+      <div style={{ transform: `scale(${zoom})` }}>
         {data && (
           <WidgetRenderer
             model={data.widgetManagerModel}

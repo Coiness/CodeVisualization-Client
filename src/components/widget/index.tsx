@@ -196,6 +196,9 @@ export function Widget(props: WidgetProps) {
           });
         }
       }}
+      onClick={(e)=>{
+        e.stopPropagation();
+      }}
       style={{
         left: x,
         top: y,
@@ -242,7 +245,6 @@ export function Widget(props: WidgetProps) {
 
 export function WidgetRenderer(props: WidgetRendererProps) {
   const model = useModelChange(props.model);
-  const widgetRendererRef = useRef<HTMLDivElement | null>(null);
   const { widgets, width, height, color } = model;
   const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
   useEffect(() => {
@@ -254,13 +256,7 @@ export function WidgetRenderer(props: WidgetRendererProps) {
   return (
     <div
       className="widgetRenderer"
-      ref={widgetRendererRef}
       style={{ width, height, backgroundColor: color }}
-      onClick={(e) => {
-        if(e.target === widgetRendererRef.current){
-          activeWidget.set(null);
-        }
-      }}
     >
       {widgets.map((widgetModel) => {
         if (widgetModel === null) {
