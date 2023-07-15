@@ -53,27 +53,29 @@ export function useValueWidget(widget: ValueWidget, model: ValueWidgetModel) {
 
       if (type === "assignment") {
         setValue(change.value);
-        let stop: () => void;
-        stop = linearAnimation(
-          el,
-          {
-            fontSize: [SmallFontSize, LargeFontSize, (n) => `${n}px`],
-          },
-          100 / animateSpeed.get(),
-          () => {
-            stop = linearAnimation(
-              el,
-              {
-                fontSize: [LargeFontSize, SmallFontSize, (n) => `${n}px`],
-              },
-              100 / animateSpeed.get(),
-              end
-            );
-          }
-        );
+        // let stop: () => void;
+
+        // TODO 这里通过 fontSize 实现动画有点不合理，先关掉
+        // stop = linearAnimation(
+        //   el,
+        //   {
+        //     fontSize: [SmallFontSize, LargeFontSize, (n) => `${n}px`],
+        //   },
+        //   100 / animateSpeed.get(),
+        //   () => {
+        //     stop = linearAnimation(
+        //       el,
+        //       {
+        //         fontSize: [LargeFontSize, SmallFontSize, (n) => `${n}px`],
+        //       },
+        //       100 / animateSpeed.get(),
+        //       end,
+        //     );
+        //   },
+        // );
         setStop(() => {
-          stop();
-          el.style.fontSize = `${SmallFontSize}px`;
+          // stop();
+          // el.style.fontSize = `${SmallFontSize}px`;
         });
       } else {
         throw new Error("value exec action: action data type error");

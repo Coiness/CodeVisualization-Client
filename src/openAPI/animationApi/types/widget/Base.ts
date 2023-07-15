@@ -32,6 +32,11 @@ export interface ResizeWidgetParams {
   height: number;
 }
 
+export interface ChangeWidgetValueParams {
+  id: string;
+  value: unknown;
+}
+
 export interface ChangeWidgetColorParams {
   id: string;
   color: string;
