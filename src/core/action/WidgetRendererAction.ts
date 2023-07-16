@@ -22,15 +22,14 @@ type CreateWidgetRendererActionParams = {
 
 export class WidgetRendererAction extends BaseAction {
   private commited = false;
+  data: WidgetRendererActionData;
 
   constructor(data: WidgetRendererActionData, cs: ChangeSet) {
     super(data, cs, "WidgetRenderer");
+    this.data = data;
   }
 
-  static create(
-    widgetManagerModel: WidgetRendererModel,
-    params: CreateWidgetRendererActionParams
-  ) {
+  static create(widgetManagerModel: WidgetRendererModel, params: CreateWidgetRendererActionParams) {
     const { type, model } = params;
     if (type === "create") {
       model.id = createOnlyId("widget");
@@ -44,7 +43,7 @@ export class WidgetRendererAction extends BaseAction {
           ["length", widgetManagerModel.widgets.length + 1],
           [widgetManagerModel.widgets.length, model],
         ],
-        widgetManagerModel
+        widgetManagerModel,
       );
       return new WidgetRendererAction(data, cs);
     } else if (type === "delete") {
@@ -61,11 +60,7 @@ export class WidgetRendererAction extends BaseAction {
       if (index === -1) {
         throw new Error("WidgetRendererAction: delete widget not found model");
       }
-      let cs = getCS(
-        widgetManagerModel.widgets,
-        [[index, null]],
-        widgetManagerModel
-      );
+      let cs = getCS(widgetManagerModel.widgets, [[index, null]], widgetManagerModel);
       return new WidgetRendererAction(data, cs);
     } else {
       throw new Error("WidgetRendererAction: create type error");
