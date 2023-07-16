@@ -1,7 +1,7 @@
 import { widgetModelManager } from "../../../components/widget";
 import { BaseModel, WidgetType, getModelById } from "../../../components/widget/widgets";
 import { StackWidget as StackWidgetModel } from "../../../components/widget/widgets/stackWidget";
-import { BaseAction, WidgetRendererAction, commitAction } from "../../../core";
+import { BaseAction, WidgetRendererAction, WidgetRendererActionCreate, commitAction } from "../../../core";
 import { snapshot } from "../../../store";
 import { BaseWidgetType } from "../types/widget";
 import { BaseWidget } from "../types/widget/Base";
@@ -26,20 +26,17 @@ export function addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]
       value: p.numberValue,
     } as Omit<NumberWidget, "id">;
 
-    const action = WidgetRendererAction.create(s.widgetManagerModel, {
-      type: "create",
-      model: {
-        id: "",
-        type: WidgetType.Number,
-        ...info,
-      },
+    const action = WidgetRendererActionCreate.create(s.widgetManagerModel, {
+      id: "",
+      type: WidgetType.Number,
+      ...info,
     });
 
     commitAction(action);
-    const id = (action.data as any).model.id;
+    const id = action.data.model.id;
     const res = {
       id,
-      [modelKey]: (action.data as any).model,
+      [modelKey]: action.data.model,
       ...info,
     } as NumberWidget;
     const proxy = new Proxy(res, {
@@ -48,7 +45,7 @@ export function addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]
           return id;
         }
         if (p === modelKey || typeof p === "symbol") {
-          return (action.data as any).model;
+          return action.data.model;
         }
         const model = getModelById(id);
         if (model?.[p]) {
@@ -69,13 +66,10 @@ export function addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]
       color: p.color ?? "#d5ff80",
       value: p.stringValue,
     } as Omit<StringWidget, "id">;
-    const action = WidgetRendererAction.create(s.widgetManagerModel, {
-      type: "create",
-      model: {
-        id: "",
-        type: WidgetType.String,
-        ...info,
-      },
+    const action = WidgetRendererActionCreate.create(s.widgetManagerModel, {
+      id: "",
+      type: WidgetType.String,
+      ...info,
     });
     commitAction(action);
     const id = (action.data as any).model.id;
@@ -138,13 +132,10 @@ export function addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]
         return null;
       },
     } as Omit<StackWidget, "id">;
-    const action = WidgetRendererAction.create(s.widgetManagerModel, {
-      type: "create",
-      model: {
-        id: "",
-        type: WidgetType.Stack,
-        ...info,
-      },
+    const action = WidgetRendererActionCreate.create(s.widgetManagerModel, {
+      id: "",
+      type: WidgetType.Stack,
+      ...info,
     });
     const id = (action!.data as any).model.id;
     const res = {

@@ -1,4 +1,6 @@
 ## P0
+- 优化 Action create 返回类型
+- 拆分 addWidget API
 
 ## P1
 - API 扩展
