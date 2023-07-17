@@ -10,36 +10,25 @@ export const widgetActionExeter = new Subject<{
   end: () => void;
 }>();
 
-export type WidgetActionData =
-  | {
-      id: string;
-      type: "resize";
-      change: { w: number; h: number };
-    }
-  | {
-      id: string;
-      type: "move";
-      change: { x: number; y: number };
-    }
-  | {
-      id: string;
-      type: "changeColor";
-      change: string;
-    };
+export interface WidgetActionResizeData {
+  id: string;
+  type: "resize";
+  change: { w: number; h: number };
+}
 
-type CreateWidgetActionParams =
-  | {
-      type: "resize";
-      change: { w: number; h: number };
-    }
-  | {
-      type: "move";
-      change: { x: number; y: number };
-    }
-  | {
-      type: "changeColor";
-      change: string;
-    };
+export interface WidgetActionMoveData {
+  id: string;
+  type: "move";
+  change: { x: number; y: number };
+}
+
+export interface WidgetActionChangeColorData {
+  id: string;
+  type: "changeColor";
+  change: string;
+}
+
+export type WidgetActionData = WidgetActionResizeData | WidgetActionMoveData | WidgetActionChangeColorData;
 
 export class WidgetAction extends BaseAction {
   private stopFun: () => void = () => {};
@@ -47,32 +36,6 @@ export class WidgetAction extends BaseAction {
 
   constructor(data: WidgetActionData, cs: ChangeSet) {
     super(data, cs, "Widget");
-  }
-
-  static create(model: BaseModel, params: CreateWidgetActionParams) {
-    const { type, change } = params;
-    const data = {
-      id: model.id,
-      type: type,
-      change: change,
-    };
-    let cs: ChangeSet;
-    if (type === "move") {
-      cs = getCS(model, [
-        ["x", change.x],
-        ["y", change.y],
-      ]);
-    } else if (type === "resize") {
-      cs = getCS(model, [
-        ["width", change.w],
-        ["height", change.h],
-      ]);
-    } else if (type === "changeColor") {
-      cs = getCS(model, [["color", change]]);
-    } else {
-      throw new Error("create WidgetAction type error");
-    }
-    return new WidgetAction(data as WidgetActionData, cs);
   }
 
   async play() {
@@ -103,5 +66,47 @@ export class WidgetAction extends BaseAction {
       this.over = true;
       this.commit();
     }
+  }
+}
+
+export class WidgetActionResize extends WidgetAction {
+  static create(model: BaseModel, change: { w: number; h: number }) {
+    const data = {
+      id: model.id,
+      type: "resize",
+      change: change,
+    };
+    const cs = getCS(model, [
+      ["width", change.w],
+      ["height", change.h],
+    ]);
+    return new WidgetAction(data as WidgetActionResizeData, cs);
+  }
+}
+
+export class WidgetActionMove extends WidgetAction {
+  static create(model: BaseModel, change: { x: number; y: number }) {
+    const data = {
+      id: model.id,
+      type: "move",
+      change: change,
+    };
+    const cs = getCS(model, [
+      ["x", change.x],
+      ["y", change.y],
+    ]);
+    return new WidgetAction(data as WidgetActionMoveData, cs);
+  }
+}
+
+export class WidgetActionChangeColor extends WidgetAction {
+  static create(model: BaseModel, color: string) {
+    const data = {
+      id: model.id,
+      type: "changeColor",
+      change: color,
+    };
+    const cs = getCS(model, [["color", color]]);
+    return new WidgetAction(data as WidgetActionChangeColorData, cs);
   }
 }

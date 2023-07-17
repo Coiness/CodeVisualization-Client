@@ -13,14 +13,11 @@ import {
 import { activeWidget, animateSpeed, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
 import { useEffect, useRef, useState } from "react";
-import { WidgetAction, WidgetActionData } from "../../core/action/WidgetAction";
+import { WidgetActionData, WidgetActionMove, WidgetActionResize } from "../../core/action/WidgetAction";
 import { widgetActionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
 import { checkNil, linearAnimation } from "../../common/utils";
-import {
-  needSelectWidget,
-  selectWidget,
-} from "./controlPanelItem/SelectWidget";
+import { needSelectWidget, selectWidget } from "./controlPanelItem/SelectWidget";
 
 export interface WidgetRendererModel extends CommonModel {
   widgets: (WidgetModel | null)[];
@@ -66,10 +63,7 @@ export class WidgetModelManager {
 
 export const widgetModelManager = new WidgetModelManager();
 
-export function listenModelChange<T extends CommonModel>(
-  model: T,
-  callback: (model: T) => void
-) {
+export function listenModelChange<T extends CommonModel>(model: T, callback: (model: T) => void) {
   const sub = modelChange.subscribe((newModel) => {
     if ((newModel as T).id === model.id) {
       callback(newModel as T);
@@ -136,8 +130,8 @@ export function useWidgetAnimation(model: BaseModel) {
               left: [x, actionData.change.x, (n) => `${n}px`],
             },
             200 / animateSpeed.get(),
-            end
-          )
+            end,
+          ),
         );
       } else if (actionData.type === "resize") {
         setStop(
@@ -148,8 +142,8 @@ export function useWidgetAnimation(model: BaseModel) {
               height: [height, actionData.change.h, (n) => `${n}px`],
             },
             200 / animateSpeed.get(),
-            end
-          )
+            end,
+          ),
         );
       } else if (actionData.type === "changeColor") {
         setStop(() => {});
@@ -170,8 +164,7 @@ export function Widget(props: WidgetProps) {
   const WidgetModel = widgetModelManager.getWidget(model);
   const WidgetCompRender = WidgetRenderMap[model.type];
   const { x, y, width, height, color } = model;
-  const [activeWidgetValue, setActiveWidget] =
-    useStore<WidgetInfo>(activeWidget);
+  const [activeWidgetValue, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
   const dom = useWidgetAnimation(model);
   const editable = props.editable;
@@ -206,20 +199,16 @@ export function Widget(props: WidgetProps) {
       }}
       ref={dom}
     >
-      <WidgetCompRender
-        className="widgetComp"
-        {...props}
-        widget={WidgetModel}
-      />
+      <WidgetCompRender className="widgetComp" {...props} widget={WidgetModel} />
       {isActive && (
         <SelectDrag
           dragInfo={{
             x,
             y,
             onDrag: (nx: number, ny: number) => {
-              const action = WidgetAction.create(model, {
-                type: "move",
-                change: { x: nx, y: ny },
+              const action = WidgetActionMove.create(model, {
+                x: nx,
+                y: ny,
               });
               commitAction(action);
             },
@@ -228,9 +217,9 @@ export function Widget(props: WidgetProps) {
             width,
             height,
             onResize: (nw: number, nh: number) => {
-              const action = WidgetAction.create(model, {
-                type: "resize",
-                change: { w: nw, h: nh },
+              const action = WidgetActionResize.create(model, {
+                w: nw,
+                h: nh,
               });
               commitAction(action);
             },
@@ -263,13 +252,7 @@ export function WidgetRenderer(props: WidgetRendererProps) {
         if (widgetModel === null) {
           return null;
         }
-        return (
-          <Widget
-            key={widgetModel.id}
-            model={widgetModel}
-            editable={props.editable}
-          ></Widget>
-        );
+        return <Widget key={widgetModel.id} model={widgetModel} editable={props.editable}></Widget>;
       })}
     </div>
   );

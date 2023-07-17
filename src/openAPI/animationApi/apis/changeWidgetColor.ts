@@ -1,5 +1,5 @@
 import { getModelById } from "../../../components/widget/widgets";
-import { WidgetAction, commitAction } from "../../../core";
+import { WidgetActionChangeColor, commitAction } from "../../../core";
 import { ChangeWidgetColorParams } from "../types/widget/Base";
 
 export function changeWidgetColor(params: ChangeWidgetColorParams) {
@@ -9,9 +9,6 @@ export function changeWidgetColor(params: ChangeWidgetColorParams) {
     // TODO 给用户提示 model id 不存在
     return;
   }
-  const action = WidgetAction.create(model, {
-    type: "changeColor",
-    change: color,
-  });
+  const action = WidgetActionChangeColor.create(model, color);
   commitAction(action);
 }

@@ -25,9 +25,11 @@ export const valueWidgetExecer = new Subject<ValueWidgetExecerParams>();
 export class ValueAction extends BaseAction {
   private stopFun: () => void = () => {};
   private stoped: boolean = false;
+  data: ValueActionData;
 
   constructor(data: ValueActionData, cs: ChangeSet) {
     super(data, cs, "Value");
+    this.data = data;
   }
 
   static create(model: BaseModel, params: CreateValueActionParams) {

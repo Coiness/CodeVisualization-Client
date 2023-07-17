@@ -1,12 +1,11 @@
 import "./index.css";
 import { useCallback, useState, useEffect } from "react";
-import { commitAction, WidgetAction } from "../../../../core";
+import { commitAction, WidgetActionChangeColor } from "../../../../core";
 import { activeWidget, useStore } from "../../../../store";
 import { SketchPicker } from "react-color";
 import { Button } from "antd";
 export function ColorEdit() {
   const [activeWidgetValue] = useStore(activeWidget);
-  const [visible, setVisible] = useState<boolean>(false);
   const [color, setColor] = useState<string>();
   const widget = activeWidgetValue?.widget;
   const model = widget?.getModel();
@@ -17,26 +16,22 @@ export function ColorEdit() {
         if (model.color === color) {
           return;
         }
-        let action = WidgetAction.create(model, {
-          type: "changeColor",
-          change: color,
-        });
+        let action = WidgetActionChangeColor.create(model, color);
         commitAction(action);
       }
     },
-    [model]
+    [model],
   );
 
   useEffect(() => {
     setColor(model?.color);
-    setVisible(false);
   }, [model]);
 
   const handleChange = useCallback(
     (color: any) => {
       setColor(color.hex);
     },
-    [model]
+    [setColor],
   );
 
   const submit = useCallback(() => {
