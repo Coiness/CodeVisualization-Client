@@ -176,7 +176,7 @@ export function Widget(props: WidgetProps) {
   return (
     <div
       className="widget"
-      onClick={() => {
+      onMouseDown={() => {
         if (editable) {
           if (needSelectWidget.get()) {
             selectWidget.next(WidgetModel);
@@ -189,6 +189,9 @@ export function Widget(props: WidgetProps) {
           });
         }
       }}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       style={{
         left: x,
         top: y,
@@ -200,32 +203,31 @@ export function Widget(props: WidgetProps) {
       ref={dom}
     >
       <WidgetCompRender className="widgetComp" {...props} widget={WidgetModel} />
-      {isActive && (
-        <SelectDrag
-          dragInfo={{
-            x,
-            y,
-            onDrag: (nx: number, ny: number) => {
-              const action = WidgetActionMove.create(model, {
-                x: nx,
-                y: ny,
-              });
-              commitAction(action);
-            },
-          }}
-          resizeInfo={{
-            width,
-            height,
-            onResize: (nw: number, nh: number) => {
-              const action = WidgetActionResize.create(model, {
-                w: nw,
-                h: nh,
-              });
-              commitAction(action);
-            },
-          }}
-        ></SelectDrag>
-      )}
+      <SelectDrag
+        isActive={isActive}
+        dragInfo={{
+          x,
+          y,
+          onDrag: (nx: number, ny: number) => {
+            const action = WidgetActionMove.create(model, {
+              x: nx,
+              y: ny,
+            });
+            commitAction(action);
+          },
+        }}
+        resizeInfo={{
+          width,
+          height,
+          onResize: (nw: number, nh: number) => {
+            const action = WidgetActionResize.create(model, {
+              w: nw,
+              h: nh,
+            });
+            commitAction(action);
+          },
+        }}
+      ></SelectDrag>
     </div>
   );
 }
@@ -241,13 +243,7 @@ export function WidgetRenderer(props: WidgetRendererProps) {
   }, [props.editable, setActiveWidget]);
 
   return (
-    <div
-      className="widgetRenderer"
-      style={{ width, height, backgroundColor: color }}
-      onDoubleClick={(e) => {
-        activeWidget.set(null);
-      }}
-    >
+    <div className="widgetRenderer" style={{ width, height, backgroundColor: color }}>
       {widgets.map((widgetModel) => {
         if (widgetModel === null) {
           return null;

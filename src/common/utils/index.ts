@@ -142,16 +142,13 @@ export function getDateString(date: number) {
   const dateObj = new Date(date);
   res += dateObj.getFullYear();
   res += "/";
-  const M = dateObj.getMonth() + 1;
-  res += M < 10 ? "0" + M : M;
+  res += String(dateObj.getMonth() + 1).padStart(2, '0');
   res += "/";
-  res += dateObj.getDate();
+  res += String(dateObj.getDate()).padStart(2, '0');
   res += " ";
-  const h = dateObj.getHours();
-  res += h < 10 ? "0" + h : h;
+  res += String(dateObj.getHours()).padStart(2, '0');
   res += ":";
-  const m = dateObj.getMinutes();
-  res += m < 10 ? "0" + m : m;
+  res += String(dateObj.getMinutes()).padStart(2, '0');
   return res;
 }
 
