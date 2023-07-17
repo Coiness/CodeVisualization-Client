@@ -1,5 +1,5 @@
 import { getModelById } from "../../../components/widget/widgets";
-import { WidgetRendererAction, WidgetRendererActionDelete, commitAction } from "../../../core";
+import { WidgetRendererActionDelete, commitAction } from "../../../core";
 import { snapshot } from "../../../store";
 import { DeleteWidgetParams } from "../types/widget/Base";
 

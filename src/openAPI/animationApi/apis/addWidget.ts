@@ -1,7 +1,7 @@
 import { widgetModelManager } from "../../../components/widget";
 import { BaseModel, WidgetType, getModelById } from "../../../components/widget/widgets";
 import { StackWidget as StackWidgetModel } from "../../../components/widget/widgets/stackWidget";
-import { BaseAction, WidgetRendererAction, WidgetRendererActionCreate, commitAction } from "../../../core";
+import { WidgetRendererActionCreate, commitAction } from "../../../core";
 import { snapshot } from "../../../store";
 import { BaseWidgetType } from "../types/widget";
 import { BaseWidget } from "../types/widget/Base";

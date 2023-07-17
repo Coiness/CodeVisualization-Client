@@ -1,4 +1,3 @@
-import { cloneDeep } from "lodash";
 import { API } from "..";
 import { Subscription } from "../../common/utils";
 import { InputContent } from "../../components/inputList";
@@ -27,11 +26,7 @@ function getAllkeys(obj: Object): string[] {
 
 export type EL = { error: Error | null; logs: any[][] };
 
-function executeSafely(
-  code: string,
-  allowAttrs: string[],
-  params: { [key: string]: any }
-): EL {
+function executeSafely(code: string, allowAttrs: string[], params: { [key: string]: any }): EL {
   let paramsKeys = Object.keys(params);
   let paramsStr = paramsKeys.join(",");
   let paramsValueStr = paramsKeys
@@ -42,12 +37,7 @@ function executeSafely(
 
   let attrs = getAllkeys(window);
   attrs = attrs.filter((item) => {
-    return (
-      !["eval"].includes(item) &&
-      !item.includes("-") &&
-      !allowAttrs.includes(item) &&
-      item !== "console"
-    );
+    return !["eval"].includes(item) && !item.includes("-") && !allowAttrs.includes(item) && item !== "console";
   });
   let publicAttrs = allowAttrs;
   let attrsStr = attrs.join(",");
@@ -93,7 +83,7 @@ export class APIDriver {
     code: string,
     showCode: ShowCodeInfo | null,
     descrition: string,
-    initData?: InputContent[]
+    initData?: InputContent[],
   ): Promise<true | { error: Error | null; logs: any[][] }> {
     modelSwitcher.pushModel(getDefaultSnapshot());
     this.sub = actionCommitter.subscribe((action) => {

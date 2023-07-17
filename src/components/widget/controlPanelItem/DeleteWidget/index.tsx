@@ -1,15 +1,12 @@
 import { Button } from "antd";
 import { useCallback, useEffect } from "react";
 import { activeWidget, useStore } from "../../../../store";
-import { commitAction, WidgetRendererAction } from "../../../../core";
+import { commitAction, WidgetRendererActionDelete } from "../../../../core";
 import { snapshot } from "../../../../store";
 import { BaseModel } from "../../widgets";
 
 export function deleteWidgetFun(model: BaseModel) {
-  let action = WidgetRendererAction.create(snapshot.get()!.widgetManagerModel, {
-    type: "delete",
-    model,
-  });
+  let action = WidgetRendererActionDelete.create(snapshot.get()!.widgetManagerModel, model);
   commitAction(action);
   activeWidget.set(null);
 }
@@ -46,13 +43,7 @@ export function DeleteWidget() {
 
   return (
     <div className="deleteWidget">
-      <Button
-        className="submit"
-        onClick={deleteWidget}
-        type="default"
-        danger
-        style={{ width: "100%" }}
-      >
+      <Button className="submit" onClick={deleteWidget} type="default" danger style={{ width: "100%" }}>
         删除元素
       </Button>
     </div>
