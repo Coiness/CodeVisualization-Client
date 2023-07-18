@@ -42,10 +42,7 @@ export function Dialogs() {
   return (
     <>
       {Object.keys(dialogs).map((key: string) => {
-        let x = dialogs[key](
-          status[key] ? status[key].v : false,
-          status[key] ? status[key].d : undefined
-        );
+        let x = dialogs[key](status[key] ? status[key].v : false, status[key] ? status[key].d : undefined);
         return <div key={key}>{x}</div>;
       })}
     </>
@@ -58,7 +55,7 @@ export function openDialog<T>(key: string, data?: any): Promise<T> {
   const [p, r] = createPromise();
   dialogPromiseMap.set(key, r);
   sub.next({ key, status: true, data });
-  return p;
+  return p as Promise<T>;
 }
 
 export function closeDialog(key: string, res?: any) {

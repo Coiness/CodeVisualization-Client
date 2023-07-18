@@ -21,13 +21,16 @@ export interface WidgetProps {
   editable: boolean;
 }
 
+// todo 治理此处 any
+export type CommonWidgetValue = any;
+
 export interface IWidget {
   setDiscard: (discard: () => void) => void;
   setValue: (value: unknown) => void;
   getValue: () => unknown;
   toStringValue: () => string;
   getModel: () => WidgetModel;
-  value$: Subject<any>;
+  value$: Subject<CommonWidgetValue>;
 }
 
 export enum WidgetType {

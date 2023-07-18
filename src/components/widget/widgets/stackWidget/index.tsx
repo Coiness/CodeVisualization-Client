@@ -122,7 +122,7 @@ export function StackWidgetRender(props: WidgetRenderProps) {
   const widget = props.widget;
   const model = props.model as StackWidgetModel;
   const { value, dom } = useValueWidget(widget, model);
-  const height = useDomPropertyListener(dom.current, "offsetHeight") ?? model.height;
+  const height = (useDomPropertyListener(dom.current, "offsetHeight") ?? model.height) as number;
   const count = Math.floor(height / 30);
   const widgets = value.map((item: WidgetModel) => {
     return widgetModelManager.getWidget(item);

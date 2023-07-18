@@ -16,19 +16,16 @@ const PageMap = {
 
 export function TopMenu() {
   const navigate = useNavigate();
-  let menuData = [
+  let menuData: { label: string; key: PageKey }[] = [
     { label: "演示中心", key: PageKey.Project },
     { label: "录像中心", key: PageKey.Video },
     { label: "算法中心", key: PageKey.Algorithm },
   ];
   const handleClick = useCallback(
-    (item: any) => {
-      let key: PageKey = item.key;
+    (key: PageKey) => {
       navigate(PageMap[key]);
     },
-    [navigate]
+    [navigate],
   );
-  return (
-    <Menu mode={"horizontal"} items={menuData} onClick={handleClick}></Menu>
-  );
+  return <Menu mode={"horizontal"} items={menuData} onClick={(e) => handleClick(e.key as PageKey)}></Menu>;
 }

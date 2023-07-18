@@ -5,6 +5,7 @@ import SimpleMDE from "react-simplemde-editor";
 import showdown from "showdown";
 import "easymde/dist/easymde.min.css";
 import "./index.css";
+import EasyMDE from "easymde";
 
 let converter = new showdown.Converter();
 
@@ -29,14 +30,7 @@ export function InfoEditDialog(visible: boolean, params: InfoEditDialogParams) {
 
   const { initText, callback, editable } = params;
   return (
-    <Modal
-      open={visible}
-      maskClosable={true}
-      onCancel={closePanel}
-      footer={null}
-      width={500}
-      closable={false}
-    >
+    <Modal open={visible} maskClosable={true} onCancel={closePanel} footer={null} width={500} closable={false}>
       <InfoEdit
         text={initText}
         editable={editable}
@@ -92,7 +86,7 @@ export function useMarkDownEdit(editable: boolean) {
     (str: string) => {
       setValue(str);
     },
-    [setValue]
+    [setValue],
   );
 
   const getText = useCallback(() => {
@@ -119,7 +113,8 @@ export function useMarkDownEdit(editable: boolean) {
         onChange={(v: string) => {
           setValue(v);
         }}
-        getMdeInstance={(mde: any) => {
+        getMdeInstance={(mde: EasyMDE) => {
+          // TODO 这里工具栏样式有问题，相关 css 文件加载失败，未来修复
           // if (!editable) {
           //   if (!mde.isPreviewActive()) {
           //     mde.toolbar_div.style.display = "block";

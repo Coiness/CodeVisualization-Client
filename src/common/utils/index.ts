@@ -31,7 +31,7 @@ export class Subject<T> {
   }
 }
 
-export function cls(...args: any[]) {
+export function cls(...args: string[]) {
   const arr = args.filter((item) => !!item);
   return arr.join(" ");
 }
@@ -49,31 +49,21 @@ const LinearAnimationStepTime = 16;
 export function linearAnimation(
   dom: HTMLElement,
   style: {
-    [attr: string]: [
-      start: number,
-      end: number,
-      toString: (now: number) => string
-    ];
+    [attr: string]: [start: number, end: number, toString: (now: number) => string];
   },
   time: number,
-  callback?: () => void
+  callback?: () => void,
 ) {
   let step: [string, number, number, (now: number) => string][] = [];
   let count = time / LinearAnimationStepTime;
   for (let s in style) {
-    step.push([
-      s,
-      style[s][0],
-      (style[s][1] - style[s][0]) / count,
-      style[s][2],
-    ]);
+    step.push([s, style[s][0], (style[s][1] - style[s][0]) / count, style[s][2]]);
   }
   const timer = setInterval(() => {
     count--;
     for (let item of step) {
       item[1] += item[2];
-      const key = item[0];
-      dom.style[key as any] = item[3](item[1]);
+      setDomStyle(dom.style, item[0] as keyof CSSStyleDeclaration, item[3](item[1]));
     }
     if (count <= 0) {
       clearInterval(timer);
@@ -83,6 +73,10 @@ export function linearAnimation(
   return () => {
     clearInterval(timer);
   };
+}
+
+function setDomStyle<T extends object, K extends keyof T>(style: T, key: K, value: T[K]) {
+  style[key] = value;
 }
 
 export const createOnlyId = (() => {
@@ -100,7 +94,7 @@ export const createOnlyId = (() => {
   };
 })();
 
-export function checkNil(obj: any) {
+export function checkNil(obj: { [key: string]: unknown }) {
   for (let x in obj) {
     if (obj[x] === null || obj[x] === undefined) {
       return false;
@@ -126,15 +120,7 @@ export function getIntRandom(l: number, r: number) {
 }
 
 export function randomColor(l: number, r: number) {
-  return (
-    "rgb(" +
-    getIntRandom(l, r) +
-    "," +
-    getIntRandom(l, r) +
-    "," +
-    getIntRandom(l, r) +
-    ")"
-  );
+  return "rgb(" + getIntRandom(l, r) + "," + getIntRandom(l, r) + "," + getIntRandom(l, r) + ")";
 }
 
 export function getDateString(date: number) {
@@ -142,13 +128,13 @@ export function getDateString(date: number) {
   const dateObj = new Date(date);
   res += dateObj.getFullYear();
   res += "/";
-  res += String(dateObj.getMonth() + 1).padStart(2, '0');
+  res += String(dateObj.getMonth() + 1).padStart(2, "0");
   res += "/";
-  res += String(dateObj.getDate()).padStart(2, '0');
+  res += String(dateObj.getDate()).padStart(2, "0");
   res += " ";
-  res += String(dateObj.getHours()).padStart(2, '0');
+  res += String(dateObj.getHours()).padStart(2, "0");
   res += ":";
-  res += String(dateObj.getMinutes()).padStart(2, '0');
+  res += String(dateObj.getMinutes()).padStart(2, "0");
   return res;
 }
 
@@ -159,19 +145,17 @@ export function useReload() {
   };
 }
 
-export function useDomPropertyListener(
-  dom: HTMLDivElement | null,
-  property: string
-): any {
-  const [value, setValue] = useState(null);
+export function useDomPropertyListener(dom: HTMLDivElement | null, property: keyof HTMLDivElement): unknown {
+  const [value, setValue] = useState<unknown>(null);
   useEffect(() => {
     const timer = setInterval(() => {
       if (dom === null) {
         if (value !== null) {
           setValue(null);
         }
+        return;
       }
-      let v = (dom as any)[property];
+      let v = dom[property];
       if (v !== value) {
         setValue(v);
       }
@@ -206,10 +190,7 @@ export async function readUploadFileContent(file: File): Promise<string> {
   });
 }
 
-export function observeDomSize(
-  dom: HTMLElement,
-  callback: (width: number, height: number) => void
-) {
+export function observeDomSize(dom: HTMLElement, callback: (width: number, height: number) => void) {
   const myObserver = new ResizeObserver((entries) => {
     entries.forEach((entry) => {
       callback(entry.contentRect.width, entry.contentRect.height);
@@ -227,7 +208,7 @@ export function nav(url: string): void {
   window.location.href = url;
 }
 
-export function createPromise(): [Promise<any>, Function] {
+export function createPromise(): [Promise<unknown>, Function] {
   let resolve: Function = () => {};
   let promise = new Promise((r) => {
     resolve = r;

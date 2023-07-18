@@ -18,7 +18,7 @@ export function MainCanvas(props: { editable: boolean; className: string }) {
     MainCanvasData.zoom = zoom;
   }, [zoom]);
 
-  function handelMouseWhell(e: any) {
+  function handelMouseWhell(e: React.WheelEvent<HTMLDivElement>) {
     if (e.deltaY > 0) {
       if (zoom > 0.2) {
         setZoom(zoom - 0.05);
@@ -39,12 +39,7 @@ export function MainCanvas(props: { editable: boolean; className: string }) {
       }}
     >
       <div style={{ transform: `scale(${zoom})` }}>
-        {data && (
-          <WidgetRenderer
-            model={data.widgetManagerModel}
-            editable={props.editable}
-          ></WidgetRenderer>
-        )}
+        {data && <WidgetRenderer model={data.widgetManagerModel} editable={props.editable}></WidgetRenderer>}
       </div>
     </div>
   );

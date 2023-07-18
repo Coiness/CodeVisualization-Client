@@ -28,8 +28,8 @@ export function ColorEdit() {
   }, [model]);
 
   const handleChange = useCallback(
-    (color: any) => {
-      setColor(color.hex);
+    (hexColor: string) => {
+      setColor(hexColor);
     },
     [setColor],
   );
@@ -48,7 +48,7 @@ export function ColorEdit() {
     <div className="colorEdit">
       <div className="displayBox" style={{ backgroundColor: color }}>
         <div className="picker">
-          <SketchPicker color={color} onChange={handleChange}></SketchPicker>
+          <SketchPicker color={color} onChange={(e) => handleChange(e.hex)}></SketchPicker>
         </div>
       </div>
       <Button onClick={submit}>修改</Button>
