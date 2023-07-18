@@ -6,28 +6,21 @@ import { ChangeSet } from "../diff/objDiff";
 import { CSType, getCS } from "../undo";
 import { BaseAction } from "./baseAction";
 
-export type StackActionData =
-  | {
-      id: string;
-      type: "push";
-      info: {
-        fromWidgetId: string;
-        newWidgetModel: WidgetModel;
-      };
-    }
-  | {
-      id: string;
-      type: "pop";
-    };
+export interface StackActionPushData {
+  id: string;
+  type: "push";
+  info: {
+    fromWidgetId: string;
+    newWidgetModel: WidgetModel;
+  };
+}
 
-export type CreateStackActionParams =
-  | {
-      type: "push";
-      info: { fromWidgetModel: WidgetModel };
-    }
-  | {
-      type: "pop";
-    };
+export interface StackActionPopData {
+  id: string;
+  type: "pop";
+}
+
+export type StackActionData = StackActionPushData | StackActionPopData;
 
 interface StackWidgetExecerParams {
   action: StackAction;
@@ -43,54 +36,6 @@ export class StackAction extends BaseAction {
 
   constructor(data: StackActionData, cs: ChangeSet) {
     super(data, cs, "Stack");
-  }
-
-  static create(model: StackWidgetModel, params: CreateStackActionParams) {
-    const { type } = params;
-    let data: StackActionData;
-    let cs: ChangeSet;
-
-    if (type === "push") {
-      const info = params.info;
-      const newModel = cloneDeep(info.fromWidgetModel);
-
-      newModel.id = createOnlyId("widget");
-      newModel.x = 0;
-      newModel.y = 0;
-
-      data = {
-        id: model.id,
-        type: "push",
-        info: {
-          fromWidgetId: info.fromWidgetModel.id,
-          newWidgetModel: newModel,
-        },
-      };
-      cs = getCS(
-        model.value,
-        [
-          ["length", model.value.length + 1], // 改变数组长度
-          [model.value.length, newModel], // 再添加元素
-        ],
-        model
-      );
-    } else if (type === "pop") {
-      data = {
-        id: model.id,
-        type: "pop",
-      };
-      cs = getCS(
-        model.value,
-        [
-          [model.value.length - 1, CSType.DELETE], // 先删除元素
-          ["length", model.value.length - 1], // 再改变数组长度
-        ],
-        model
-      );
-    } else {
-      throw new Error("Stack Action: params.type error");
-    }
-    return new StackAction(data, cs);
   }
 
   async play() {
@@ -116,5 +61,63 @@ export class StackAction extends BaseAction {
     //   this.commit();
     // }
     // this.stopFun();
+  }
+}
+
+export class StackActionPush extends StackAction {
+  data: StackActionPushData;
+  static create(model: StackWidgetModel, info: { fromWidgetModel: WidgetModel }) {
+    const newModel = cloneDeep(info.fromWidgetModel);
+
+    newModel.id = createOnlyId("widget");
+    newModel.x = 0;
+    newModel.y = 0;
+
+    const data: StackActionPushData = {
+      id: model.id,
+      type: "push",
+      info: {
+        fromWidgetId: info.fromWidgetModel.id,
+        newWidgetModel: newModel,
+      },
+    };
+    const cs = getCS(
+      model.value,
+      [
+        ["length", model.value.length + 1], // 改变数组长度
+        [model.value.length, newModel], // 再添加元素
+      ],
+      model,
+    );
+    return new StackActionPush(data, cs);
+  }
+
+  constructor(data: StackActionPushData, cs: ChangeSet) {
+    super(data, cs);
+    this.data = data;
+  }
+}
+
+export class StackActionPop extends StackAction {
+  data: StackActionPopData;
+  static create(model: StackWidgetModel) {
+    const data: StackActionPopData = {
+      id: model.id,
+      type: "pop",
+    };
+    const cs = getCS(
+      model.value,
+      [
+        [model.value.length - 1, CSType.DELETE], // 先删除元素
+        ["length", model.value.length - 1], // 再改变数组长度
+      ],
+      model,
+    );
+    return new StackActionPop(data, cs);
+  }
+
+  constructor(data: StackActionPopData, cs: ChangeSet) {
+    super(data, cs);
+    this.data = data;
   }
 }

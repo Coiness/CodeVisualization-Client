@@ -2,15 +2,12 @@ import "./index.css";
 import { listenModelChange, widgetModelManager } from "../..";
 import { cls, Subject, useDomPropertyListener } from "../../../../common/utils";
 import { commitAction } from "../../../../core";
-import { StackAction } from "../../../../core/action/StackAction";
+import { StackActionPop, StackActionPush } from "../../../../core/action/StackAction";
 import { ValueAction } from "../../../../core/action/ValueAction";
 import { snapshot } from "../../../../store";
 import { WidgetDefaultInfo } from "../../../../view/project/widgetPanel";
 import { WidgetInfoView } from "../../controlPanelItem";
-import {
-  StackControl,
-  WidgetContainer,
-} from "../../controlPanelItem/StackControl";
+import { StackControl, WidgetContainer } from "../../controlPanelItem/StackControl";
 import { IWidget, WidgetModel, WidgetRenderProps, WidgetType } from "../type";
 import { useValueWidget } from "../ValueWidget";
 import { useStackActionAnimation } from "./animation";
@@ -85,11 +82,8 @@ export class StackWidget implements IWidget {
   };
 
   push(m: WidgetModel) {
-    const action = StackAction.create(this.model, {
-      type: "push",
-      info: {
-        fromWidgetModel: m,
-      },
+    const action = StackActionPush.create(this.model, {
+      fromWidgetModel: m,
     });
     commitAction(action);
   }
@@ -97,9 +91,7 @@ export class StackWidget implements IWidget {
   pop(): WidgetModel | null {
     if (this.value.length) {
       let res = this.value[this.value.length - 1];
-      const action = StackAction.create(this.model, {
-        type: "pop",
-      });
+      const action = StackActionPop.create(this.model);
       commitAction(action);
       return res;
     } else {
@@ -130,18 +122,13 @@ export function StackWidgetRender(props: WidgetRenderProps) {
   const widget = props.widget;
   const model = props.model as StackWidgetModel;
   const { value, dom } = useValueWidget(widget, model);
-  const height =
-    useDomPropertyListener(dom.current, "offsetHeight") ?? model.height;
+  const height = useDomPropertyListener(dom.current, "offsetHeight") ?? model.height;
   const count = Math.floor(height / 30);
   const widgets = value.map((item: WidgetModel) => {
     return widgetModelManager.getWidget(item);
   });
   const isLittle = count <= 2 && value.length > count;
-  useStackActionAnimation(
-    model,
-    () => (dom.current?.children[0] as HTMLDivElement) ?? null,
-    height
-  );
+  useStackActionAnimation(model, () => (dom.current?.children[0] as HTMLDivElement) ?? null, height);
   let list: (IWidget | null)[] = [];
   list = [...widgets];
   if (widgets.length > count) {

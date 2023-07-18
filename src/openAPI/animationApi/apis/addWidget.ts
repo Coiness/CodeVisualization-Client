@@ -137,10 +137,10 @@ export function addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]
       type: WidgetType.Stack,
       ...info,
     });
-    const id = (action!.data as any).model.id;
+    commitAction(action);
+    const id = action.data.model.id;
     const res = {
       id,
-      [modelKey]: (action.data as any).model,
       ...info,
     } as StackWidget;
     const proxy = new Proxy(res, {
@@ -148,12 +148,13 @@ export function addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]
         if (p === "id") {
           return id;
         }
-        if (p === modelKey || typeof p === "symbol") {
-          return (action.data as any).model;
-        }
         const model = getModelById(id);
-        if (model?.[p]) {
+        if (typeof p === "symbol") {
+          return null;
+        } else if (model?.[p]) {
           return model[p];
+        } else if ((info as any)[p]) {
+          return (info as any)[p];
         } else {
           return null;
         }
