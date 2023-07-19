@@ -1,22 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { linearAnimation, Subject } from "../../../common/utils";
+import { Subject } from "../../../common/utils";
 import { valueWidgetExecer, ValueActionData } from "../../../core";
-import { animateSpeed } from "../../../store";
-import { BaseModel } from "./type";
+import { BaseModel, CommonWidgetValue } from "./type";
 
 export interface ValueWidgetModel extends BaseModel {
   value: unknown;
 }
 
-export type Value = any;
+export type Value = CommonWidgetValue;
 
 export interface ValueWidget {
   value$: Subject<Value>;
   getValue(): Value;
 }
 
-const SmallFontSize = 16;
-const LargeFontSize = 32;
+// const SmallFontSize = 16;
+// const LargeFontSize = 32;
 
 export function useValueWidget(widget: ValueWidget, model: ValueWidgetModel) {
   const v = widget.getValue() as Value;
@@ -37,7 +36,7 @@ export function useValueWidget(widget: ValueWidget, model: ValueWidgetModel) {
   const dom = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const sub = valueWidgetExecer.subscribe((params) => {
-      const { action, setStop, end } = params;
+      const { action, setStop } = params;
       if (action.type !== "Value") {
         return;
       }

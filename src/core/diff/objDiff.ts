@@ -4,18 +4,9 @@ import { CommonModel } from "../../components/widget/widgets";
 import { Obj } from "../types";
 import { initPathDfs } from "../undo";
 
-// export function objDiff(o1: any, o2: any): ChangeSet {
-//   return [];
-// }
-
-// function diffDfs(o1: Obj, o2: Obj, cs: ChangeSet, p: string) {
-//   for (let attr in o1) {
-//     if (o2.hasOwnProperty(attr)) {
-//     }
-//   }
-// }
 export const modelChange = new Subject<CommonModel>();
 
+// todo any 治理 & 拆分 ChangeSet 类型
 export type ChangeSet = {
   modelPath: string; // 对应逻辑层 model path
   t: "u" | "d" | "c"; // 操作类型

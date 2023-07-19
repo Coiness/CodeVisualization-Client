@@ -40,7 +40,7 @@ export async function createWS(type: WSType, data: Obj): Promise<WS> {
           type: type,
           ...data,
         },
-      })
+      }),
     );
   };
 
@@ -63,7 +63,6 @@ export async function createWS(type: WSType, data: Obj): Promise<WS> {
 
   websocket.onmessage = function (msg) {
     let data = JSON.parse(msg.data);
-    (window as any).str = msg.data;
     if (data.type === "ready") {
       resolve(ws);
     } else if (data.type === "message") {

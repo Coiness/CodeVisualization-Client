@@ -19,17 +19,9 @@ export function useUndo(enable: boolean) {
       return;
     }
     const fun = (e: KeyboardEvent) => {
-      if (
-        (e.ctrlKey || e.metaKey) &&
-        (e.key === "z" || e.key === "Z") &&
-        !e.shiftKey
-      ) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "z" || e.key === "Z") && !e.shiftKey) {
         commitUndo();
-      } else if (
-        (e.ctrlKey || e.metaKey) &&
-        (e.key === "z" || e.key === "Z") &&
-        e.shiftKey
-      ) {
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === "z" || e.key === "Z") && e.shiftKey) {
         commitRedo();
       }
     };
@@ -40,7 +32,7 @@ export function useUndo(enable: boolean) {
   }, [enable]);
 }
 
-function initPath(obj: any) {
+function initPath(obj: unknown) {
   initPathDfs(obj, []);
 }
 
@@ -49,19 +41,23 @@ snapshot.subscribe((s) => {
   initPath(s);
 });
 
-export function initPathDfs(obj: any, path: string[]) {
+type PathKeyObj = {
+  [pathKey]: string;
+};
+
+export function initPathDfs(obj: unknown, path: string[]) {
   if (typeof obj === "object" && obj !== null) {
     for (let attr in obj) {
       path.push(attr);
-      initPathDfs(obj[attr], path);
+      initPathDfs((obj as Obj)[attr], path);
       path.pop();
     }
-    obj[pathKey] = path.join(".");
+    (obj as PathKeyObj)[pathKey] = path.join(".");
   }
 }
 
-function getPath(obj: any) {
-  return obj[pathKey];
+function getPath(obj: Obj): string {
+  return (obj as PathKeyObj)[pathKey];
 }
 
 export function execDo(cs: ChangeSet) {
@@ -101,13 +97,10 @@ export enum CSType {
   DELETE = "DELETE",
 }
 
-export function getCS(
-  target: any,
-  change: [attr: string | number, value: any][],
-  model?: CommonModel
-) {
+// todo 治理这里的 any
+export function getCS(target: any, change: [attr: string | number, value: unknown][], model?: CommonModel) {
   model = model ?? target;
-  const mp = getPath(model);
+  const mp = getPath(model!);
   const path = getPath(target);
   const cs = [] as ChangeSet;
   for (let item of change) {

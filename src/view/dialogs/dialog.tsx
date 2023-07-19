@@ -11,6 +11,7 @@ import { SetVideoNameDialog } from "../videoPlay";
 import { UploadImageDialog } from "../userInfo/UserInfo";
 import { ConfirmDialog } from "../../components/confirmDialog";
 
+// todo any 治理 定义 Dialog 类型
 const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   login: Login,
   setProjectName: SetProjectNameDialog,
@@ -24,11 +25,11 @@ const dialogs: { [key: string]: (v: boolean, d?: any) => JSX.Element } = {
   confirmDialog: ConfirmDialog,
 };
 
-const sub = new Subject<{ key: string; status: boolean; data?: any }>();
+const sub = new Subject<{ key: string; status: boolean; data?: unknown }>();
 
 export function Dialogs() {
   const [status, setStatus] = useState<{
-    [key: string]: { v: boolean; d?: any };
+    [key: string]: { v: boolean; d?: unknown };
   }>({});
 
   useEffect(() => {
@@ -51,14 +52,14 @@ export function Dialogs() {
 
 const dialogPromiseMap = new Map<string, Function>();
 
-export function openDialog<T>(key: string, data?: any): Promise<T> {
+export function openDialog<T>(key: string, data?: unknown): Promise<T> {
   const [p, r] = createPromise();
   dialogPromiseMap.set(key, r);
   sub.next({ key, status: true, data });
   return p as Promise<T>;
 }
 
-export function closeDialog(key: string, res?: any) {
+export function closeDialog<T>(key: string, res?: T) {
   sub.next({ key, status: false });
   dialogPromiseMap.get(key)?.(res);
 }

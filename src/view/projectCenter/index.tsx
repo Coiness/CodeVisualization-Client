@@ -4,18 +4,8 @@ import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useEffect, useState, useCallback } from "react";
 import * as projectAPI from "../../net/projectAPI";
-import {
-  downloadString,
-  getDateString,
-  getIntRandom,
-  randomColor,
-} from "../../common/utils";
-import {
-  DeleteOutlined,
-  DownloadOutlined,
-  EditOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { downloadString, getDateString, getIntRandom, randomColor } from "../../common/utils";
+import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
@@ -40,6 +30,7 @@ export type Project = {
   permission: number;
 };
 
+// todo any 治理 定义服务端返回数据类型
 export function constructProjectList(videos: any[]): Project[] {
   return videos.map((item: any) => {
     let deg = getIntRandom(0, 180);
@@ -65,10 +56,8 @@ export function ProjectCenter() {
   const [projectList, setList] = useState<Project[] | null>(null);
   const navigate = useNavigate();
 
-  async function getProjectList(
-    type: "all" | "search" | "mine",
-    search?: string
-  ) {
+  async function getProjectList(type: "all" | "search" | "mine", search?: string) {
+    // todo any 治理 同上
     let list: any[] = [];
     if (type === "all") {
       let res = await projectAPI.searchProject("");
@@ -104,9 +93,7 @@ export function ProjectCenter() {
       <div className="projectCenterContent">
         <div className="left">
           <div className="search">
-            <Input.Search
-              onSearch={(e) => getProjectList("search", e)}
-            ></Input.Search>
+            <Input.Search onSearch={(e) => getProjectList("search", e)}></Input.Search>
           </div>
           <div className="all">
             <Button type="text" onClick={() => getProjectList("all")}>
@@ -164,10 +151,7 @@ export function ProjectList(props: { list: Project[] | null }) {
       snapshot: data.snapshot,
       descrition: data.descrition,
     } as DownloadProjectInfo;
-    downloadString(
-      `${data.name}.${FileEndNameMap[FileType.Project]}`,
-      JSON.stringify(info)
-    );
+    downloadString(`${data.name}.${FileEndNameMap[FileType.Project]}`, JSON.stringify(info));
   }, []);
 
   return projects ? (
@@ -243,22 +227,12 @@ export function ProjectList(props: { list: Project[] | null }) {
                     placement="right"
                     trigger={"click"}
                     zIndex={500}
-                    content={
-                      <UserCard
-                        account={item.user.account}
-                        width="300px"
-                      ></UserCard>
-                    }
+                    content={<UserCard account={item.user.account} width="300px"></UserCard>}
                   >
-                    <div
-                      className="img"
-                      style={{ backgroundImage: `url(${item.user.img})` }}
-                    ></div>
+                    <div className="img" style={{ backgroundImage: `url(${item.user.img})` }}></div>
                   </Popover>
                 </div>
-                <div className="time">
-                  最近修改：{getDateString(item.modifyTime)}
-                </div>
+                <div className="time">最近修改：{getDateString(item.modifyTime)}</div>
               </div>
             );
           })}

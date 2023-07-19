@@ -4,17 +4,8 @@ import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useEffect, useState, useCallback } from "react";
 import * as videoAPI from "../../net/videoAPI";
-import {
-  downloadString,
-  getDateString,
-  getIntRandom,
-  randomColor,
-} from "../../common/utils";
-import {
-  DeleteOutlined,
-  DownloadOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { downloadString, getDateString, getIntRandom, randomColor } from "../../common/utils";
+import { DeleteOutlined, DownloadOutlined, EyeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
@@ -38,6 +29,7 @@ export type Video = {
   permission: number;
 };
 
+// todo any 治理 定义服务端返回类型
 export function constructVideoList(videos: any[]): Video[] {
   return videos.map((item: any) => {
     let deg = getIntRandom(0, 180);
@@ -61,10 +53,8 @@ export function constructVideoList(videos: any[]): Video[] {
 export function VideoCenter() {
   const [videoList, setList] = useState<Video[] | null>(null);
 
-  async function getVideoList(
-    type: "all" | "search" | "mine",
-    search?: string
-  ) {
+  async function getVideoList(type: "all" | "search" | "mine", search?: string) {
+    // todo any 治理 同上
     let list: any[] = [];
     if (type === "all") {
       let res = await videoAPI.searchVideo("");
@@ -156,10 +146,7 @@ export function VideoList(props: { list: Video[] | null }) {
       video: data.video,
       descrition: data.descrition,
     } as DownloadVideoInfo;
-    downloadString(
-      `${data.name}.${FileEndNameMap[FileType.Video]}`,
-      JSON.stringify(info)
-    );
+    downloadString(`${data.name}.${FileEndNameMap[FileType.Video]}`, JSON.stringify(info));
   }, []);
 
   return videos ? (
@@ -235,22 +222,12 @@ export function VideoList(props: { list: Video[] | null }) {
                     placement="right"
                     trigger={"click"}
                     zIndex={500}
-                    content={
-                      <UserCard
-                        account={item.user.account}
-                        width="300px"
-                      ></UserCard>
-                    }
+                    content={<UserCard account={item.user.account} width="300px"></UserCard>}
                   >
-                    <div
-                      className="img"
-                      style={{ backgroundImage: `url(${item.user.img})` }}
-                    ></div>
+                    <div className="img" style={{ backgroundImage: `url(${item.user.img})` }}></div>
                   </Popover>
                 </div>
-                <div className="time">
-                  创建时间：{getDateString(item.createTime)}
-                </div>
+                <div className="time">创建时间：{getDateString(item.createTime)}</div>
               </div>
             );
           })}

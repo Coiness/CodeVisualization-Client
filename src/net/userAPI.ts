@@ -19,7 +19,7 @@ export async function register(
   account: string,
   pwd: string,
   checkCode: string,
-  invitationCode: string
+  invitationCode: string,
 ): Promise<{ flag: boolean; code: RegisterErrorCode }> {
   let r = await post("/user/register", {
     account,
@@ -69,7 +69,7 @@ export async function cancelfollow(account: string) {
   return res.flag;
 }
 
-export async function getFollowInfo(account: string): Promise<any> {
+export async function getFollowInfo(account: string) {
   let res = await get("/user/getFollowInfo", { followAccount: account });
   return {
     ...res.data,

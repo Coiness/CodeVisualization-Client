@@ -2,10 +2,10 @@ import { consoleSub } from "../common/console";
 import { ApiDriver } from "../driver";
 
 export const ioApi = {
-  getParam(name: string): any {
+  getParam(name: string): unknown {
     return ApiDriver.initData?.[name] ?? undefined;
   },
-  getParams(): { [key: string]: any } {
+  getParams(): { [key: string]: unknown } {
     return ApiDriver.initData ?? {};
   },
   print(str: string): void {

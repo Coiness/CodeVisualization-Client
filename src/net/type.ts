@@ -12,5 +12,5 @@ export interface Result {
   flag: boolean;
   code: ResultCode;
   message: string;
-  data: any;
+  data: any; // todo any 治理，增加泛型控制请求返回值类型
 }

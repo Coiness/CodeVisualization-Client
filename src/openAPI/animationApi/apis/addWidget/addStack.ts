@@ -3,8 +3,8 @@ import { BaseModel, WidgetType, getModelById } from "../../../../components/widg
 import { Snapshot } from "../../../../view/project";
 import { BaseWidget } from "../../types/widget/Base";
 import { AddStackWidgetParams, StackWidget } from "../../types/widget/Stack";
-import { modelKey } from "./common";
-import { StackWidget as StackWidgetModel } from "../../../../components/widget/widgets/stackWidget";
+import { ModelKeyObj, modelKey } from "./common";
+import { StackWidget as CompStackWidget, StackWidgetModel } from "../../../../components/widget/widgets/stackWidget";
 import { WidgetRendererActionCreate, commitAction } from "../../../../core";
 
 export function addStack(s: Snapshot, p: AddStackWidgetParams) {
@@ -16,17 +16,17 @@ export function addStack(s: Snapshot, p: AddStackWidgetParams) {
     color: p.color ?? "rgb(255, 242, 213)",
     value: [],
     size() {
-      let model = getModelById((action!.data as any).model.id)!;
+      let model = getModelById(action.data.model.id)! as StackWidgetModel;
       return model.value.length;
     },
     push(widget: BaseWidget) {
       const model = getModelById(id)!;
-      const stack = widgetModelManager.getWidget(model) as StackWidgetModel;
-      stack.push((widget as any)[modelKey] as BaseModel);
+      const stack = widgetModelManager.getWidget(model) as CompStackWidget;
+      stack.push((widget as ModelKeyObj)[modelKey] as BaseModel);
     },
     pop(): BaseWidget | null {
       const model = getModelById(id)!;
-      const stack = widgetModelManager.getWidget(model) as StackWidgetModel;
+      const stack = widgetModelManager.getWidget(model) as CompStackWidget;
       const m = stack.pop();
       if (m) {
         return m;
@@ -35,7 +35,7 @@ export function addStack(s: Snapshot, p: AddStackWidgetParams) {
     },
     peek(): BaseWidget | null {
       const model = getModelById(id)!;
-      const stack = widgetModelManager.getWidget(model) as StackWidgetModel;
+      const stack = widgetModelManager.getWidget(model) as CompStackWidget;
       const m = stack.peek();
       if (m) {
         return m;
@@ -64,8 +64,8 @@ export function addStack(s: Snapshot, p: AddStackWidgetParams) {
         return null;
       } else if (model?.[p]) {
         return model[p];
-      } else if ((info as any)[p]) {
-        return (info as any)[p];
+      } else if (info[p as keyof Omit<StackWidget, "id">]) {
+        return info[p as keyof Omit<StackWidget, "id">];
       } else {
         return null;
       }

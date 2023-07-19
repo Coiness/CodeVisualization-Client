@@ -53,9 +53,7 @@ export function Project() {
   const id = getProjectId(location.search);
   const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
   const account = useAccount();
-  const editable =
-    (projectInfo && projectInfo?.name === "") ||
-    (account !== null && projectInfo?.account === account);
+  const editable = (projectInfo && projectInfo?.name === "") || (account !== null && projectInfo?.account === account);
   const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
   const inited = useRef<boolean>(false);
 
@@ -91,27 +89,21 @@ export function Project() {
   }, [id]);
 
   const change = useCallback(
-    (key: ProjectInfoKey, value: any) => {
+    (key: ProjectInfoKey, value: unknown) => {
       let newInfo = {
         ...projectInfo,
         [key]: value,
       };
       setProjectInfo(newInfo as ProjectInfo);
     },
-    [projectInfo, setProjectInfo]
+    [projectInfo, setProjectInfo],
   );
 
   return (
     projectInfo && (
       <div className="projectDS">
         <Header
-          content={
-            <HeaderToolBar
-              info={projectInfo}
-              change={change}
-              editable={editable}
-            ></HeaderToolBar>
-          }
+          content={<HeaderToolBar info={projectInfo} change={change} editable={editable}></HeaderToolBar>}
         ></Header>
         <div className="projectDSContent">
           {editable && <WidgetPanel></WidgetPanel>}

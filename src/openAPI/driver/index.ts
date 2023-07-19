@@ -24,9 +24,9 @@ function getAllkeys(obj: Object): string[] {
   return arr;
 }
 
-export type EL = { error: Error | null; logs: any[][] };
+export type EL = { error: Error | null; logs: string[][] };
 
-function executeSafely(code: string, allowAttrs: string[], params: { [key: string]: any }): EL {
+function executeSafely(code: string, allowAttrs: string[], params: { [key: string]: unknown }): EL {
   let paramsKeys = Object.keys(params);
   let paramsStr = paramsKeys.join(",");
   let paramsValueStr = paramsKeys
@@ -43,10 +43,10 @@ function executeSafely(code: string, allowAttrs: string[], params: { [key: strin
   let attrsStr = attrs.join(",");
   let publicAttrsStr = publicAttrs.join(",");
 
-  let logs: any[][] = [];
+  let logs: string[][] = [];
   // let myConsole = console;
   let myConsole = {
-    log(...args: any[]) {
+    log(...args: string[]) {
       logs.push(args);
     },
   };
@@ -63,9 +63,9 @@ function executeSafely(code: string, allowAttrs: string[], params: { [key: strin
 						API.commonApi.end();
 				}`;
     eval(c);
-    (window as any).runCode(params, myConsole, API);
-  } catch (e: any) {
-    error = e;
+    (window as unknown as { runCode: (...args: unknown[]) => void }).runCode(params, myConsole, API);
+  } catch (e) {
+    error = e as Error;
   } finally {
     return { error, logs };
   }
@@ -84,7 +84,7 @@ export class APIDriver {
     showCode: ShowCodeInfo | null,
     descrition: string,
     initData?: InputContent[],
-  ): Promise<true | { error: Error | null; logs: any[][] }> {
+  ): Promise<true | { error: Error | null; logs: string[][] }> {
     modelSwitcher.pushModel(getDefaultSnapshot());
     this.sub = actionCommitter.subscribe((action) => {
       actions.push(action);

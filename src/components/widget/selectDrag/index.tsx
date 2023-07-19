@@ -22,7 +22,7 @@ export function SelectDrag(props: SelectDragProps) {
   const { x, y, onDrag } = dragInfo;
   const { width, height, onResize } = resizeInfo;
   const dragStart = useCallback(
-    (e: MouseEvent) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const zoom = MainCanvasData.zoom;
       const parent = dom.current?.parentElement;
       if (!parent) {
@@ -31,27 +31,22 @@ export function SelectDrag(props: SelectDragProps) {
       const startX = e.clientX;
       const startY = e.clientY;
       const move = (e: MouseEvent) => {
-        parent.style.transform = `translate(${(e.clientX - startX) / zoom}px, ${
-          (e.clientY - startY) / zoom
-        }px)`;
+        parent.style.transform = `translate(${(e.clientX - startX) / zoom}px, ${(e.clientY - startY) / zoom}px)`;
       };
       const up = (e: MouseEvent) => {
         parent.style.transform = "none";
         document.removeEventListener("mousemove", move);
         document.removeEventListener("mouseup", up);
-        onDrag(
-          (e.clientX - startX) / zoom + x,
-          (e.clientY - startY) / zoom + y
-        );
+        onDrag((e.clientX - startX) / zoom + x, (e.clientY - startY) / zoom + y);
       };
       document.addEventListener("mousemove", move);
       document.addEventListener("mouseup", up);
     },
-    [dom, onDrag, x, y]
+    [dom, onDrag, x, y],
   );
 
   const resizeStart = useCallback(
-    (e: MouseEvent) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
       const zoom = MainCanvasData.zoom;
       const parent = dom.current?.parentElement;
@@ -82,21 +77,12 @@ export function SelectDrag(props: SelectDragProps) {
       document.addEventListener("mousemove", move);
       document.addEventListener("mouseup", up);
     },
-    [dom, onResize, width, height]
+    [dom, onResize, width, height],
   );
 
   return (
-    <div
-      className="selectDrag"
-      onMouseDown={dragStart as any}
-      ref={dom}
-      style={{ border: isActive ? '' : 'none'}}
-    >
-      <div
-        className="resize"
-        onMouseDown={resizeStart as any}
-        style={{ display: isActive ? 'block' : 'none'}}
-      ></div>
+    <div className="selectDrag" onMouseDown={dragStart} ref={dom} style={{ border: isActive ? "" : "none" }}>
+      <div className="resize" onMouseDown={resizeStart} style={{ display: isActive ? "block" : "none" }}></div>
     </div>
   );
 }

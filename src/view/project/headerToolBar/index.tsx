@@ -5,11 +5,7 @@ import { closeDialog, openDialog } from "../../dialogs/dialog";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Subject } from "../../../common/utils";
 import * as projectAPI from "../../../net/projectAPI";
-import {
-  CloudDownloadOutlined,
-  RedoOutlined,
-  UndoOutlined,
-} from "@ant-design/icons";
+import { CloudDownloadOutlined, RedoOutlined, UndoOutlined } from "@ant-design/icons";
 import { commitRedo, commitUndo, Recorder } from "../../../core";
 import { initVideoInfo } from "../../../store";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +16,7 @@ const recorder = new Recorder();
 
 export function HeaderToolBar(props: {
   info: ProjectInfo;
-  change: (key: ProjectInfoKey, value: any) => void;
+  change: (key: ProjectInfoKey, value: unknown) => void;
   editable: boolean;
 }) {
   const info = props.info;
@@ -39,21 +35,14 @@ export function HeaderToolBar(props: {
       openDialog("setProjectName");
     } else {
       if (info.id) {
-        let res = await projectAPI.saveProject(
-          info.id,
-          JSON.stringify(info.snapshot)
-        );
+        let res = await projectAPI.saveProject(info.id, JSON.stringify(info.snapshot));
         if (res) {
           message.success("保存成功");
         } else {
           message.error("保存失败");
         }
       } else {
-        return projectAPI.createProject(
-          name,
-          JSON.stringify(info.snapshot),
-          ""
-        );
+        return projectAPI.createProject(name, JSON.stringify(info.snapshot), "");
       }
     }
   }
@@ -125,10 +114,7 @@ export function HeaderToolBar(props: {
               initText: info.descrition,
               editable: editable,
               callback: async (str: string) => {
-                let flag = await projectAPI.updateProjectDescrition(
-                  info.id,
-                  str
-                );
+                let flag = await projectAPI.updateProjectDescrition(info.id, str);
                 if (flag) {
                   props.change("descrition", str);
                   message.success("修改成功");
@@ -216,14 +202,7 @@ export function SetProjectNameDialog(visible: boolean) {
   }, [closePanel]);
 
   return (
-    <Modal
-      open={visible}
-      maskClosable={true}
-      onCancel={closePanel}
-      footer={null}
-      width={400}
-      closable={false}
-    >
+    <Modal open={visible} maskClosable={true} onCancel={closePanel} footer={null} width={400} closable={false}>
       <Input.Group compact>
         <Input style={{ width: "75%" }} placeholder="请输入项目名" ref={inp} />
         <Button type="default" style={{ width: "25%" }} onClick={submit}>

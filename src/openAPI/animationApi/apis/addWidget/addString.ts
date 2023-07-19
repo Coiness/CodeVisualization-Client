@@ -19,10 +19,10 @@ export function addString(s: Snapshot, p: AddStringWidgetParams) {
     ...info,
   });
   commitAction(action);
-  const id = (action.data as any).model.id;
+  const id = action.data.model.id;
   const res = {
     id,
-    [modelKey]: (action.data as any).model,
+    [modelKey]: action.data.model,
     ...info,
   } as StringWidget;
   const proxy = new Proxy(res, {
@@ -31,7 +31,7 @@ export function addString(s: Snapshot, p: AddStringWidgetParams) {
         return id;
       }
       if (p === modelKey || typeof p === "symbol") {
-        return (action.data as any).model;
+        return action.data.model;
       }
       const model = getModelById(id);
       if (model?.[p]) {

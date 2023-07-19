@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { Status } from "./status";
-import {
-  activeWidget,
-  activeWidgetType,
-  snapshot,
-  historyInfo,
-  mode,
-} from "./projectStores";
+import { activeWidget, activeWidgetType, snapshot, historyInfo, mode } from "./projectStores";
 import { initProjectInfo, initVideoInfo, initAlgorithmInfo } from "./initData";
 export * from "./commonStores";
 export * from "./projectStores";
@@ -39,4 +33,5 @@ const stores = {
   initAlgorithmInfo,
 };
 
+// todo 开发调试时代码，运行时去掉
 (window as any).stores = stores;

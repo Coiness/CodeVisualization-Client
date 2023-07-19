@@ -14,13 +14,16 @@ const prefixMap = {
 export async function request(
   url: string,
   method: "GET" | "POST",
-  data: { [key: string]: any },
-  headers?: { [key: string]: any }
+  data: { [key: string]: unknown } | FormData,
+  headers?: { [key: string]: string | number },
 ): Promise<Result> {
   url = prefixMap[model] + url;
-  let config: AxiosRequestConfig<{
-    [key: string]: any;
-  }> = {
+  let config: AxiosRequestConfig<
+    | {
+        [key: string]: unknown;
+      }
+    | FormData
+  > = {
     url,
     method,
   };
@@ -31,7 +34,7 @@ export async function request(
     config.data = data;
   }
 
-  let h: { [key: string]: any } = {};
+  let h: { [key: string]: string | number } = {};
   if (headers) {
     h = { ...headers };
   }
@@ -58,16 +61,10 @@ export async function request(
   return r;
 }
 
-export async function get(
-  url: string,
-  data: { [key: string]: any }
-): Promise<Result> {
+export async function get(url: string, data: { [key: string]: unknown }): Promise<Result> {
   return request(url, "GET", data);
 }
 
-export async function post(
-  url: string,
-  data: { [key: string]: any } | FormData
-): Promise<Result> {
+export async function post(url: string, data: { [key: string]: unknown } | FormData): Promise<Result> {
   return request(url, "POST", data);
 }

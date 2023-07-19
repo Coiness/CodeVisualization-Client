@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { activeWidget, useStore } from "../../../../store";
 export function ValueEdit() {
   const [activeWidgetValue] = useStore(activeWidget);
-  const [value, setValue] = useState<any>(undefined);
+  const [value, setValue] = useState<unknown>(undefined);
   const widget = activeWidgetValue?.widget;
 
   useEffect(() => {

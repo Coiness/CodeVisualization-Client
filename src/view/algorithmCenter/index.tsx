@@ -4,19 +4,8 @@ import { Header } from "../../components/header";
 import { TopMenu } from "../../components/topMenu";
 import { useCallback, useEffect, useState } from "react";
 import * as algorithmAPI from "../../net/algorithmAPI";
-import {
-  downloadString,
-  getDateString,
-  getIntRandom,
-  randomColor,
-} from "../../common/utils";
-import {
-  DeleteOutlined,
-  DownloadOutlined,
-  EditOutlined,
-  EyeOutlined,
-  PlaySquareOutlined,
-} from "@ant-design/icons";
+import { downloadString, getDateString, getIntRandom, randomColor } from "../../common/utils";
+import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, PlaySquareOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { UserCard } from "../../components/userCard";
@@ -43,6 +32,7 @@ export type Algorithm = {
   permission: number;
 };
 
+// todo any 治理 完善服务端返回值类型
 export function constructAlgorithmList(algorithms: any[]): Algorithm[] {
   return algorithms.map((item: any) => {
     let deg = getIntRandom(0, 180);
@@ -68,10 +58,8 @@ export function AlgorithmCenter() {
   const [algorithmList, setList] = useState<Algorithm[] | null>(null);
   const navigate = useNavigate();
 
-  async function getAlgorithmList(
-    type: "all" | "search" | "mine",
-    search?: string
-  ) {
+  async function getAlgorithmList(type: "all" | "search" | "mine", search?: string) {
+    // todo any 治理 同上
     let list: any[] = [];
     if (type === "all") {
       let res = await algorithmAPI.searchAlgorithm("");
@@ -184,13 +172,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
         })();
 
         if (code) {
-          await execAlgorithm(
-            code,
-            showCode,
-            descrition ?? "",
-            navigate,
-            inputData
-          );
+          await execAlgorithm(code, showCode, descrition ?? "", navigate, inputData);
         }
       } else {
         if (code) {
@@ -198,7 +180,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
         }
       }
     },
-    [navigate]
+    [navigate],
   );
 
   const downLoadAlgorithm = useCallback(async (id: string) => {
@@ -208,10 +190,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
       content: data.content,
       descrition: data.descrition,
     } as DownAlgorithmInfo;
-    downloadString(
-      `${data.name}.${FileEndNameMap[FileType.Algorithm]}`,
-      JSON.stringify(info)
-    );
+    downloadString(`${data.name}.${FileEndNameMap[FileType.Algorithm]}`, JSON.stringify(info));
   }, []);
 
   return algorithms ? (
@@ -298,22 +277,12 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                     placement="right"
                     trigger={"click"}
                     zIndex={500}
-                    content={
-                      <UserCard
-                        account={item.user.account}
-                        width="300px"
-                      ></UserCard>
-                    }
+                    content={<UserCard account={item.user.account} width="300px"></UserCard>}
                   >
-                    <div
-                      className="img"
-                      style={{ backgroundImage: `url(${item.user.img})` }}
-                    ></div>
+                    <div className="img" style={{ backgroundImage: `url(${item.user.img})` }}></div>
                   </Popover>
                 </div>
-                <div className="time">
-                  最近修改：{getDateString(item.modifyTime)}
-                </div>
+                <div className="time">最近修改：{getDateString(item.modifyTime)}</div>
               </div>
             );
           })}

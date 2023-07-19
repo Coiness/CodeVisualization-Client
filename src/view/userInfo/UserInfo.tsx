@@ -85,9 +85,7 @@ function Content() {
       label: (
         <>
           <div style={{ height: "24px", lineHeight: "24px" }}>关注</div>
-          <div style={{ height: "24px", lineHeight: "15px", fontSize: "12px" }}>
-            {info.followList.length}
-          </div>
+          <div style={{ height: "24px", lineHeight: "15px", fontSize: "12px" }}>{info.followList.length}</div>
         </>
       ),
       key: "follow",
@@ -96,9 +94,7 @@ function Content() {
       label: (
         <>
           <div style={{ height: "24px", lineHeight: "24px" }}>粉丝</div>
-          <div style={{ height: "24px", lineHeight: "15px", fontSize: "12px" }}>
-            {info.fansList.length}
-          </div>
+          <div style={{ height: "24px", lineHeight: "15px", fontSize: "12px" }}>{info.fansList.length}</div>
         </>
       ),
       key: "fans",
@@ -140,7 +136,7 @@ function Content() {
               }}
               onKeyDown={async (e) => {
                 if (e.key === "Enter") {
-                  const name = (e.nativeEvent.target as any).value.trim();
+                  const name = (e.nativeEvent.target as HTMLInputElement).value.trim();
                   if (!name) {
                     message.error("名称不能为空");
                     setUsernameMode("view");
@@ -163,9 +159,7 @@ function Content() {
           )}
         </div>
         <div className="blank"></div>
-        <div className="follow">
-          {!isMe && <Follow account={info.account}></Follow>}
-        </div>
+        <div className="follow">{!isMe && <Follow account={info.account}></Follow>}</div>
       </div>
       <div className="bottom">
         <div className="friend">
@@ -179,12 +173,8 @@ function Content() {
             defaultActiveFirst
           ></Menu>
           <div className="blank"></div>
-          {friendNow === "follow" && (
-            <UserListComp list={info.followList}></UserListComp>
-          )}
-          {friendNow === "fans" && (
-            <UserListComp list={info.fansList}></UserListComp>
-          )}
+          {friendNow === "follow" && <UserListComp list={info.followList}></UserListComp>}
+          {friendNow === "fans" && <UserListComp list={info.fansList}></UserListComp>}
         </div>
         <Works account={info.account}></Works>
       </div>
@@ -226,18 +216,11 @@ export function UploadImageDialog(visible: boolean) {
         closePanel();
       }
     },
-    [setUploading, closePanel]
+    [setUploading, closePanel],
   );
 
   return (
-    <Modal
-      open={visible}
-      maskClosable={true}
-      onCancel={closePanel}
-      footer={null}
-      width={400}
-      closable={false}
-    >
+    <Modal open={visible} maskClosable={true} onCancel={closePanel} footer={null} width={400} closable={false}>
       <div className="upload" style={{ height: "200px" }}>
         {!uploading && (
           <Dragger

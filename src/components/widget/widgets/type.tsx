@@ -2,6 +2,7 @@ import type { Subject } from "../../../common/utils";
 
 export interface CommonModel {
   id: string;
+  [key: string]: unknown;
 }
 
 export interface BaseModel extends CommonModel {
@@ -11,7 +12,6 @@ export interface BaseModel extends CommonModel {
   width: number;
   height: number;
   color: string;
-  [key: string]: any;
 }
 
 export type WidgetModel = BaseModel;
@@ -46,7 +46,7 @@ export const WidgetTypeNameMap = {
 };
 
 export interface WidgetRenderProps {
-  className: any;
+  className: string;
   widget: IWidget;
   model: WidgetModel;
 }
