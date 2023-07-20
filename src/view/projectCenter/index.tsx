@@ -30,9 +30,8 @@ export type Project = {
   permission: number;
 };
 
-// todo any 治理 定义服务端返回数据类型
-export function constructProjectList(videos: any[]): Project[] {
-  return videos.map((item: any) => {
+export function constructProjectList(projects: projectAPI.ProjectInfo[]): Project[] {
+  return projects.map((item: any) => {
     let deg = getIntRandom(0, 180);
     let c1 = randomColor(180, 220);
     let c2 = randomColor(180, 220);
@@ -57,8 +56,7 @@ export function ProjectCenter() {
   const navigate = useNavigate();
 
   async function getProjectList(type: "all" | "search" | "mine", search?: string) {
-    // todo any 治理 同上
-    let list: any[] = [];
+    let list: projectAPI.ProjectInfo[] = [];
     if (type === "all") {
       let res = await projectAPI.searchProject("");
       list = res.projects;

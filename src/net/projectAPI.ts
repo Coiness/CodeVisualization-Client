@@ -3,11 +3,26 @@ import { get, post } from "./request";
 import { getAccount } from "./token";
 import { ResultCode } from "./type";
 
-export async function createProject(
-  name: string,
-  snapshot: string,
-  descrition: string
-) {
+export interface ProjectInfo {
+  account: string;
+  createTime: string;
+  descrition: string;
+  id: number;
+  modifyTime: string;
+  name: string;
+  persimmion: number;
+  snapshot: string;
+  user: {
+    img: string;
+    username: string;
+  };
+}
+
+export interface GetProjectResponseData {
+  projects: ProjectInfo[];
+}
+
+export async function createProject(name: string, snapshot: string, descrition: string) {
   let r = await post("/project/create", { name, snapshot, descrition });
   return r.data.id;
 }
@@ -44,7 +59,7 @@ export async function getProjectInfo(id: string) {
   return r.data;
 }
 
-export async function searchProject(name: string) {
+export async function searchProject(name: string): Promise<GetProjectResponseData> {
   let account = getAccount();
   let r;
   if (account === null) {
@@ -55,12 +70,12 @@ export async function searchProject(name: string) {
   return r.data;
 }
 
-export async function getMyProject() {
+export async function getMyProject(): Promise<GetProjectResponseData> {
   let r = await get("/project/mine", {});
   return r.data;
 }
 
-export async function searchProjectByUser(account: string) {
+export async function searchProjectByUser(account: string): Promise<GetProjectResponseData> {
   let self = getAccount();
   let r;
   if (account !== self) {

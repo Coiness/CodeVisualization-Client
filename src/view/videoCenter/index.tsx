@@ -29,8 +29,7 @@ export type Video = {
   permission: number;
 };
 
-// todo any 治理 定义服务端返回类型
-export function constructVideoList(videos: any[]): Video[] {
+export function constructVideoList(videos: videoAPI.VideoInfo[]): Video[] {
   return videos.map((item: any) => {
     let deg = getIntRandom(0, 180);
     let c1 = randomColor(180, 220);
@@ -54,8 +53,7 @@ export function VideoCenter() {
   const [videoList, setList] = useState<Video[] | null>(null);
 
   async function getVideoList(type: "all" | "search" | "mine", search?: string) {
-    // todo any 治理 同上
-    let list: any[] = [];
+    let list: videoAPI.VideoInfo[] = [];
     if (type === "all") {
       let res = await videoAPI.searchVideo("");
       list = res.videos;

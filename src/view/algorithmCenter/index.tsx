@@ -32,8 +32,7 @@ export type Algorithm = {
   permission: number;
 };
 
-// todo any 治理 完善服务端返回值类型
-export function constructAlgorithmList(algorithms: any[]): Algorithm[] {
+export function constructAlgorithmList(algorithms: algorithmAPI.AlgorithmInfo[]): Algorithm[] {
   return algorithms.map((item: any) => {
     let deg = getIntRandom(0, 180);
     let c1 = randomColor(180, 220);
@@ -59,8 +58,7 @@ export function AlgorithmCenter() {
   const navigate = useNavigate();
 
   async function getAlgorithmList(type: "all" | "search" | "mine", search?: string) {
-    // todo any 治理 同上
-    let list: any[] = [];
+    let list: algorithmAPI.AlgorithmInfo[] = [];
     if (type === "all") {
       let res = await algorithmAPI.searchAlgorithm("");
       list = res.algorithms;
