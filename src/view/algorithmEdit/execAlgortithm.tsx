@@ -1,6 +1,6 @@
 import "./execAlgortithm.css";
 import { Modal } from "antd";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { InputContent } from "../../components/inputList";
 import { ApiDriver, EL } from "../../openAPI/driver";
 import { closeDialog, openDialog } from "../dialogs/dialog";
@@ -11,7 +11,7 @@ export async function execAlgorithm(
   showCode: ShowCodeInfo | null,
   descrition: string,
   navigate: (url: string) => void,
-  initData?: InputContent[]
+  initData?: InputContent[],
 ) {
   let res = await ApiDriver.start(code, showCode, descrition, initData);
   if (res === true) {
@@ -31,14 +31,7 @@ export function ExecCodeErrorDialog(visible: boolean, data?: EL) {
   }
 
   return (
-    <Modal
-      open={visible}
-      maskClosable={true}
-      onCancel={closePanel}
-      footer={null}
-      width={500}
-      closable={true}
-    >
+    <Modal open={visible} maskClosable={true} onCancel={closePanel} footer={null} width={500} closable={true}>
       <div className="execCodeErrorContent">
         <h2>执行出错</h2>
         {data.error && (

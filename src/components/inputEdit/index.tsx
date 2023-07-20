@@ -21,7 +21,7 @@ export function InputEdit(props: InputEditProps) {
     if (!res) {
       setValue(props.value);
     }
-  }, [props.onChange, value, setValue]);
+  }, [props, value, setValue]);
 
   return (
     <>

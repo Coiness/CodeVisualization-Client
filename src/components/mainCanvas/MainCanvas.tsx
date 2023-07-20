@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useUndo } from "../../core";
 import { snapshot, activeWidget, useStore } from "../../store";
 import { WidgetRenderer } from "../widget";

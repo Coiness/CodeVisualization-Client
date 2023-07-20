@@ -1,7 +1,6 @@
 import { Button, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import * as userAPI from "../../net/userAPI";
-import { useAccount } from "../header/userInfo";
 import { isLogin } from "../../net/token";
 import { openDialog } from "../../view/dialogs/dialog";
 
@@ -72,7 +71,7 @@ export function Follow(props: FollowProps) {
         });
       }
     },
-    [info, setInfo, props.account]
+    [info, setInfo, props.account],
   );
 
   useEffect(load, [load]);

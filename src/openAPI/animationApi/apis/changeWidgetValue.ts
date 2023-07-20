@@ -1,5 +1,5 @@
 import { WidgetType, getModelById } from "../../../components/widget/widgets";
-import { ValueAction, WidgetAction, commitAction } from "../../../core";
+import { ValueAction, commitAction } from "../../../core";
 import { ChangeWidgetValueParams } from "../types/widget/Base";
 
 export function changeWidgetValue(params: ChangeWidgetValueParams) {

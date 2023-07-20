@@ -15,10 +15,7 @@ export interface ShowCodeInfo {
   list: ShowCodeItem[];
 }
 
-function findItemByLanguage(
-  info: ShowCodeInfo,
-  lang: ShowCodeLanguage
-): ShowCodeItem | null {
+function findItemByLanguage(info: ShowCodeInfo, lang: ShowCodeLanguage): ShowCodeItem | null {
   for (let i = 0; i < info.list.length; i++) {
     if (info.list[i].lang === lang) {
       return info.list[i];
@@ -42,10 +39,7 @@ const langs: ShowCodeLanguage[] = Object.keys(langsObj) as ShowCodeLanguage[];
 export function useShowCode(props: ShowCodeProps) {
   const [info, setInfo] = useState<ShowCodeInfo | null>(null);
   const [nowItem, setItem] = useState<ShowCodeItem | null>(null);
-  const { getCode, setCode, el } = useCodeEditor(
-    "vs",
-    nowItem?.lang ?? undefined
-  );
+  const { getCode, setCode, el } = useCodeEditor("vs", nowItem?.lang ?? undefined);
 
   useEffect(() => {
     setInfo(props.info);
@@ -73,7 +67,7 @@ export function useShowCode(props: ShowCodeProps) {
       info.list.push({ lang: lang, code: "" });
       setInfo({ ...info });
     },
-    [info, setInfo]
+    [info, setInfo],
   );
 
   const removeLang = useCallback(
@@ -92,11 +86,10 @@ export function useShowCode(props: ShowCodeProps) {
       setInfo({ ...info });
 
       if (nowItem?.lang === lang) {
-        console.log("setItem", info.list[0]);
         setItem(info.list[0]);
       }
     },
-    [info, setInfo, nowItem, setItem]
+    [info, setInfo, nowItem, setItem],
   );
 
   const isReady = !(info === null || nowItem === null);

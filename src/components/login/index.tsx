@@ -53,7 +53,7 @@ function LoginPanel(params: LoginPanelParams) {
     if (loginAccount.current) {
       loginAccount.current.focus();
     }
-  }, [loginAccount.current]);
+  }, [loginAccount.current]); // todo 改为 mount
 
   async function execLogin() {
     let account = loginAccount?.current?.input?.value;
@@ -150,11 +150,7 @@ function LoginPanel(params: LoginPanelParams) {
             </div>
           </div>
           <div className="submit">
-            <Button
-              type="primary"
-              style={{ height: "40px" }}
-              onClick={execLogin}
-            >
+            <Button type="primary" style={{ height: "40px" }} onClick={execLogin}>
               登录
             </Button>
           </div>
@@ -197,11 +193,7 @@ function LoginPanel(params: LoginPanelParams) {
             <div className="left">验证码</div>
             <div className="right">
               <Input ref={registerCheckCode}></Input>
-              <Button
-                className="sendCheckCode"
-                onClick={execSendCheckCode}
-                disabled={sendCheckCodeDisable}
-              >
+              <Button className="sendCheckCode" onClick={execSendCheckCode} disabled={sendCheckCodeDisable}>
                 发送验证码
               </Button>
             </div>
@@ -213,11 +205,7 @@ function LoginPanel(params: LoginPanelParams) {
             </div>
           </div>
           <div className="submit">
-            <Button
-              type="primary"
-              style={{ height: "40px" }}
-              onClick={execRegister}
-            >
+            <Button type="primary" style={{ height: "40px" }} onClick={execRegister}>
               注册
             </Button>
           </div>
