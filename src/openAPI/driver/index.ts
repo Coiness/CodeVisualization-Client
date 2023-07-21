@@ -6,6 +6,7 @@ import { initVideoInfo } from "../../store";
 import { ShowCodeInfo } from "../../view/algorithmEdit/ShowCode";
 import { actions } from "../common/actions";
 import { getDefaultSnapshot } from "../common/snapshot";
+import { $, APIV2 } from "../v2";
 import { allowAttrs } from "./allowAttrs";
 
 // 获取对象中除 Symbol 外所有属性
@@ -53,17 +54,17 @@ function executeSafely(code: string, allowAttrs: string[], params: { [key: strin
   let error: Error | null = null;
 
   try {
-    let c = `window.runCode = (params, myConsole, API) => {
-						(function(${attrsStr}, ${publicAttrs}, ${paramsStr}, console){${code}})(
-							${new Array(attrs.length).fill("undefined")},
-							${publicAttrsStr},
-							${paramsValueStr},
-							myConsole
-						)
-						API.commonApi.end();
-				}`;
+    let c = `window.runCode = (params, myConsole) => {
+							(function(${attrsStr}, ${publicAttrs}, ${paramsStr}, console){${code}})(
+								${new Array(attrs.length).fill("undefined")},
+								${publicAttrsStr},
+								${paramsValueStr},
+								myConsole
+							)
+					}`;
     eval(c);
-    (window as unknown as { runCode: (...args: unknown[]) => void }).runCode(params, myConsole, API);
+    (window as unknown as { runCode: (...args: unknown[]) => void }).runCode(params, myConsole);
+    API.commonApi.end();
   } catch (e) {
     error = e as Error;
   } finally {
@@ -109,7 +110,7 @@ export class APIDriver {
       this.r = resolve;
     }) as Promise<true | EL>;
 
-    let { error, logs } = executeSafely(code, allowAttrs, { API });
+    let { error, logs } = executeSafely(code, allowAttrs, { API, APIV2, $ });
 
     if (error !== null) {
       console.log("DEBUG: ", error, logs);

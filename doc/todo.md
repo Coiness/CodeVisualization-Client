@@ -1,5 +1,5 @@
 ## P0
-- 逆波兰拖动快速进度条导致 snapshot 乱掉
+- 完善 API v2，降低开发成本，提升开发者体验
 
 ## P1
 - API 扩展
@@ -19,5 +19,6 @@
 - add widget action 增加回放动画
 - bugfix
   - markdown 编辑器工具栏图标加载失败 (一个字体 css 文件加载失败，暂时通过隐藏工具栏回避问题)
+  - 逆波兰快速拖动进度条导致 snapshot 乱掉（难以复现）
 - 重构
   - 动画 next 时，先执行 commit 后执行动画，不在 stop 中 commit
