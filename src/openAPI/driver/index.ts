@@ -45,12 +45,12 @@ function executeSafely(code: string, allowAttrs: string[], params: { [key: strin
   let publicAttrsStr = publicAttrs.join(",");
 
   let logs: string[][] = [];
-  // let myConsole = console;
   let myConsole = {
     log(...args: string[]) {
       logs.push(args);
     },
   };
+  // myConsole = console;
   let error: Error | null = null;
 
   try {

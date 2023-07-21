@@ -48,4 +48,13 @@ export function createBaseWidget(obj: BaseWidget) {
       });
     },
   });
+
+  Object.defineProperty(obj, "color", {
+    set(v) {
+      API.animationApi.changeWidgetColor({
+        id: obj.id,
+        color: v,
+      });
+    },
+  });
 }
