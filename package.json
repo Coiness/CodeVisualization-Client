@@ -57,5 +57,5 @@
     "@types/react-color": "^3.0.6",
     "@types/showdown": "^2.0.0"
   },
-  "proxy": "http://localhost:80"
+  "proxy": "http://localhost:12345"
 }
