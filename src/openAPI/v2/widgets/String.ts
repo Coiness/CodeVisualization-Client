@@ -1,6 +1,6 @@
 import { API } from "../..";
 import { StringWidget, StringWidgetType } from "../../animationApi/types/widget/String";
-import { createBaseWidget, createBaseWidgetProps } from "./baseWidget";
+import { createBaseWidget, createBaseWidgetProps, getModelGetter } from "./baseWidget";
 
 export interface createStringProps extends createBaseWidgetProps {
   value: string;
@@ -21,12 +21,16 @@ export function String(props: createStringProps) {
 
 function createStringWidget(obj: StringWidget) {
   createBaseWidget(obj);
+  const getModel = getModelGetter(obj.id);
   Object.defineProperty(obj, "value", {
     set(v) {
       API.animationApi.changeWidgetValue({
         id: obj.id,
         value: v,
       });
+    },
+    get() {
+      return getModel().value;
     },
   });
 }

@@ -50,26 +50,9 @@ export function addStack(s: Snapshot, p: AddStackWidgetParams) {
   });
   commitAction(action);
   const id = action.data.model.id;
-  const res = {
+  return {
     id,
+    [modelKey]: action.data.model,
     ...info,
   } as StackWidget;
-  const proxy = new Proxy(res, {
-    get(target, p) {
-      if (p === "id") {
-        return id;
-      }
-      const model = getModelById(id);
-      if (typeof p === "symbol") {
-        return null;
-      } else if (model?.[p]) {
-        return model[p];
-      } else if (info[p as keyof Omit<StackWidget, "id">]) {
-        return info[p as keyof Omit<StackWidget, "id">];
-      } else {
-        return null;
-      }
-    },
-  });
-  return proxy;
 }
