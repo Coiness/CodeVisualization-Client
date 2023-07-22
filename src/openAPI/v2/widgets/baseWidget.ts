@@ -26,7 +26,7 @@ export function createBaseWidget(obj: BaseWidget) {
     set(v) {
       const model = getModel();
       API.animationApi.resizeWidget({
-        id: model.id,
+        id: obj.id,
         width: v,
         height: model.height,
       });
@@ -40,7 +40,7 @@ export function createBaseWidget(obj: BaseWidget) {
     set(v) {
       const model = getModel();
       API.animationApi.resizeWidget({
-        id: model.id,
+        id: obj.id,
         width: model.width,
         height: v,
       });
@@ -54,7 +54,7 @@ export function createBaseWidget(obj: BaseWidget) {
     set(v) {
       const model = getModel();
       API.animationApi.moveWidget({
-        id: model.id,
+        id: obj.id,
         x: v,
         y: model.y,
       });
@@ -68,7 +68,7 @@ export function createBaseWidget(obj: BaseWidget) {
     set(v) {
       const model = getModel();
       API.animationApi.moveWidget({
-        id: model.id,
+        id: obj.id,
         x: model.x,
         y: v,
       });
@@ -80,14 +80,29 @@ export function createBaseWidget(obj: BaseWidget) {
 
   Object.defineProperty(obj, "color", {
     set(v) {
-      const model = getModel();
       API.animationApi.changeWidgetColor({
-        id: model.id,
+        id: obj.id,
         color: v,
       });
     },
     get() {
       return getModel().color;
+    },
+  });
+
+  Object.defineProperty(obj, "close", {
+    get() {
+      return () => {
+        API.animationApi.deleteWidget({ id: obj.id });
+      };
+    },
+  });
+
+  Object.defineProperty(obj, "destroy", {
+    get() {
+      return () => {
+        API.animationApi.deleteWidget({ id: obj.id });
+      };
     },
   });
 }
