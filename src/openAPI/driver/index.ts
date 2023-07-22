@@ -110,7 +110,7 @@ export class APIDriver {
       this.r = resolve;
     }) as Promise<true | EL>;
 
-    let { error, logs } = executeSafely(code, allowAttrs, { API, APIV2, $ });
+    let { error, logs } = executeSafely(code, allowAttrs, { $ });
 
     if (error !== null) {
       console.log("DEBUG: ", error, logs);
