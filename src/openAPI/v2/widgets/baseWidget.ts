@@ -7,6 +7,7 @@ export interface createBaseWidgetProps {
   y: number;
   width?: number;
   height?: number;
+  color?: string;
 }
 
 // todo 这里每次获取 model 都要 get 一次，如果不这么做会拿不到最新的 model 的值，这种方式比较消耗性能，看看能不能优化一下

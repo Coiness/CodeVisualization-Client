@@ -14,6 +14,7 @@ export function Number(props: createNumberProps) {
     width: props.width,
     height: props.height,
     numberValue: props.value,
+    color: props.color,
   });
   createNumberWidget(numberWidget as NumberWidget);
   return numberWidget;

@@ -14,6 +14,7 @@ export function String(props: createStringProps) {
     width: props.width,
     height: props.height,
     stringValue: props.value,
+    color: props.color,
   });
   createStringWidget(stringWidget as StringWidget);
   return stringWidget;

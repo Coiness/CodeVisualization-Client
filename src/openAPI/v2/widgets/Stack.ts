@@ -11,6 +11,7 @@ export function Stack(props: createStackProps) {
     y: props.y,
     width: props.width,
     height: props.height,
+    color: props.color,
   });
   createStackWidget(stackWidget as StackWidget);
   return stackWidget;
