@@ -41,6 +41,7 @@ export function InputEdit(props: InputEditProps) {
         <Input
           defaultValue={value}
           onBlur={() => {
+            submit();
             setEdit(false);
           }}
           onChange={(v) => {
