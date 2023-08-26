@@ -47,8 +47,8 @@
 }
 
 .algorithmEditContent > .left > .line {
-  height: 2px;
-  background-color: rgb(122, 162, 255);
+  height: 1px;
+  background-color: rgb(226, 226, 226);
 }
 
 .algorithmEditContent > .left > .bottom {
@@ -63,9 +63,9 @@
 }
 
 .algorithmEditContent > .middle {
-  width: 3px;
+  width: 1px;
   height: 100%;
-  background-color: rgb(122, 162, 255);
+  background-color: rgb(226, 226, 226);
 }
 
 .algorithmEditContent > .right {
