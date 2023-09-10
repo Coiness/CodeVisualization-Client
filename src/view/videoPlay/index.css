@@ -31,9 +31,9 @@
 }
 
 .videoPlayContent > .middle > .vline {
-  width: 2px;
+  width: 1px;
   height: 100%;
-  background-color: rgb(122, 162, 255);
+  background-color: rgb(226, 226, 226);
 }
 
 .videoPlayContent > .middle > .left {

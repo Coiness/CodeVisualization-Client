@@ -16,7 +16,7 @@
   height: 40px;
   padding: 0px 5px;
   box-sizing: border-box;
-  border-bottom: 2px solid #7aa2ff;
+  border-bottom: 1px solid rgb(226, 226, 226);
 }
 
 .showCodeManager .tab .tabContent {
