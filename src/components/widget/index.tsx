@@ -203,31 +203,33 @@ export function Widget(props: WidgetProps) {
       ref={dom}
     >
       <WidgetCompRender className="widgetComp" {...props} widget={WidgetModel} />
-      <SelectDrag
-        isActive={isActive}
-        dragInfo={{
-          x,
-          y,
-          onDrag: (nx: number, ny: number) => {
-            const action = WidgetActionMove.create(model, {
-              x: nx,
-              y: ny,
-            });
-            commitAction(action);
-          },
-        }}
-        resizeInfo={{
-          width,
-          height,
-          onResize: (nw: number, nh: number) => {
-            const action = WidgetActionResize.create(model, {
-              w: nw,
-              h: nh,
-            });
-            commitAction(action);
-          },
-        }}
-      ></SelectDrag>
+      {editable && (
+        <SelectDrag
+          isActive={isActive}
+          dragInfo={{
+            x,
+            y,
+            onDrag: (nx: number, ny: number) => {
+              const action = WidgetActionMove.create(model, {
+                x: nx,
+                y: ny,
+              });
+              commitAction(action);
+            },
+          }}
+          resizeInfo={{
+            width,
+            height,
+            onResize: (nw: number, nh: number) => {
+              const action = WidgetActionResize.create(model, {
+                w: nw,
+                h: nh,
+              });
+              commitAction(action);
+            },
+          }}
+        />
+      )}
     </div>
   );
 }
