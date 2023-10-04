@@ -37,12 +37,14 @@ export enum WidgetType {
   Number = "Number",
   String = "String",
   Stack = "Stack",
+  Line = "Line",
 }
 
 export const WidgetTypeNameMap = {
   [WidgetType.Number]: "数字",
   [WidgetType.String]: "字符串",
   [WidgetType.Stack]: "栈",
+  [WidgetType.Line]: "线",
 };
 
 export interface WidgetRenderProps {

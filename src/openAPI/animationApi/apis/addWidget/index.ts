@@ -1,8 +1,10 @@
 import { snapshot } from "../../../../store";
 import { BaseWidgetType } from "../../types/widget";
+import { AddLineWidgetParams } from "../../types/widget/Line";
 import { AddNumberWidgetParams } from "../../types/widget/Number";
 import { AddStackWidgetParams } from "../../types/widget/Stack";
 import { AddStringWidgetParams } from "../../types/widget/String";
+import { addLine } from "./addLine";
 import { addNumber } from "./addNumber";
 import { addStack } from "./addStack";
 import { addString } from "./addString";
@@ -18,6 +20,8 @@ export function addWidget<T extends BaseWidgetType>(params: T["addWidgetParams"]
     return addString(s, params as AddStringWidgetParams);
   } else if (params.type === "stack") {
     return addStack(s, params as AddStackWidgetParams);
+  } else if (params.type === "line") {
+    return addLine(s, params as AddLineWidgetParams);
   } else {
     throw new Error("animationApi addWidget: params.type illegal");
   }

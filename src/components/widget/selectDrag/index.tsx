@@ -31,10 +31,10 @@ export function SelectDrag(props: SelectDragProps) {
       const startX = e.clientX;
       const startY = e.clientY;
       const move = (e: MouseEvent) => {
-        parent.style.transform = `translate(${(e.clientX - startX) / zoom}px, ${(e.clientY - startY) / zoom}px)`;
+        parent.style.left = `${x + (e.clientX - startX) / zoom}px`;
+        parent.style.top = `${y + (e.clientY - startY) / zoom}px`;
       };
       const up = (e: MouseEvent) => {
-        parent.style.transform = "none";
         document.removeEventListener("mousemove", move);
         document.removeEventListener("mouseup", up);
         onDrag((e.clientX - startX) / zoom + x, (e.clientY - startY) / zoom + y);

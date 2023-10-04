@@ -12,7 +12,7 @@ import {
 } from "./widgets";
 import { activeWidget, animateSpeed, useStore } from "../../store";
 import { SelectDrag } from "./selectDrag";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { WidgetActionData, WidgetActionMove, WidgetActionResize } from "../../core/action/WidgetAction";
 import { widgetActionExeter, commitAction } from "../../core/action";
 import { modelChange } from "../../core/diff/objDiff";
@@ -163,19 +163,20 @@ export function Widget(props: WidgetProps) {
   const model = useModelChange(props.model);
   const WidgetModel = widgetModelManager.getWidget(model);
   const WidgetCompRender = WidgetRenderMap[model.type];
-  const { x, y, width, height, color } = model;
+  const { id, x, y, width, height, color } = model;
   const [activeWidgetValue, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
   const isActive = activeWidgetValue?.id === model.id;
   const dom = useWidgetAnimation(model);
   const editable = props.editable;
 
-  if (!checkNil({ x, y, width, height, color })) {
+  if (!checkNil({ id, x, y, width, height, color })) {
     console.log("ERROR: ", "参数缺失");
     return null;
   }
   return (
     <div
       className="widget"
+      id={id}
       onMouseDown={() => {
         if (editable) {
           if (needSelectWidget.get()) {
@@ -198,7 +199,7 @@ export function Widget(props: WidgetProps) {
         width,
         height,
         backgroundColor: color,
-        zIndex: isActive ? 99999 : 0,
+        zIndex: isActive ? 99999 : 1,
       }}
       ref={dom}
     >
@@ -234,6 +235,121 @@ export function Widget(props: WidgetProps) {
   );
 }
 
+function getDomXY(id: string) {
+  const dom = document.getElementById(id);
+  if (!dom) {
+    return null;
+  }
+  const { top, left, width, height } = dom.style;
+  const x = parseFloat(left) + parseFloat(width) / 2;
+  const y = parseFloat(top) + parseFloat(height) / 2;
+  return { x, y };
+}
+
+export function LineWidget(props: WidgetProps) {
+  const model = useModelChange(props.model);
+  const WidgetModel = widgetModelManager.getWidget(model);
+  const WidgetCompRender = WidgetRenderMap[model.type];
+  const { id, startNodeId, endNodeId, size, color } = model;
+  const [, setActiveWidget] = useStore<WidgetInfo>(activeWidget);
+  const editable = props.editable;
+  const [visible, setVisible] = useState<boolean>(false);
+  const [x, setX] = useState<number>(0);
+  const [y, setY] = useState<number>(0);
+  const [deg, setDeg] = useState<number>(0);
+  const [length, setLength] = useState<number>(0);
+
+  const updateStyle = useCallback(
+    (x1: number, y1: number, x2: number, y2: number) => {
+      const nx = (x1 + x2) / 2;
+      const ny = (y1 + y2) / 2;
+      const nlength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+      let ndeg = (Math.atan((y2 - y1) / (x2 - x1)) / Math.PI) * 180;
+      if (x2 < x1) {
+        ndeg += 180;
+      }
+      setX(nx);
+      setY(ny);
+      setLength(nlength);
+      setDeg(ndeg);
+    },
+    [setX, setY, setLength, setDeg],
+  );
+
+  const update = useCallback(() => {
+    if (startNodeId && endNodeId) {
+      const startXY = getDomXY(startNodeId as string);
+      const endXY = getDomXY(endNodeId as string);
+      if (!startXY || !endXY) {
+        setVisible(false);
+        return;
+      }
+      setVisible(true);
+      updateStyle(startXY.x, startXY.y, endXY.x, endXY.y);
+    }
+  }, [startNodeId, endNodeId, setVisible, updateStyle]);
+
+  useEffect(() => {
+    const observer = new MutationObserver(function (mutations, observer) {
+      update();
+    });
+    const startEl = document.getElementById(startNodeId as string);
+    const endEl = document.getElementById(endNodeId as string);
+    const options = {
+      attributes: true,
+    };
+    observer.observe(startEl as any, options);
+    observer.observe(endEl as any, options);
+    update();
+    return () => {
+      observer.disconnect();
+    };
+  }, [update, startNodeId, endNodeId]);
+
+  if (!checkNil({ id, startNodeId, endNodeId, size, color })) {
+    console.log("ERROR: ", "参数缺失");
+    return null;
+  }
+
+  if (!visible) {
+    return null;
+  }
+
+  return (
+    <div
+      id={id}
+      className="commonLineWidget"
+      onMouseDown={() => {
+        if (editable) {
+          if (needSelectWidget.get()) {
+            selectWidget.next(WidgetModel);
+            return;
+          }
+          setActiveWidget({
+            type: model.type,
+            id: model.id,
+            widget: WidgetModel,
+          });
+        }
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      style={{
+        left: x,
+        top: y,
+        width: length,
+        height: size as number,
+        transform: `translate(-50%, -50%) rotate(${deg}deg)`,
+        backgroundColor: color,
+        zIndex: 0,
+      }}
+    >
+      <WidgetCompRender className="widgetComp" {...props} widget={WidgetModel} />
+    </div>
+  );
+}
+
 export function WidgetRenderer(props: WidgetRendererProps) {
   const model = useModelChange(props.model);
   const { widgets, width, height, color } = model;
@@ -250,7 +366,10 @@ export function WidgetRenderer(props: WidgetRendererProps) {
         if (widgetModel === null) {
           return null;
         }
-        return <Widget key={widgetModel.id} model={widgetModel} editable={props.editable}></Widget>;
+        if (widgetModel.type === WidgetType.Line) {
+          return <LineWidget key={widgetModel.id} model={widgetModel} editable={props.editable} />;
+        }
+        return <Widget key={widgetModel.id} model={widgetModel} editable={props.editable} />;
       })}
     </div>
   );

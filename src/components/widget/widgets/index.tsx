@@ -1,5 +1,6 @@
 import { Obj } from "../../../core";
 import { snapshot } from "../../../store";
+import { LineWidgetControlPanel } from "./lineWidget";
 import { NumberWidgetControlPanel } from "./numberWidget";
 import { StackWidgetControlPanel } from "./stackWidget";
 import { StringWidgetControlPanel } from "./stringWidget";
@@ -35,14 +36,13 @@ function getModelByIdDfs(id: string, now: Obj | null): BaseModel | null {
   return null;
 }
 
+const WidgetControlPanelMap: Record<WidgetType, () => JSX.Element> = {
+  [WidgetType.Number]: NumberWidgetControlPanel,
+  [WidgetType.String]: StringWidgetControlPanel,
+  [WidgetType.Stack]: StackWidgetControlPanel,
+  [WidgetType.Line]: LineWidgetControlPanel,
+};
+
 export function getWidgetControlPanel(type: WidgetType) {
-  if (type === WidgetType.Number) {
-    return NumberWidgetControlPanel;
-  } else if (type === WidgetType.String) {
-    return StringWidgetControlPanel;
-  } else if (type === WidgetType.Stack) {
-    return StackWidgetControlPanel;
-  } else {
-    throw new Error("get widget control panel: widget type error");
-  }
+  return WidgetControlPanelMap[type];
 }
