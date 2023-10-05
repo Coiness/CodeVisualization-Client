@@ -6,6 +6,7 @@ export interface createLineProps extends createBaseWidgetProps {
   size: number;
   startNodeId: string;
   endNodeId: string;
+  directional?: boolean;
 }
 
 export function Line(props: createLineProps) {
@@ -19,6 +20,7 @@ export function Line(props: createLineProps) {
     size: props.size,
     startNodeId: props.startNodeId,
     endNodeId: props.endNodeId,
+    directional: props.directional ?? true,
   });
   createLineWidget(lineWidget as LineWidget);
   return lineWidget;

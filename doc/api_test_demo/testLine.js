@@ -14,13 +14,30 @@ const b = $.Number({
   value: 40,
 });
 
+const c = $.Number({
+  x: 500,
+  y: 200,
+  width: 50,
+  height: 50,
+  value: 50,
+});
+
 $.next();
 
-const l = $.Line({
-  size: 3,
+const l1 = $.Line({
+  size: 2,
   startNodeId: a.id,
   endNodeId: b.id,
   color: "rgb(35, 102, 213)",
+  directional: true,
+});
+
+const l2 = $.Line({
+  size: 2,
+  startNodeId: b.id,
+  endNodeId: c.id,
+  color: "rgb(35, 102, 213)",
+  directional: false,
 });
 
 $.next();

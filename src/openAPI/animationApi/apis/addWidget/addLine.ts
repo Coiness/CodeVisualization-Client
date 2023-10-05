@@ -14,6 +14,7 @@ export function addLine(s: Snapshot, p: AddLineWidgetParams) {
     size: p.size,
     startNodeId: p.startNodeId,
     endNodeId: p.endNodeId,
+    directional: p.directional,
   } as Omit<LineWidget, "id">;
 
   const action = WidgetRendererActionCreate.create(s.widgetManagerModel, {

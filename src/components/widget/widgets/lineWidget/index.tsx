@@ -13,6 +13,7 @@ export interface LineWidgetModel extends WidgetModel {
   size: number;
   startNodeId: string;
   endNodeId: string;
+  directional: boolean;
 }
 
 export class LineWidget implements IWidget {
@@ -67,7 +68,9 @@ export class LineWidget implements IWidget {
 export function LineWidgetRender(props: WidgetRenderProps) {
   return (
     <div className={cls("lineWidget", props.className)}>
-      <div className="arrow" style={{ borderLeftColor: props.model.color }}></div>
+      {(props.model as LineWidgetModel).directional && (
+        <div className="arrow" style={{ borderLeftColor: props.model.color }}></div>
+      )}
     </div>
   );
 }
