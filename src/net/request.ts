@@ -18,8 +18,8 @@ const model: "dev" | "build" = "dev";
 
 // 根据不同的运行模式设置不同的请求前缀
 const prefixMap = {
-  dev: "",
-  build: "",
+  dev: "http://localhost:12345",
+  build: "http://localhost:12345",
 };
 
 // 通用的网络请求函数

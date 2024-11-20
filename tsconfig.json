@@ -17,5 +17,5 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "types": ["showdown", "react-color"]
+  "types": ["showdown", "react-color","jest","@testing-library/jest-dom"]
 }

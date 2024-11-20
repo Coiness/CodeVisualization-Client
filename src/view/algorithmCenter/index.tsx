@@ -18,6 +18,7 @@ import { execAlgorithm } from "../algorithmEdit/execAlgortithm";
 import { FileEndNameMap, FileType } from "../../components/uploadFile";
 import { isLogin } from "../../net/token";
 
+//类型定义
 export type Algorithm = {
   id: string;
   name: string;
@@ -28,15 +29,16 @@ export type Algorithm = {
   };
   createTime: number;
   modifyTime: number;
-  bgi: string;
+  bgi: string;  //背景样式
   permission: number;
 };
 
+//将从API获取的数据转换为Algorithm类型
 export function constructAlgorithmList(algorithms: algorithmAPI.AlgorithmInfo[]): Algorithm[] {
   return algorithms.map((item: any) => {
-    let deg = getIntRandom(0, 180);
-    let c1 = randomColor(180, 220);
-    let c2 = randomColor(180, 220);
+    let deg = getIntRandom(0, 180); //随机角度
+    let c1 = randomColor(180, 220); //随机颜色
+    let c2 = randomColor(180, 220); //随机颜色
     return {
       id: item.id,
       name: item.name,
@@ -53,10 +55,13 @@ export function constructAlgorithmList(algorithms: algorithmAPI.AlgorithmInfo[])
   });
 }
 
+//算法中心页面
 export function AlgorithmCenter() {
-  const [algorithmList, setList] = useState<Algorithm[] | null>(null);
-  const navigate = useNavigate();
+  //状态管理
+  const [algorithmList, setList] = useState<Algorithm[] | null>(null); //算法列表
+  const navigate = useNavigate(); //路由导航
 
+  //获取算法列表
   async function getAlgorithmList(type: "all" | "search" | "mine", search?: string) {
     let list: algorithmAPI.AlgorithmInfo[] = [];
     if (type === "all") {
@@ -97,7 +102,7 @@ export function AlgorithmCenter() {
               onSearch={(s) => {
                 getAlgorithmList("search", s);
               }}
-            ></Input.Search>
+            ></Input.Search> 
           </div>
           <div className="all">
             <Button type="text" onClick={() => getAlgorithmList("all")}>
@@ -115,18 +120,16 @@ export function AlgorithmCenter() {
               type="default"
               onClick={() => {
                 openDialog("uploadFileDialog", FileType.Algorithm);
-              }}
-            >
+              }}> 
               上传算法
-            </Button>
+            </Button> 
           </div>
           <div className="create">
             <Button
               type="default"
               onClick={() => {
                 navigate("/algorithmEdit");
-              }}
-            >
+              }}>
               新建算法
             </Button>
           </div>
@@ -138,6 +141,7 @@ export function AlgorithmCenter() {
     </div>
   );
 }
+
 
 export function AlgorithmList(props: { list: Algorithm[] | null }) {
   const [algorithms, setAlgorithms] = useState<Algorithm[] | null>(null);
@@ -181,6 +185,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
     [navigate],
   );
 
+  //下载算法
   const downLoadAlgorithm = useCallback(async (id: string) => {
     let data = await getAlInfo(id);
     let info = {
@@ -191,6 +196,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
     downloadString(`${data.name}.${FileEndNameMap[FileType.Algorithm]}`, JSON.stringify(info));
   }, []);
 
+  //渲染算法列表
   return algorithms ? (
     algorithms.length > 0 ? (
       <div className="listContainer">
@@ -255,6 +261,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                             return;
                           }
                           let res = await algorithmAPI.removeAlgorithm(item.id);
+                          //删除成功后更新列表
                           if (res && algorithms) {
                             let newArr = [];
                             for (let i = 0; i < algorithms.length; i++) {
