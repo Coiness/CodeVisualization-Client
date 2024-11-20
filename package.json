@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
     "@types/lodash": "^4.14.189",
     "@types/react-color": "^3.0.6",
     "@types/showdown": "^2.0.0"

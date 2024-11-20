@@ -6,7 +6,7 @@ import "monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution";
 import { useEffect, useRef, useCallback } from "react";
 import { ShowCodeLanguage } from "./type";
 
-const EditerLineHeight = 20;
+const EditerLineHeight = 20;      //
 const ScrollJGRowCount = 1;
 
 export function useCodeEditor(theme: "show" | "vs", language?: ShowCodeLanguage, minimapEnable?: boolean) {

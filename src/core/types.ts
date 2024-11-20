@@ -3,3 +3,4 @@ export type Obj = {
 };
 
 export type DisplayMode = "edit" | "play";
+//模式切换

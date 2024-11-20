@@ -9,8 +9,8 @@ export enum ResultCode {
 }
 
 export interface Result {
-  flag: boolean;
-  code: ResultCode;
-  message: string;
+  flag: boolean; // 标识请求是否成功
+  code: ResultCode; // 请求结果的状态码
+  message: string; // 请求结果的详细信息
   data: any; // todo any 治理，增加泛型控制请求返回值类型
 }

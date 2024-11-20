@@ -1,3 +1,6 @@
+//定义websocket的类型和接口
+
+//这个Obj是一个对象类型，key是string或者number，value是any
 import { Obj } from "../core";
 
 export enum WSType {
@@ -13,6 +16,7 @@ export interface WS {
 
 const WS_HOST = "ws://localhost:3001";
 
+//测试websocket
 export function testWS() {
   // 浏览器提供 WebSocket 对象
   var ws = new WebSocket(WS_HOST);

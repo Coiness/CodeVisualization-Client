@@ -3,6 +3,15 @@ import { get, post } from "./request";
 import { getAccount } from "./token";
 import { ResultCode } from "./type";
 
+/*
+ * nav 用于导航到指定URL
+ * get 用于发送GET请求
+ * post 用于发送POST请求
+ * getAccount 用于获取当前账号
+ * ResultCode 定义了统一的状态响应码格式
+ */
+
+// 定义项目信息
 export interface ProjectInfo {
   account: string;
   createTime: string;
@@ -18,39 +27,48 @@ export interface ProjectInfo {
   };
 }
 
+// 定义获取项目响应数据
 export interface GetProjectResponseData {
   projects: ProjectInfo[];
 }
 
+// 创建项目
 export async function createProject(name: string, snapshot: string, descrition: string) {
   let r = await post("/project/create", { name, snapshot, descrition });
   return r.data.id;
 }
 
+// 移除项目
 export async function removeProject(id: string) {
   let r = await post("/project/remove", { id });
   return r.flag;
 }
 
+// 重命名项目
 export async function renameProject(id: string, name: string) {
   let r = await post("/project/rename", { id, name });
   return r.flag;
 }
 
+// 保存项目
 export async function saveProject(id: string, snapshot: string) {
   let r = await post("/project/save", { id, snapshot });
   return r.flag;
 }
+
+// 更新项目描述
 export async function updateProjectDescrition(id: string, descrition: string) {
   let r = await post("/project/updateDescrition", { id, descrition });
   return r.flag;
 }
 
+// 更改项目权限
 export async function changeProjectPermission(id: string, permission: number) {
   let r = await post("/project/updatePermission", { id, permission });
   return r.flag;
 }
 
+// 获取项目信息
 export async function getProjectInfo(id: string) {
   let r = await get("/project/loadInfo", { id });
   if (r.code === ResultCode.NoPermission) {
@@ -59,6 +77,7 @@ export async function getProjectInfo(id: string) {
   return r.data;
 }
 
+// 搜索项目
 export async function searchProject(name: string): Promise<GetProjectResponseData> {
   let account = getAccount();
   let r;
@@ -70,11 +89,13 @@ export async function searchProject(name: string): Promise<GetProjectResponseDat
   return r.data;
 }
 
+// 获取我的项目
 export async function getMyProject(): Promise<GetProjectResponseData> {
   let r = await get("/project/mine", {});
   return r.data;
 }
 
+// 按照用户搜索项目
 export async function searchProjectByUser(account: string): Promise<GetProjectResponseData> {
   let self = getAccount();
   let r;

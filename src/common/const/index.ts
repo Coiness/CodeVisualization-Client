@@ -13,3 +13,5 @@ export const getInitSnapshot = () => {
     },
   } as Snapshot;
 };
+
+// 设置初始快照，用于界面初始化
