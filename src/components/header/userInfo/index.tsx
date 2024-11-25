@@ -7,7 +7,7 @@ import { nowAccount } from "../../../store";
 import { openDialog } from "../../../view/dialogs/dialog";
 import { useNavigate } from "react-router-dom";
 
-export const DefaultImg = "/image/get?fileName=Default";
+export const DefaultImg = "/image/get?fileName=Default.jpg";
 
 function logined(): string | null {
   let account = getAccount();
@@ -23,6 +23,7 @@ function logined(): string | null {
 }
 
 function logout() {
+  console.log("Logging out"); // 添加日志
   lo();
 }
 
@@ -51,7 +52,9 @@ export function UserInfo() {
       }
     } else {
       if (name === null || img === null) {
+        console.log(`Fetching user info for account: ${account}`); // 添加日志
         getUserInfo(account).then((info: UserInfoData) => {
+          console.log(`User info fetched: ${JSON.stringify(info)}`); // 添加日志
           setName(info.username);
           setImg(info.img);
         });
