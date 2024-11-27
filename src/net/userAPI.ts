@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { get, post } from "./request";
 import { clear, setAccount, setToken } from "./token";
 

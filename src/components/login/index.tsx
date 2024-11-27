@@ -4,6 +4,7 @@ import { Button, Input, InputRef, message, Modal } from "antd";
 import { RegisterErrorCode, login, register, sendCheckCode } from "../../net";
 import { closeDialog } from "../../view/dialogs/dialog";
 
+//登录对话框
 export function Login(visible: boolean) {
   const closePanel = useCallback(() => {
     closeDialog("login");
@@ -11,7 +12,7 @@ export function Login(visible: boolean) {
 
   return (
     <Modal
-      open={visible}
+      open={visible} 
       maskClosable={true}
       onCancel={closePanel}
       footer={null}
@@ -22,13 +23,14 @@ export function Login(visible: boolean) {
       <LoginPanel
         onSuccess={() => {
           closePanel();
-          window.location.reload();
+          window.location.reload(); //登录成功后关闭对话框并刷新页面
         }}
       ></LoginPanel>
     </Modal>
   );
 }
 
+//注册错误码映射
 const RegisterErrorMsgMap: Record<RegisterErrorCode, string> = {
   [RegisterErrorCode.Success]: "注册成功",
   [RegisterErrorCode.AccountExist]: "账号已存在",
@@ -38,32 +40,41 @@ const RegisterErrorMsgMap: Record<RegisterErrorCode, string> = {
   [RegisterErrorCode.Other]: "系统正忙",
 };
 
+//登录面板组件
+//参数接口
 interface LoginPanelParams {
   onSuccess: () => void;
 }
 
 function LoginPanel(params: LoginPanelParams) {
+  //状态管理
   const [model, setModel] = useState<"login" | "register">("login");
   const { onSuccess } = params;
 
+  //引用管理
   const loginAccount = useRef<InputRef | null>(null);
   const loginPwd = useRef<InputRef | null>(null);
 
+  //生命周期（在组件挂载时自动聚焦到loginAccount输入框）
   useEffect(() => {
     if (loginAccount.current) {
       loginAccount.current.focus();
     }
   }, [loginAccount.current]); // todo 改为 mount
 
+  //登录逻辑实现
   async function execLogin() {
+    //获取用户输入的账号和密码
     let account = loginAccount?.current?.input?.value;
     let pwd = loginPwd?.current?.input?.value;
 
+    //校验输入
     if (!account || !pwd) {
       message.error("请输入完整");
       return;
     }
 
+    //调用登录接口
     let res = await login(account, pwd);
     if (res) {
       message.success("登录成功");
@@ -73,6 +84,7 @@ function LoginPanel(params: LoginPanelParams) {
     }
   }
 
+  //发送验证码功能实现
   const [sendCheckCodeDisable, setDisable] = useState<boolean>(false);
   const registerAccount = useRef<InputRef | null>(null);
   const registerPwd = useRef<InputRef | null>(null);
@@ -81,13 +93,13 @@ function LoginPanel(params: LoginPanelParams) {
   const registerInvitationCode = useRef<InputRef | null>(null);
 
   async function execSendCheckCode() {
-    setDisable(true);
     let account = registerAccount?.current?.input?.value;
     if (!account) {
       message.error("请先输入邮箱");
       return;
-    }
-    let res = await sendCheckCode(account);
+    }//检查是否输入邮箱
+    setDisable(true);//60s内不能再重新发送验证码
+    let res = await sendCheckCode(account);//todo:点击就出错，未打通
     if (res) {
       message.success("发送成功");
     } else {
@@ -95,9 +107,10 @@ function LoginPanel(params: LoginPanelParams) {
     }
     setTimeout(() => {
       setDisable(false);
-    }, 60000);
+    }, 60000);//60s后可以重新发送
   }
 
+  //注册功能实现
   async function execRegister() {
     let account = registerAccount?.current?.input?.value;
     let pwd = registerPwd?.current?.input?.value;
