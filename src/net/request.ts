@@ -29,7 +29,10 @@ export async function request(
   data: { [key: string]: unknown } | FormData,
   headers?: { [key: string]: string | number },
 ): Promise<Result> {
-  url = prefixMap[model] + url; // 根据不同的模式设置不同的请求前缀
+  // 根据不同的模式设置不同的请求前缀
+  url = prefixMap[model] + url;
+
+  // 配置Axios请求参数
   let config: AxiosRequestConfig<
     | {
         [key: string]: unknown;
@@ -54,7 +57,7 @@ export async function request(
   }
   let token = getToken();
   if (token !== null) {
-    h.token = token;
+    h[`Authorization`] = `Bearer ${token}`;
   }
 
   config.headers = h;

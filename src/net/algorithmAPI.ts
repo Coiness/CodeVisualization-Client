@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { nav } from "../common/utils";
 import { get, post } from "./request";
 import { getAccount } from "./token";
@@ -78,6 +79,7 @@ export async function getAlgorithmInfo(id: string) {
 
 // 根据名称搜索算法
 export async function searchAlgorithm(name: string): Promise<GetAlgorithmResponseData> {
+  message.error("searchAlgorithm is deprecated");
   let account = getAccount();
   let r;
   if (account === null) {
