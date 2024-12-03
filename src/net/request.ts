@@ -1,8 +1,10 @@
 import { message } from "antd";
 import axios, { AxiosRequestConfig } from "axios";
-import { getToken } from "./token";
+import { getAccount, getToken } from "./token";
 import { Result, ResultCode } from "./type";
 import { nav } from "../common/utils";
+import { config } from "process";
+import { error } from "console";
 
 /*
  * messgae 用于在前端显示全局消息提醒
@@ -12,6 +14,17 @@ import { nav } from "../common/utils";
  * ResultCode 定义了统一的返回码格式
  * nav 用于导航到指定URL
  */
+
+axios.interceptors.request.use(
+  (config) => {
+    console.log("request", config);
+    return config;
+  },
+  (error) => {
+    console.log("request error", error);
+    return Promise.reject(error);
+  },
+);
 
 // 定义当前的运行模式 dev 为开发模式，build 为生产模式
 const model: "dev" | "build" = "dev";
@@ -41,6 +54,7 @@ export async function request(
   > = {
     url,
     method,
+    withCredentials: true,
   };
 
   // 对于GET请求，将参数放在params中，对于POST请求，将参数放在data中
@@ -56,8 +70,14 @@ export async function request(
     h = { ...headers };
   }
   let token = getToken();
-  if (token !== null) {
-    h[`Authorization`] = `Bearer ${token}`;
+  let account = getAccount();
+
+  console.log("token:", token, "account:", account);
+
+  if (token !== null && account !== null) {
+    document.cookie = "account=" + account;
+    h["token"] = token;
+    // h["Authorization"] = "Bearer " + token;
   }
 
   config.headers = h;
@@ -81,9 +101,11 @@ export async function request(
 
 // 封装GET和POST请求
 export async function get(url: string, data: { [key: string]: unknown }): Promise<Result> {
+  console.log("get", url, data);
   return request(url, "GET", data);
 }
 
 export async function post(url: string, data: { [key: string]: unknown } | FormData): Promise<Result> {
+  console.log("post", url, data);
   return request(url, "POST", data);
 }

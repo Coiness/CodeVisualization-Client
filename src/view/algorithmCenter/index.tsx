@@ -79,6 +79,7 @@ export function AlgorithmCenter() {
       let res = await algorithmAPI.getMyAlgorithm();
       list = res.algorithms;
     }
+    console.log("list:", list);
     setList(constructAlgorithmList(list));
   }
 
