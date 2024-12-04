@@ -31,7 +31,7 @@ export async function getProjectData(id: string | null): Promise<ProjectInfo> {
         name: "",
         snapshot: getInitSnapshot(),
         permission: 0,
-        descrition: "",
+        description: "",
       }
     );
   } else {
@@ -43,7 +43,7 @@ export async function getProjectData(id: string | null): Promise<ProjectInfo> {
       snapshot: JSON.parse(p.snapshot),
       historyInfo: p.historyInfo ? JSON.parse(p.historyInfo) : undefined,
       permission: p.permission,
-      descrition: p.descrition,
+      description: p.description,
     };
   }
 }

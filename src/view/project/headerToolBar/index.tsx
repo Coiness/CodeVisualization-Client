@@ -107,16 +107,16 @@ export function HeaderToolBar(props: {
           ]}
         />
       )}
-      {info.id && (editable || info.descrition) && (
+      {info.id && (editable || info.description) && (
         <Button
           onClick={() => {
             openDialog("infoEditDialog", {
-              initText: info.descrition,
+              initText: info.description,
               editable: editable,
               callback: async (str: string) => {
-                let flag = await projectAPI.updateProjectDescrition(info.id, str);
+                let flag = await projectAPI.updateProjectDescription(info.id, str);
                 if (flag) {
-                  props.change("descrition", str);
+                  props.change("description", str);
                   message.success("修改成功");
                 } else {
                   message.error("修改失败");
@@ -170,7 +170,7 @@ export function HeaderToolBar(props: {
               name: "",
               video,
               permission: 0,
-              descrition: info.descrition,
+              description: info.description,
             });
             navigate("/videoPlay");
           }}

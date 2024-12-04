@@ -9,11 +9,11 @@ import { ShowCodeInfo } from "./ShowCode";
 export async function execAlgorithm(
   code: string,
   showCode: ShowCodeInfo | null,
-  descrition: string,
+  description: string,
   navigate: (url: string) => void,
   initData?: InputContent[],
 ) {
-  let res = await ApiDriver.start(code, showCode, descrition, initData);
+  let res = await ApiDriver.start(code, showCode, description, initData);
   if (res === true) {
     navigate("/videoPlay");
   } else {

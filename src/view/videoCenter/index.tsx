@@ -142,7 +142,7 @@ export function VideoList(props: { list: Video[] | null }) {
     let info = {
       name: data.name,
       video: data.video,
-      descrition: data.descrition,
+      description: data.description,
     } as DownloadVideoInfo;
     downloadString(`${data.name}.${FileEndNameMap[FileType.Video]}`, JSON.stringify(info));
   }, []);

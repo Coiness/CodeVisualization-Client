@@ -37,17 +37,17 @@ export function UploadFileDialog(visible: boolean, type: FileType) {
         let json = JSON.parse(data);
         if (type === FileType.Project) {
           let pData = json as DownloadProjectInfo;
-          let id = await createProject(pData.name, JSON.stringify(pData.snapshot), pData.descrition);
+          let id = await createProject(pData.name, JSON.stringify(pData.snapshot), pData.description);
           navigate(`/project?id=${id}`);
           flag = true;
         } else if (type === FileType.Video) {
           let vData = json as DownloadVideoInfo;
-          let id = await createVideo(vData.name, JSON.stringify(vData.video), vData.descrition);
+          let id = await createVideo(vData.name, JSON.stringify(vData.video), vData.description);
           navigate(`/videoPlay?id=${id}`);
           flag = true;
         } else if (type === FileType.Algorithm) {
           let aData = json as DownAlgorithmInfo;
-          let id = await createAlgorithm(aData.name, JSON.stringify(aData.content), aData.descrition);
+          let id = await createAlgorithm(aData.name, JSON.stringify(aData.content), aData.description);
           navigate(`/algorithmEdit?id=${id}`);
           flag = true;
         } else {

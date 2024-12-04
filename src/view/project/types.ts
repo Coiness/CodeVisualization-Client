@@ -5,13 +5,7 @@ export interface Snapshot {
   widgetManagerModel: WidgetRendererModel;
 }
 
-export type ProjectInfoKey =
-  | "id"
-  | "name"
-  | "account"
-  | "snapshot"
-  | "permission"
-  | "descrition";
+export type ProjectInfoKey = "id" | "name" | "account" | "snapshot" | "permission" | "description";
 
 export type ProjectInfo = {
   id: string;
@@ -20,11 +14,11 @@ export type ProjectInfo = {
   snapshot: Snapshot;
   historyInfo?: HistoryInfo;
   permission: number;
-  descrition: string;
+  description: string;
 };
 
 export type DownloadProjectInfo = {
   name: string;
   snapshot: Snapshot;
-  descrition: string;
+  description: string;
 };

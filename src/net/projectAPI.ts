@@ -15,7 +15,7 @@ import { ResultCode } from "./type";
 export interface ProjectInfo {
   account: string;
   createTime: string;
-  descrition: string;
+  description: string;
   id: number;
   modifyTime: string;
   name: string;
@@ -33,8 +33,8 @@ export interface GetProjectResponseData {
 }
 
 // 创建项目
-export async function createProject(name: string, snapshot: string, descrition: string) {
-  let r = await post("/project/create", { name, snapshot, descrition });
+export async function createProject(name: string, snapshot: string, description: string) {
+  let r = await post("/project/create", { name, snapshot, description });
   return r.data.id;
 }
 
@@ -57,8 +57,8 @@ export async function saveProject(id: string, snapshot: string) {
 }
 
 // 更新项目描述
-export async function updateProjectDescrition(id: string, descrition: string) {
-  let r = await post("/project/updateDescrition", { id, descrition });
+export async function updateProjectDescription(id: string, description: string) {
+  let r = await post("/project/updateDescription", { id, description });
   return r.flag;
 }
 

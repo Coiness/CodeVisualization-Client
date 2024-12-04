@@ -152,17 +152,20 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
     setAlgorithms(props.list);
   }, [props.list]);
 
+  //description似乎有错
   const run = useCallback(
     async function (id: string) {
+      console.log("run:", id);
       let info = await getAlInfo(id);
       let showCode = info.content.showCode ?? null;
       let code = info.content.runCode;
       let inputList = info.content.inputList;
       let inputEnable = inputList !== null;
-      let descrition = info.descrition;
+      let description = info.description;
       if (inputEnable) {
+        console.log("inputList:", inputList);
         openDialog("inputListDialog", {
-          descrition: descrition ?? "",
+          description: description ?? "",
           inputData: inputList,
         });
         let inputData: InputContent[] = await (async function () {
@@ -175,11 +178,11 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
         })();
 
         if (code) {
-          await execAlgorithm(code, showCode, descrition ?? "", navigate, inputData);
+          await execAlgorithm(code, showCode, description ?? "", navigate, inputData);
         }
       } else {
         if (code) {
-          await execAlgorithm(code, showCode, descrition ?? "", navigate);
+          await execAlgorithm(code, showCode, description ?? "", navigate);
         }
       }
     },
@@ -192,12 +195,13 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
     let info = {
       name: data.name,
       content: data.content,
-      descrition: data.descrition,
+      description: data.description,
     } as DownAlgorithmInfo;
     downloadString(`${data.name}.${FileEndNameMap[FileType.Algorithm]}`, JSON.stringify(info));
   }, []);
 
   //渲染算法列表
+  //首先判断是否已经获取到算法列表，如果没有则显示加载中，如果有则判断列表是否为空，如果为空则显示空页面，如果不为空则显示列表
   return algorithms ? (
     algorithms.length > 0 ? (
       <div className="listContainer">
@@ -207,26 +211,30 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
             const readable = editable || item.permission >= 2;
             const useble = readable || item.permission >= 1;
             return (
-              <div
+                <div
                 className="algorithm"
                 key={item.id}
                 style={{
                   backgroundImage: item.bgi,
                 }}
               >
+              {/*算法名称 */}
                 <div className="name">{item.name}</div>
                 <div className="control">
                   <div className="btns">
+                    {/*权限可读 再根据是否可编辑进一步区分*/}
                     {readable && (
                       <Button
                         shape="circle"
                         size="large"
+                        
                         icon={editable ? <EditOutlined /> : <EyeOutlined />}
                         onClick={() => {
                           navigate(`/algorithmEdit?id=${item.id}`);
                         }}
                       ></Button>
                     )}
+                    {/*权限可用*/}
                     {useble && (
                       <Button
                         shape="circle"
@@ -237,6 +245,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                         }}
                       ></Button>
                     )}
+                    {/*权限可读*/}
                     {readable && (
                       <Button
                         shape="circle"
@@ -247,6 +256,7 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                         }}
                       ></Button>
                     )}
+                    {/*权限可编辑*/}
                     {editable && (
                       <Button
                         shape="circle"

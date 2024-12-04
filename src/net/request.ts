@@ -15,17 +15,6 @@ import { error } from "console";
  * nav 用于导航到指定URL
  */
 
-axios.interceptors.request.use(
-  (config) => {
-    console.log("request", config);
-    return config;
-  },
-  (error) => {
-    console.log("request error", error);
-    return Promise.reject(error);
-  },
-);
-
 // 定义当前的运行模式 dev 为开发模式，build 为生产模式
 const model: "dev" | "build" = "dev";
 

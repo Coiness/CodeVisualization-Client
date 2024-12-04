@@ -147,7 +147,7 @@ export function ProjectList(props: { list: Project[] | null }) {
     let info = {
       name: data.name,
       snapshot: data.snapshot,
-      descrition: data.descrition,
+      description: data.description,
     } as DownloadProjectInfo;
     downloadString(`${data.name}.${FileEndNameMap[FileType.Project]}`, JSON.stringify(info));
   }, []);

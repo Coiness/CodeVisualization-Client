@@ -128,7 +128,7 @@ export const inputListDialogSub = new Subject<InputContent[]>();
 
 export function InputListDialog(
   visible: boolean,
-  data?: { inputData: InputContent[]; descrition: string }
+  data?: { inputData: InputContent[]; description: string }
 ) {
   const { el, getData, setData } = useInputList(false);
   const closePanel = useCallback(() => {
@@ -157,9 +157,9 @@ export function InputListDialog(
       closable={false}
     >
       <div className="inputListDialog">
-        {data && data.descrition !== "" && (
+        {data && data.description !== "" && (
           <InfoEdit
-            text={data.descrition}
+            text={data.description}
             editable={false}
             onSave={() => {}}
           ></InfoEdit>

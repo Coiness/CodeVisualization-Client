@@ -16,7 +16,7 @@ export interface AlgorithmInfo {
   account: string;
   content: string;
   createTime: string;
-  descrition: string;
+  description: string;
   id: number;
   modifyTime: string;
   name: string;
@@ -33,8 +33,8 @@ export interface GetAlgorithmResponseData {
 }
 
 // 创建算法
-export async function createAlgorithm(name: string, content: string, descrition: string) {
-  let r = await post("/algorithm/create", { name, content, descrition });
+export async function createAlgorithm(name: string, content: string, description: string) {
+  let r = await post("/algorithm/create", { name, content, description });
   return r.data.id;
 }
 
@@ -57,8 +57,8 @@ export async function saveAlgorithm(id: string, content: string) {
 }
 
 // 更新算法描述
-export async function updateAlgorithmDescrition(id: string, descrition: string) {
-  let r = await post("/algorithm/updateDescrition", { id, descrition });
+export async function updateAlgorithmDescription(id: string, description: string) {
+  let r = await post("/algorithm/updateDescription", { id, description });
   return r.flag;
 }
 

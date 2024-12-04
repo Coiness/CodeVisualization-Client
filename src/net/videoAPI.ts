@@ -15,7 +15,7 @@ export interface VideoInfo {
   account: string;
   content: string;
   createTime: string;
-  descrition: string;
+  description: string;
   id: number;
   name: string;
   permission: number;
@@ -30,8 +30,8 @@ export interface GetVideosResponseData {
 }
 
 // 创建视频
-export async function createVideo(name: string, content: string, descrition: string) {
-  let r = await post("/video/create", { name, content, descrition });
+export async function createVideo(name: string, content: string, description: string) {
+  let r = await post("/video/create", { name, content, description });
   return r.data.id;
 }
 
@@ -48,8 +48,8 @@ export async function renameVideo(id: string, name: string) {
 }
 
 //更新视频描述
-export async function updateVideoDescrition(id: string, descrition: string) {
-  let r = await post("/video/updateDescrition", { id, descrition });
+export async function updateVideoDescription(id: string, description: string) {
+  let r = await post("/video/updateDescription", { id, description });
   return r.flag;
 }
 

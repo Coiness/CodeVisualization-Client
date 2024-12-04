@@ -29,13 +29,13 @@ export type VideoInfo = {
   name: string;
   video: Video;
   permission: number;
-  descrition: string;
+  description: string;
 };
 
 export type DownloadVideoInfo = {
   name: string;
   video: Video;
-  descrition: string;
+  description: string;
 };
 
 export async function getVideoInfo(
@@ -58,7 +58,7 @@ export async function getVideoInfo(
       name: r.name,
       video: v,
       permission: r.permission,
-      descrition: r.descrition,
+      description: r.description,
     };
   }
 }
@@ -171,21 +171,21 @@ export function VideoPlay() {
                   ]}
                 />
               )}
-              {vInfo.id && (editable || vInfo.descrition) && (
+              {vInfo.id && (editable || vInfo.description) && (
                 <Button
                   onClick={() => {
                     openDialog("infoEditDialog", {
-                      initText: vInfo.descrition,
+                      initText: vInfo.description,
                       editable: editable,
                       callback: async (str: string) => {
-                        let flag = await videoAPI.updateVideoDescrition(
+                        let flag = await videoAPI.updateVideoDescription(
                           vInfo.id,
                           str
                         );
                         if (flag) {
                           setInfo({
                             ...vInfo,
-                            descrition: str,
+                            description: str,
                           });
                           message.success("修改成功");
                         } else {
@@ -343,7 +343,7 @@ function Control() {
               name: "",
               snapshot: s,
               permission: 0,
-              descrition: "",
+              description: "",
             });
             navigate("/project");
           }}

@@ -78,12 +78,12 @@ export class APIDriver {
   initData: { [key: string]: string } | undefined = undefined;
   showCode: ShowCodeInfo | null = null;
   sub: Subscription | null = null;
-  descrition: string = "";
+  description: string = "";
 
   start(
     code: string,
     showCode: ShowCodeInfo | null,
-    descrition: string,
+    description: string,
     initData?: InputContent[],
   ): Promise<true | { error: Error | null; logs: string[][] }> {
     modelSwitcher.pushModel(getDefaultSnapshot());
@@ -98,7 +98,7 @@ export class APIDriver {
     });
 
     this.showCode = showCode ?? null;
-    this.descrition = descrition;
+    this.description = description;
 
     if (this.showCode) {
       API.commonApi.start(this.showCode.list.map((item) => item.lang));
@@ -138,7 +138,7 @@ export class APIDriver {
       name: "",
       video: v,
       permission: 0,
-      descrition: "",
+      description: "",
     });
 
     this.r(true);

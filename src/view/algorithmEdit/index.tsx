@@ -31,7 +31,7 @@ export type AlgorithmInfo = {
     inputList?: InputContent[];
   };
   permission: number;
-  descrition: string;
+  description: string;
 };
 
 export type DownAlgorithmInfo = {
@@ -41,7 +41,7 @@ export type DownAlgorithmInfo = {
     runCode: string;
     inputList?: InputContent[];
   };
-  descrition: string;
+  description: string;
 };
 
 export async function getAlInfo(id: string | null): Promise<AlgorithmInfo> {
@@ -55,7 +55,7 @@ export async function getAlInfo(id: string | null): Promise<AlgorithmInfo> {
         runCode: "",
       },
       permission: 0,
-      descrition: "",
+      description: "",
     };
   } else {
     const r = await algorithmAPI.getAlgorithmInfo(id);
@@ -65,7 +65,7 @@ export async function getAlInfo(id: string | null): Promise<AlgorithmInfo> {
       name: r.name,
       content: JSON.parse(r.content),
       permission: r.permission,
-      descrition: r.descrition,
+      description: r.description,
     };
   }
 }
@@ -163,7 +163,7 @@ export function AlgorithmEdit() {
     if (inputEnable) {
       let data = getInputListData();
       openDialog("inputListDialog", {
-        descrition: alInfo?.descrition ?? "",
+        description: alInfo?.description ?? "",
         inputData: data,
       });
       data = await (async function () {
@@ -178,14 +178,14 @@ export function AlgorithmEdit() {
         await execAlgorithm(
           code,
           showCode,
-          alInfo?.descrition ?? "",
+          alInfo?.description ?? "",
           navigate,
           data
         );
       }
     } else {
       if (code) {
-        await execAlgorithm(code, showCode, alInfo?.descrition ?? "", navigate);
+        await execAlgorithm(code, showCode, alInfo?.description ?? "", navigate);
       }
     }
   }
@@ -250,21 +250,21 @@ export function AlgorithmEdit() {
                   ]}
                 />
               )}
-              {alInfo.id && (editable || alInfo.descrition) && (
+              {alInfo.id && (editable || alInfo.description) && (
                 <Button
                   onClick={() => {
                     openDialog("infoEditDialog", {
-                      initText: alInfo.descrition,
+                      initText: alInfo.description,
                       editable: editable,
                       callback: async (str: string) => {
-                        let flag = await algorithmAPI.updateAlgorithmDescrition(
+                        let flag = await algorithmAPI.updateAlgorithmDescription(
                           alInfo.id,
                           str
                         );
                         if (flag) {
                           setInfo({
                             ...alInfo,
-                            descrition: str,
+                            description: str,
                           });
                           message.success("修改成功");
                         } else {
