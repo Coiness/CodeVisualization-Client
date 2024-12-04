@@ -81,8 +81,6 @@ export async function getAlgorithmInfo(id: string) {
 export async function searchAlgorithm(name: string): Promise<GetAlgorithmResponseData> {
   let account = getAccount();
   let token = getToken();
-  console.log("account:", account);
-  console.log("token:", token);
   let r;
   if (account === null) {
     r = await get("/algorithm/search", { name });

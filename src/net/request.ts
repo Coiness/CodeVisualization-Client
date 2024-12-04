@@ -61,8 +61,6 @@ export async function request(
   let token = getToken();
   let account = getAccount();
 
-  console.log("token:", token, "account:", account);
-
   if (token !== null && account !== null) {
     document.cookie = "account=" + account;
     h["token"] = token;

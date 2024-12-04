@@ -79,7 +79,6 @@ export function AlgorithmCenter() {
       let res = await algorithmAPI.getMyAlgorithm();
       list = res.algorithms;
     }
-    console.log("list:", list);
     setList(constructAlgorithmList(list));
   }
 
@@ -152,18 +151,17 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
     setAlgorithms(props.list);
   }, [props.list]);
 
-  //description似乎有错
   const run = useCallback(
     async function (id: string) {
-      console.log("run:", id);
       let info = await getAlInfo(id);
       let showCode = info.content.showCode ?? null;
       let code = info.content.runCode;
+      //如果有输入列表，则弹出输入列表对话框
       let inputList = info.content.inputList;
-      let inputEnable = inputList !== null;
+      //哈哈，inputList是undefined不是null，所以需要宽松判断！=null，而不是!==null
+      let inputEnable = (inputList != null );
       let description = info.description;
       if (inputEnable) {
-        console.log("inputList:", inputList);
         openDialog("inputListDialog", {
           description: description ?? "",
           inputData: inputList,
