@@ -225,7 +225,6 @@ export function AlgorithmList(props: { list: Algorithm[] | null }) {
                       <Button
                         shape="circle"
                         size="large"
-                        
                         icon={editable ? <EditOutlined /> : <EyeOutlined />}
                         onClick={() => {
                           navigate(`/algorithmEdit?id=${item.id}`);

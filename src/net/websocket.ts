@@ -14,7 +14,7 @@ export interface WS {
   close(): void;
 }
 
-const WS_HOST = "ws://localhost:3001";
+const WS_HOST = "ws://localhost:3002";
 
 //测试websocket
 export function testWS() {

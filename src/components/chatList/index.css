@@ -1,0 +1,56 @@
+/* index.css */
+.chatListContainer {
+    border: 1px solid #eee;
+    width: 250px;
+    transition: all 0.3s;
+    font-family: sans-serif;
+  }
+  
+  .chatListHeader {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .chatListHeader:hover {
+    background: #f5f5f5;
+  }
+  
+  .chatListBody {
+    padding: 8px;
+  }
+  
+  .chatItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .chatItem:hover {
+    background: #fafafa;
+  }
+  
+  .chatActions {
+    display: none;
+  }
+  
+  .chatItem:hover .chatActions {
+    display: inline-block;
+  }
+  
+  .addChat {
+    margin-top: 8px;
+    color: #1890ff;
+    cursor: pointer;
+  }
+  
+  /* 折叠状态可酌情隐藏或缩小 */
+  .folded .chatListBody {
+    display: none;
+  }
