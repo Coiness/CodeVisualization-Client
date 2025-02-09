@@ -6,6 +6,7 @@
 
 import { useEffect, useState } from "react";
 import { message } from "antd";
+import "./index.css";
 import ChatList from "../../components/chatList";
 import ChatContent from "../../components/chatContent";
 import { Button } from "antd";
@@ -200,13 +201,33 @@ export default function AiAssistant(){
     }
   },[currentChat]);
 
-  return(
-    <div className={`sidebar_${fold?`folded`:`unfolded`}`}>
-      <Button className={`sidebarbutton_${fold?`folded`:`unfolded`}`} onClick={()=>{setFold(!fold)}}></Button>
-      <ChatList chatList={chatList}  currentChat={currentChat} onAdd={addChat} onDelete={deleteChat} onEdit={renameChat}></ChatList>
-      <ChatContent currentChat={currentChat} messages={messages} isSending={isSending} onSend={SendMessage} stopGet={()=>{}}></ChatContent>
+    return (
+    <div>
+      <div className={`sidebar ${fold ? "sidebar--folded" : "sidebar--unfolded"}`}>
+        <div className={`sidebar-toggle ${fold ? "sidebar-toggle--folded" : "sidebar-toggle--unfolded"}`}>
+          <Button onClick={() => setFold(!fold)}></Button>
+        </div>
+        {!fold && (
+          <>
+            <ChatList
+              chatList={chatList}
+              currentChat={currentChat}
+              onAdd={addChat}
+              onDelete={deleteChat}
+              onEdit={renameChat}
+            />
+            <ChatContent
+              currentChat={currentChat}
+              messages={messages}
+              isSending={isSending}
+              onSend={SendMessage}
+              stopGet={() => {}}
+            />
+          </>
+        )}
+      </div>
     </div>
-  )
+  );
 
 
 }

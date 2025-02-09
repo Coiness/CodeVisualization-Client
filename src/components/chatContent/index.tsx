@@ -6,9 +6,10 @@
 第三步是发送消息，以及流式接收消息
 */
 
-import { Input ,Button} from "antd";
+import { Input ,Button,message} from "antd";
 import { LoadingOutlined,SendOutlined } from "@ant-design/icons"; 
 import { useState } from "react";
+import "./index.css";
 const { TextArea } = Input;
 
 
@@ -58,7 +59,7 @@ export default function ChatContent(props: Props){
                 <div className="sendButton">
                 <Button icon={props.isSending?
                     <LoadingOutlined onClick={()=>{props.stopGet()}}/>:
-                    <SendOutlined onClick={()=> {props.onSend(value);}} />}
+                    <SendOutlined onClick={(currentChat)=> {if(currentChat){props.onSend(value)}else{message.error("请先选择对话")}}} />}
                 
                 ></Button>
                 </div>

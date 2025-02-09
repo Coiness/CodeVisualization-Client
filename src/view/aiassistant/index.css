@@ -1,39 +1,58 @@
-.sidebar_unfolded {
-  display: flex;
-  height: 100vh;
-  transition: all 0.3s ease;
-}
-
-.sidebar_folded {
-  display: flex;
-  height: 100vh;
-  width: 60px;
-  transition: all 0.3s ease;
-}
-
-/* 折叠按钮 */
-.sidebarbutton_unfolded {
+/* 外层容器：固定定位在右侧 */
+.sidebar {
   position: fixed;
-  left: 250px;
-  top: 20px;
-  z-index: 100;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: left 0.3s ease;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 300px;                   /* 侧边栏总宽度 */
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 9999;                  /* 保证覆盖文档流 */
 }
 
-.sidebarbutton_folded {
-  position: fixed;
-  left: 20px;
-  top: 20px;
-  z-index: 100;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: left 0.3s ease;
+/* 折叠状态：侧边栏完全移出屏幕，仅保留按钮可见 */
+.sidebar--folded {
+  transform: translateX(100%);
 }
+
+/* 展开状态：侧边栏完全展示在页面上 */
+.sidebar--unfolded {
+  transform: translateX(0);
+}
+
+/* 
+ * 通用的按钮样式 
+ * 以绝对定位的方式贴在侧边栏容器中
+ */
+.sidebar-toggle {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 折叠时：按钮固定在视口右侧中间 */
+.sidebar-toggle--folded {
+  position: fixed;           /* 固定到视口，贴到右边 */
+  left:-36px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10000;            /* 高于 sidebar */
+}
+
+/* 展开时：按钮贴在侧边栏左边缘中间 */
+.sidebar-toggle--unfolded {
+  left: -36px;               /* 按钮突出 sidebar 左侧 */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10001;            /* 保证在侧边栏上层 */
+}
+

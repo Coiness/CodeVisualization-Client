@@ -15,6 +15,7 @@ import { DownloadProjectInfo, getProjectData } from "../project";
 import { openDialog } from "../dialogs/dialog";
 import { FileEndNameMap, FileType } from "../../components/uploadFile";
 import { isLogin } from "../../net/token";
+import AiAssistant from "../aiassistant";
 
 export type Project = {
   id: string;

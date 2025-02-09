@@ -8,7 +8,7 @@
 
 import { MenuFoldOutlined, MenuUnfoldOutlined,DeleteOutlined,EditOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { Modal } from 'antd';
+import { Modal ,Button} from 'antd';
 import "./index.css";
 
 export interface Chat{
@@ -65,6 +65,7 @@ export default function ChatList(props: Props){
                     )
                 })}
                 <div className='addChat' onClick={props.onAdd}>新增对话</div>
+
             </div>
 
 

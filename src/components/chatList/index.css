@@ -1,75 +1,82 @@
-/* chatList组件样式 */
+/* 整体容器：位于侧边栏的上部，悬浮定位 */
 .chatListContainer {
-  width: 250px;
-  height: 100%;
-  border-right: 1px solid #eee;
-  transition: all 0.3s ease;
+  position: relative;
   background: #fff;
+  padding: 8px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  
 }
 
-.chatListContainer.folder {
-  width: 0;
-  overflow: hidden;
-}
-
+/* 标题栏 */
 .chatListHeader {
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid #eee;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #f6f6f6;
+  border-bottom: 1px solid #e8e8e8;
   cursor: pointer;
-  font-weight: 500;
 }
 
-.chatListHeader:hover {
-  background: #f5f5f5;
-}
-
+/* 内容区：点击标题栏展开后，下方区域顺着垂直铺开 */
 .chatListBody {
+  max-height: 300px;         /* 如有需要可设置滚动 */
+  
   overflow-y: auto;
-  height: calc(100% - 56px);
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
 }
 
+/* 每一条 item */
 .chatItem {
-  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
+  padding: 8px 16px;
   border-bottom: 1px solid #f0f0f0;
-}
-
-.chatItem:hover {
-  background: #f5f5f5;
-}
-
-.chatItem .anticon {
-  opacity: 0;
-  margin-left: 8px;
-  color: #999;
-}
-
-.chatItem:hover .anticon {
-  opacity: 1;
-}
-
-.chatItem .anticon:hover {
-  color: #1890ff;
-}
-
-.addChat {
-  margin: 16px;
-  padding: 8px;
-  text-align: center;
-  color: #1890ff;
   cursor: pointer;
-  border: 1px dashed #1890ff;
-  border-radius: 4px;
 }
 
+/* 限制 item 内文字，超出部分显示省略 */
+.chatItem .item-text {
+  flex: 1;
+  margin-right: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 操作区域：rename 和 delete 按钮，水平排列靠右 */
+.chatItem .item-actions {
+  display: flex;
+  gap: 8px;
+}
+.chatItem .item-actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* 最后 addChat 按钮，与 chatItem 高度一致，文字居中 */
+.addChat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  margin: 8px 16px;
+  border: 1px dashed #1890ff;
+  color: #1890ff;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* 悬停效果 */
+.chatItem:hover {
+  background: #f9f9f9;
+}
 .addChat:hover {
-  color: #40a9ff;
+  background: #e6f7ff;
   border-color: #40a9ff;
-  background: rgba(24, 144, 255, 0.1);
+  color: #40a9ff;
 }

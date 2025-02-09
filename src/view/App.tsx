@@ -9,6 +9,7 @@ import { Dialogs } from "./dialogs/dialog";
 import { AlgorithmEdit } from "./algorithmEdit";
 import { VideoPlay } from "./videoPlay";
 import { UserInfo } from "./userInfo/UserInfo";
+import AiAssistant from "./aiassistant";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="videoPlay" element={<VideoPlay />} />
         <Route path="userInfo" element={<UserInfo />} />
       </Routes>
+      <AiAssistant></AiAssistant>
       <Dialogs></Dialogs>
     </BrowserRouter>
   );

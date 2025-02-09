@@ -4,7 +4,6 @@
 
 .algorithmCenter .algorithmCenterContent {
   display: flex;
-
   height: calc(100% - 60px);
   padding: 0px 20px;
   overflow: hidden;
