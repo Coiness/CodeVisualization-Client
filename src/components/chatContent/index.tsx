@@ -22,7 +22,7 @@ export interface Message{
 
 export interface Chat{
     id:string;
-    name:string;
+    title:string;
     time:string;
 }
 

@@ -9,13 +9,12 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined,DeleteOutlined,EditOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { getAccount,getToken } from '../../net/token';
-import { Modal ,Button,message} from 'antd';
+import { Modal ,message} from 'antd';
 import "./index.css";
-import { set } from 'lodash';
 
 export interface Chat{
     id: string;
-    name: string;
+    title: string;
     time: string;
 }
 
@@ -43,7 +42,7 @@ export default function ChatList(props: Props){
         <div className={`chatListContainer ${fold?`folder`:``}`}>
             <div className='chatListHeader' onClick={() => setFold(!fold)}>
                 {fold ? <MenuFoldOutlined/> : <MenuUnfoldOutlined/>}
-                {currentChat?.name||"请选择对话喵"}
+                {currentChat?.title||"请选择对话喵"}
             </div>
             <div className='addChat' onClick={()=>{
                 props.onAdd();
@@ -54,7 +53,7 @@ export default function ChatList(props: Props){
                 {fold ? null : props.chatList?.map((chat)=>{
                     return (
                         <div className='chatItem' key={chat.id} onClick={() => setCurrentChat(chat)}>
-                            {chat.name}
+                            {chat.title}
                         <EditOutlined onClick={(e) => {
                             if(token === null || account === null){
                                 message.error("你还没登录呢");
@@ -82,6 +81,9 @@ export default function ChatList(props: Props){
                                     //调用删除对话的API
                                     console.log("调用删除对话的API",currentChat?.id);
                                     props.onDelete(chat.id);
+                                    if(currentChat?.id === chat.id){
+                                        setCurrentChat(null);
+                                    }
                                 }
                             })
                             }}/>

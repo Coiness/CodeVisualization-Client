@@ -60,5 +60,12 @@
     "@types/showdown": "^2.0.0",
     "@types/testing-library__jest-dom": "^6.0.0"
   },
-  "proxy": "http://localhost:12345"
+  "proxy": "http://localhost:12345",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "author": "",
+  "license": "ISC"
 }

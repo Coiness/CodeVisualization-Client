@@ -23,7 +23,7 @@ export interface Message{
 
 export interface Chat{
     id:string;
-    name:string;
+    title:string;
     time:string;
 }
 
@@ -96,7 +96,7 @@ export default function AiAssistant(){
   const [currentChat, setCurrentChat] = useState<Chat |null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
-  const [fold, setFold] = useState(false);
+  const [fold, setFold] = useState(true);
 
   //函数编写
   const addChat = async () => {
@@ -116,7 +116,7 @@ export default function AiAssistant(){
     if (res) {
       const newChatList = chatList.filter((chat) => chat.id !== id);
       if(currentChat?.id === id){
-        setCurrentChat(null);
+        setCurrentChat(currentChat);
         console.log("currentChat在删除后被设定为",currentChat);
       }
       setChatList(newChatList);
@@ -131,7 +131,7 @@ export default function AiAssistant(){
     if (res) {
       const newChatList = chatList.map((chat) => {
         if (chat.id === id) {
-          chat.name = name;
+          chat.title = name;
         }
         return chat;
       });
@@ -145,7 +145,7 @@ export default function AiAssistant(){
   // 发送消息的处理函数
   const SendMessage = async (content: string) => {
     if (!currentChat) return;
-    setCurrentChat({...currentChat,time: new Date().toISOString()});
+    setCurrentChat({...currentChat,time:new Date().toISOString()});
     
     // 1. 添加用户消息
     const userMessage: Message = {

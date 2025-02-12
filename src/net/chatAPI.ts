@@ -14,7 +14,7 @@ import { getAccount } from "./token";
 export interface Chat {
   account: string;
   id: string;
-  name: string;
+  title: string;
   time: string;
 }
 
@@ -26,7 +26,9 @@ export interface GetChatResponseData {
 // 不用传参，在token中获取用户信息
 export async function getChatList(): Promise<GetChatResponseData> {
   let res = await get("/chat/list", {});
-  const sortedChats = res.data.chats.sort((a: Chat, b: Chat) => {
+  console.log("res", res);
+  console.log("res.data.chats:", res.data.chats);
+  let sortedChats = res.data.sort((a: Chat, b: Chat) => {
     return new Date(b.time).getTime() - new Date(a.time).getTime();
   });
   return { chats: sortedChats };
@@ -47,24 +49,21 @@ export async function deletechat(id: string): Promise<boolean> {
 // 新增聊天
 export async function addchat(): Promise<Chat> {
   let res = await post("/chat/add", {});
-  console.log("chat/add的回复res", res);
-  console.log("chat/add的回复res.data的id", res.data.id);
   let newChat: Chat;
   let account = getAccount();
   if (account) {
     newChat = {
       account: account,
       id: res.data.id,
-      name: "新对话",
+      title: "新对话",
       time: new Date().toISOString(),
     };
-    console.log("chat/add的回复newChat", newChat);
     return newChat;
   } else {
     newChat = {
       account: "",
       id: "",
-      name: "未登录（不过这种情况真的存在吗）",
+      title: "未登录（不过这种情况真的存在吗）",
       time: new Date().toISOString(),
     };
     return newChat;
