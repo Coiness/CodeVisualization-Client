@@ -112,8 +112,13 @@ export default function AiAssistant(){
 
   const deleteChat = async (id: string) => {
     const res = await deletechat(id);
+    console.log("删除对话",res);
     if (res) {
       const newChatList = chatList.filter((chat) => chat.id !== id);
+      if(currentChat?.id === id){
+        setCurrentChat(null);
+        console.log("currentChat在删除后被设定为",currentChat);
+      }
       setChatList(newChatList);
       message.success("删除成功");
     } else {
@@ -140,6 +145,7 @@ export default function AiAssistant(){
   // 发送消息的处理函数
   const SendMessage = async (content: string) => {
     if (!currentChat) return;
+    setCurrentChat({...currentChat,time: new Date().toISOString()});
     
     // 1. 添加用户消息
     const userMessage: Message = {
@@ -194,12 +200,14 @@ export default function AiAssistant(){
   },[]);
 
   useEffect(()=>{
+    console.log("currentChat在useEffect中的值",currentChat);
     if(currentChat){
       getMessage(currentChat).then((res)=>{
         setMessages(res.messages);
       });
     }
   },[currentChat]);
+
 
     return (
     <div>

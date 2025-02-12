@@ -1,4 +1,5 @@
 import { get, post } from "./request";
+import { getAccount, getToken } from "./token";
 
 // 定义消息类型
 export interface MessageInfo {
@@ -21,27 +22,17 @@ export interface GetMessageResponseData {
 // 获取消息，返回的消息按照id排序，role排序
 export async function getMessage(currentChat: Chat): Promise<GetMessageResponseData> {
   let res = await get("message/get", { currentChat });
-  return res.data.sort((a: MessageInfo, b: MessageInfo) => {
+  const sortedMessages = res.data.messages.sort((a: MessageInfo, b: MessageInfo) => {
     if (a.id !== b.id) {
       return a.id - b.id;
     } else {
-      if (a.role === b.role) {
-        return 0;
-      } else if (a.role === "user") {
-        return -1;
-      } else {
-        return 1;
-      }
+      return a.role === b.role ? 0 : a.role === "user" ? -1 : 1;
     }
   });
+  return { messages: sortedMessages };
 }
 
 // 发送消息
-//todo: 实现流式传输
-export async function sendmessage(content: string, id: string) {
-  let res = await post("message/send", { content });
-  return res.flag;
-}
 
 // messageAPI.ts
 
@@ -59,11 +50,22 @@ export async function sendMessageStream(
   onFinish: () => void,
   onError: (err: string) => void,
 ) {
+  const token = getToken();
+  const account = getAccount();
+
+  if (token === null || account === null) {
+    onError("未登录");
+    return;
+  }
+
   try {
+    document.cookie = "account=" + account;
     const response = await fetch("http://localhost:12345/message/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        token: token,
+        account: account,
       },
       body: JSON.stringify({ content }),
     });

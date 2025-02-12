@@ -28,34 +28,18 @@
 
 /* 每一条 item */
 .chatItem {
-  display: flex;
+  display: grid;
+  grid-template-columns: 80% 10% 10%;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
-  border-bottom: 1px solid #f0f0f0;
-  cursor: pointer;
+  padding: 8px 8px 8px 16px;
+  
 }
 
-/* 限制 item 内文字，超出部分显示省略 */
-.chatItem .item-text {
-  flex: 1;
-  margin-right: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
-/* 操作区域：rename 和 delete 按钮，水平排列靠右 */
-.chatItem .item-actions {
-  display: flex;
-  gap: 8px;
-}
-.chatItem .item-actions button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-}
+
+
+
 
 /* 最后 addChat 按钮，与 chatItem 高度一致，文字居中 */
 .addChat {

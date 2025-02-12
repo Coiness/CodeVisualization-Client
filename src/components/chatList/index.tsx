@@ -7,9 +7,11 @@
 */
 
 import { MenuFoldOutlined, MenuUnfoldOutlined,DeleteOutlined,EditOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
-import { Modal ,Button} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { getAccount,getToken } from '../../net/token';
+import { Modal ,Button,message} from 'antd';
 import "./index.css";
+import { set } from 'lodash';
 
 export interface Chat{
     id: string;
@@ -28,6 +30,14 @@ interface Props{
 export default function ChatList(props: Props){
     const [fold, setFold] = useState(true);
     const [currentChat, setCurrentChat] = useState(props.currentChat);
+    const account = getAccount();
+    const token = getToken();
+
+    useEffect(()=>{
+        if(account === null || token === null){
+            message.warning("请先登录再使用AI助手");
+        }
+    },[account,token]);
 
     return(
         <div className={`chatListContainer ${fold?`folder`:``}`}>
@@ -35,11 +45,21 @@ export default function ChatList(props: Props){
                 {fold ? <MenuFoldOutlined/> : <MenuUnfoldOutlined/>}
                 {currentChat?.name||"请选择对话喵"}
             </div>
+            <div className='addChat' onClick={()=>{
+                props.onAdd();
+                setFold(true);
+            }}>新增对话</div>
+
             <div className='chatListBody'>
                 {fold ? null : props.chatList?.map((chat)=>{
                     return (
-                        <div className='chatItem' key={chat.id} onClick={() => setCurrentChat(chat)}>{chat.name}-{chat.time}
+                        <div className='chatItem' key={chat.id} onClick={() => setCurrentChat(chat)}>
+                            {chat.name}
                         <EditOutlined onClick={(e) => {
+                            if(token === null || account === null){
+                                message.error("你还没登录呢");
+                                return;
+                            }
                             e.stopPropagation();
                             const newName = prompt("请输入新的名字");
                             if(newName){
@@ -48,6 +68,10 @@ export default function ChatList(props: Props){
                             }
                         }}/>
                         <DeleteOutlined onClick={(e) => {
+                            if(token === null || account === null){
+                                message.error("你还没登录呢");
+                                return;
+                            }
                             e.stopPropagation();
                             Modal.confirm({
                                 title: "删除对话",
@@ -56,15 +80,14 @@ export default function ChatList(props: Props){
                                 cancelText: "取消",
                                 onOk: () => {
                                     //调用删除对话的API
+                                    console.log("调用删除对话的API",currentChat?.id);
                                     props.onDelete(chat.id);
                                 }
                             })
                             }}/>
-                    
                         </div>
                     )
                 })}
-                <div className='addChat' onClick={props.onAdd}>新增对话</div>
 
             </div>
 

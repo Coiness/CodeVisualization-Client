@@ -9,6 +9,7 @@
 import { Input ,Button,message} from "antd";
 import { LoadingOutlined,SendOutlined } from "@ant-design/icons"; 
 import { useState } from "react";
+import { getAccount,getToken } from "../../net/token";
 import "./index.css";
 const { TextArea } = Input;
 
@@ -36,6 +37,8 @@ export interface Props{
 
 export default function ChatContent(props: Props){
     const [value, setValue] = useState("");
+    const account = getAccount();
+    const token = getToken();
     //isSending的逻辑在父组件中实现    
     return(
         <div className="chatContent">
@@ -59,7 +62,10 @@ export default function ChatContent(props: Props){
                 <div className="sendButton">
                 <Button icon={props.isSending?
                     <LoadingOutlined onClick={()=>{props.stopGet()}}/>:
-                    <SendOutlined onClick={(currentChat)=> {if(currentChat){props.onSend(value)}else{message.error("请先选择对话")}}} />}
+                    <SendOutlined onClick={(currentChat)=> {if(token === null || account === null){
+                        message.error("你还没登录呢");
+                        return;
+                    }if(currentChat){props.onSend(value)}else{message.error("请先选择对话")}}} />}
                 
                 ></Button>
                 </div>
