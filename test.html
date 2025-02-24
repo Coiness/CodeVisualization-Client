@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Stream Client Demo</title>
+  </head>
+  <body>
+    <div id="output"></div>
+    <script>
+      async function sendMessage(content,slug,account) {
+
+        console.log(content,slug,account)
+        // 发起请求
+        const response = await fetch("http://localhost:12345/message/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ content,slug,account })
+        });
+
+        if (!response.ok || !response.body) {
+          throw new Error("请求失败");
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) {
+            break;
+          }
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || ""; // 保留最后一行可能截断的部分
+
+          for (const line of lines) {
+            if (!line.trim() || !line.startsWith("data: ")) {
+              continue;
+            }
+            try {
+              const jsonStr = line.slice(5);
+              const data = JSON.parse(jsonStr);
+              document.getElementById("output").innerText += JSON.stringify(data) + "\n";
+            } catch (err) {
+              console.error("JSON解析失败:", err);
+            }
+          }
+        }
+      }
+
+      // 示例：页面加载后立即发送测试消息
+      sendMessage("你好，测试一下","1512133221-at-qq-dot-com2025-02-24T110624-dot-683Z","1512133221@qq.com").catch(err => console.error("错误:", err));
+    </script>
+  </body>
+</html>

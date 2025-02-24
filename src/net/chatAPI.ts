@@ -24,10 +24,13 @@ export interface GetChatResponseData {
 
 // 获取聊天列表
 // 不用传参，在token中获取用户信息
-export async function getChatList(): Promise<GetChatResponseData> {
+export async function getChatList(): Promise<GetChatResponseData | null> {
   let res = await get("/chat/list", {});
   console.log("res", res);
-  console.log("res.data.chats:", res.data.chats);
+  console.log("res.data.chats:", res.data);
+  if (res.data === null) {
+    return null;
+  }
   let sortedChats = res.data.sort((a: Chat, b: Chat) => {
     return new Date(b.time).getTime() - new Date(a.time).getTime();
   });

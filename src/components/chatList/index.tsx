@@ -19,7 +19,7 @@ export interface Chat{
 }
 
 interface Props{
-    chatList: Chat[];
+    chatList: Chat[]|null;
     currentChat: Chat|null;
     onEdit: (id: string, newName: string) => void;
     onDelete: (id: string) => void;
@@ -45,12 +45,16 @@ export default function ChatList(props: Props){
                 {currentChat?.title||"请选择对话喵"}
             </div>
             <div className='addChat' onClick={()=>{
+                if(token === null || account === null){
+                    message.error("你还没登录呢");
+                    return;
+                }
                 props.onAdd();
                 setFold(true);
             }}>新增对话</div>
 
             <div className='chatListBody'>
-                {fold ? null : props.chatList?.map((chat)=>{
+                {fold ? null : props.chatList?props.chatList.map((chat)=>{
                     return (
                         <div className='chatItem' key={chat.id} onClick={() => setCurrentChat(chat)}>
                             {chat.title}
@@ -89,7 +93,7 @@ export default function ChatList(props: Props){
                             }}/>
                         </div>
                     )
-                })}
+                }):null}
 
             </div>
 

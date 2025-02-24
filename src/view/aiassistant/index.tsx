@@ -10,7 +10,8 @@ import "./index.css";
 import ChatList from "../../components/chatList";
 import ChatContent from "../../components/chatContent";
 import { Button } from "antd";
-import {getChatList,renamechat,deletechat,getMessage,sendMessageStream,addchat} from"../../net"
+import {getChatList,renamechat,deletechat,getMessage,MessageService,addchat} from"../../net"
+import { getAccount,getToken } from "../../net/token";
 
 
 //toDo：完成函数的编写、状态管理、完成按钮的CSS
@@ -97,6 +98,8 @@ export default function AiAssistant(){
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [fold, setFold] = useState(true);
+  const [temptext,setTemptext] = useState<string>("");
+
 
   //函数编写
   const addChat = async () => {
@@ -142,61 +145,66 @@ export default function AiAssistant(){
     }
   }
   
-  // 发送消息的处理函数
-  const SendMessage = async (content: string) => {
-    if (!currentChat) return;
-    setCurrentChat({...currentChat,time:new Date().toISOString()});
-    
-    // 1. 添加用户消息
-    const userMessage: Message = {
-      id: Date.now(),
-      role: "user",
-      content: content
-    };
-    setMessages(prev => [...prev, userMessage]);
-    
-    // 2. 创建空的助手消息
-    const assistantMessage: Message = {
-      id: Date.now() + 1,
-      role: "assistant",
-      content: ""
-    };
-    setMessages(prev => [...prev, assistantMessage]);
-    
-    // 3. 设置发送状态
-    setIsSending(true);
-    
-    try {
-      await sendMessageStream(
-        content,
-        // 处理每个数据块
-        (chunk: string) => {
-          setMessages(prev => prev.map(msg => 
-            msg.id === assistantMessage.id 
-              ? { ...msg, content: msg.content + chunk }
-              : msg
-          ));
-        },
-        // 完成回调
-        () => {
-          setIsSending(false);
-        },
-        // 错误处理
-        (error: string) => {
-          setIsSending(false);
-          message.error(error);
-        }
-      );
-    } catch (err) {
-      setIsSending(false);
-      message.error("发送失败");
-    }
+
+  // 使用示例
+const sendMessage = async (content: string) => {
+  if (!currentChat) return;
+  
+  // 1. 创建并添加用户消息
+  const userMessage: Message = {
+    id: messages.length,
+    role: "user",
+    content
   };
+  
+  // 2. 创建空的助手消息占位
+  const assistantMessage: Message = {
+    id: messages.length + 1,
+    role: "assistant",
+    content: ""  // 初始为空
+  };
+  
+  // 3. 将两条消息添加到数组
+  setMessages([...messages, userMessage, assistantMessage]);
+  
+  // 4. 开始发送请求
+  setIsSending(true);
+  
+  await MessageService.sendMessage({
+    content,
+    slug: currentChat.id,
+    onMessage: (text) => {
+      // 5. 收到消息时更新助手消息内容
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === assistantMessage.id
+            ? { ...msg, content: msg.content + text }
+            : msg
+        )
+      );
+    },
+    onComplete: () => {
+      setIsSending(false);
+      console.log('会话完成');
+    },onError: (err) => {
+      setIsSending(false);
+      console.log('会话失败', err);
+    }
+  });
+};
+
+
 
   useEffect(()=>{
+    if(!getToken() || !getAccount()){
+      console.log("认证失败");return;}else{
     getChatList().then((res)=>{
+      if(!res){
+        message.error("获取对话列表失败");
+        return;
+      }
       setChatList(res.chats.sort((a,b)=>a.time>b.time?-1:1));
-    });
+    });}
   },[]);
 
   useEffect(()=>{
@@ -228,7 +236,7 @@ export default function AiAssistant(){
               currentChat={currentChat}
               messages={messages}
               isSending={isSending}
-              onSend={SendMessage}
+              onSend={sendMessage}
               stopGet={() => {}}
             />
           </>
