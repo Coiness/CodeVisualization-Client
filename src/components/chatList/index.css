@@ -2,7 +2,7 @@
 .chatListContainer {
   position: relative;
   background: #fff;
-  padding: 8px 0;
+  padding: 8px 0 0 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   
 }
@@ -18,12 +18,20 @@
 }
 
 /* 内容区：点击标题栏展开后，下方区域顺着垂直铺开 */
-.chatListBody {
-  max-height: 300px;         /* 如有需要可设置滚动 */
-  
+.chatListBody-Relative {
+  position: relative;
+  height: 0;
+  overflow:visible;
+}
+
+.chatListBody-Absolute{
+  position: absolute;
+  width: 100%;
+  top:0;
+  left:0;
+  z-index: 1;
+  background-color: #fff;
   overflow-y: auto;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
 }
 
 /* 每一条 item */

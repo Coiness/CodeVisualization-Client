@@ -11,10 +11,9 @@ import ChatList from "../../components/chatList";
 import ChatContent from "../../components/chatContent";
 import { Button } from "antd";
 import {getChatList,renamechat,deletechat,getMessage,MessageService,addchat} from"../../net"
-import { getAccount,getToken } from "../../net/token";
+import { isLogin } from "../../net/token";
 
-
-//toDo：完成函数的编写、状态管理、完成按钮的CSS
+//toDo：判断是否登录，如果没有登录，提示登录
 
 export interface Message{
     id: number;
@@ -29,67 +28,23 @@ export interface Chat{
 }
 
 export interface ChatListProps{
-    chatList: Chat[];
-    currentChat: Chat|null;
-    onEdit: (id: number, newName: string) => void;
-    onDelete: (id: number) => void;
-    onAdd:()=>void;
+  chatList: Chat[]|null;
+  currentChat: Chat|null;
+  isLogin:boolean;
+  onSelectChat:(chat:Chat)=>void;
+  onEdit: (id: string, newName: string) => void;
+  onDelete: (id: string) => void;
+  onAdd:()=>void;
 }
 
 export interface ChatContentProps{
-    currentChat: Chat|null;
-    messages: Message[];
-    isSending: boolean;
-    onSend:(content: string) => void;
-    stopGet: () => void;
+  currentChat: Chat|null;
+  messages: Message[];
+  isSending: boolean;
+  isLogin:boolean;
+  onSend:(content: string) => void;
+  stopGet: () => void;
 }
-/* 
-export function renameChat(id: string, name: string,chatList:Chat[],setChatList:(chatList:Chat[])=>void){
-    renamechat(id, name).then((res)=>{
-        if(res){
-            let newChatList = chatList.map((chat)=>{
-                if(chat.id === id){
-                    chat.name = name;
-                }
-                return chat;
-            });
-            setChatList(newChatList);
-            message.success("修改成功");
-        }
-        else{
-            message.error("修改失败");
-        }
-    });
-
-}
-export function deleteChat(id: string,chatList:Chat[],setChatList:(chatList:Chat[])=>void){
-    deletechat(id).then((res)=>{
-        if(res){
-            let newChatList = chatList.filter((chat)=>chat.id!==id);
-            setChatList(newChatList);
-            message.success("删除成功");
-        }
-        else{
-            message.error("删除失败");
-        }
-    });
-
-}
-
-export function addChat(chatList:Chat[],setChatList:(chatList:Chat[])=>void,setCurrentChat:(currentChat:Chat|null)=>void){
-    addchat().then((res:Chat)=>{
-      if(!res){
-        setChatList([res,...chatList]);
-        setCurrentChat(res);
-        message.success("成功创建新对话");}
-      else{
-        message.error("新对话创建失败");
-      }
-    });
-}*/
-
-
-
 
 export default function AiAssistant(){
   //首先是状态管理
@@ -98,8 +53,6 @@ export default function AiAssistant(){
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [fold, setFold] = useState(true);
-  const [temptext,setTemptext] = useState<string>("");
-
 
   //函数编写
   const addChat = async () => {
@@ -145,9 +98,8 @@ export default function AiAssistant(){
     }
   }
   
-
   // 使用示例
-const sendMessage = async (content: string) => {
+  const sendMessage = async (content: string) => {
   if (!currentChat) return;
   
   // 1. 创建并添加用户消息
@@ -196,7 +148,7 @@ const sendMessage = async (content: string) => {
 
 
   useEffect(()=>{
-    if(!getToken() || !getAccount()){
+    if(!isLogin()){
       console.log("认证失败");return;}else{
     getChatList().then((res)=>{
       if(!res){
@@ -209,6 +161,7 @@ const sendMessage = async (content: string) => {
 
   useEffect(()=>{
     console.log("currentChat在useEffect中的值",currentChat);
+    setMessages([]);
     if(currentChat){
       getMessage(currentChat).then((res)=>{
         setMessages(res.messages);
@@ -228,12 +181,15 @@ const sendMessage = async (content: string) => {
             <ChatList
               chatList={chatList}
               currentChat={currentChat}
+              isLogin={isLogin()}
+              onSelectChat={setCurrentChat}
               onAdd={addChat}
               onDelete={deleteChat}
               onEdit={renameChat}
             />
             <ChatContent
               currentChat={currentChat}
+              isLogin={isLogin()}
               messages={messages}
               isSending={isSending}
               onSend={sendMessage}

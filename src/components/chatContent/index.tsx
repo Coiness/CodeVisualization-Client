@@ -9,7 +9,6 @@
 import { Input ,Button,message} from "antd";
 import { LoadingOutlined,SendOutlined } from "@ant-design/icons"; 
 import { useState } from "react";
-import { getAccount,getToken } from "../../net/token";
 import "./index.css";
 const { TextArea } = Input;
 
@@ -27,18 +26,44 @@ export interface Chat{
 }
 
 
-export interface Props{
+export interface ChatContentProps{
     currentChat: Chat|null;
     messages: Message[];
     isSending: boolean;
+    isLogin:boolean;
     onSend:(content: string) => void;
     stopGet: () => void;
 }
 
-export default function ChatContent(props: Props){
+export default function ChatContent(props: ChatContentProps){
     const [value, setValue] = useState("");
-    const account = getAccount();
-    const token = getToken();
+
+    //处理键盘事件
+    const handleKeyDown : React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
+        if(event.key === 'Enter' && !event.shiftKey){
+            event.preventDefault();
+            handleSend();
+        }
+    }
+
+    const handleSend = () =>{
+        if(!props.isLogin){
+            message.error("你还没登录呢");
+            return;
+        }
+
+        if(value.trim() === ""){
+            message.error("请输入内容");
+            return
+        }
+
+        if(props.currentChat){
+            props.onSend(value);
+            setValue("");
+            return;
+        }
+    }
+
     //isSending的逻辑在父组件中实现    
     return(
         <div className="chatContent">
@@ -55,17 +80,15 @@ export default function ChatContent(props: Props){
             <div className="contentInput">
                 <TextArea
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
                 placeholder="赶快来和我对话吧！"
                 autoSize={{ minRows: 3, maxRows: 5 }}
+                onChange = {(e) => setValue(e.target.value)}
+                onKeyDown={handleKeyDown}
                 />
                 <div className="sendButton">
                 <Button icon={props.isSending?
                     <LoadingOutlined onClick={()=>{props.stopGet()}}/>:
-                    <SendOutlined onClick={(currentChat)=> {if(token === null || account === null){
-                        message.error("你还没登录呢");
-                        return;
-                    }if(currentChat){props.onSend(value)}else{message.error("请先选择对话")}}} />}
+                    <SendOutlined onClick={handleSend} />}
                 
                 ></Button>
                 </div>

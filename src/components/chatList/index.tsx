@@ -8,7 +8,6 @@
 
 import { MenuFoldOutlined, MenuUnfoldOutlined,DeleteOutlined,EditOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { getAccount,getToken } from '../../net/token';
 import { Modal ,message} from 'antd';
 import "./index.css";
 
@@ -18,34 +17,35 @@ export interface Chat{
     time: string;
 }
 
-interface Props{
+//toDo：登录状态、以及选择对话状态 变为从父组件传入
+interface ChatListProps{
     chatList: Chat[]|null;
     currentChat: Chat|null;
+    isLogin:boolean;
+    onSelectChat:(chat:Chat|null)=>void;
     onEdit: (id: string, newName: string) => void;
     onDelete: (id: string) => void;
     onAdd:()=>void;
 }
 
-export default function ChatList(props: Props){
+export default function ChatList(props: ChatListProps){
     const [fold, setFold] = useState(true);
-    const [currentChat, setCurrentChat] = useState(props.currentChat);
-    const account = getAccount();
-    const token = getToken();
+
 
     useEffect(()=>{
-        if(account === null || token === null){
+        if(!props.isLogin){
             message.warning("请先登录再使用AI助手");
         }
-    },[account,token]);
+    },[props.isLogin]);
 
     return(
         <div className={`chatListContainer ${fold?`folder`:``}`}>
             <div className='chatListHeader' onClick={() => setFold(!fold)}>
                 {fold ? <MenuFoldOutlined/> : <MenuUnfoldOutlined/>}
-                {currentChat?.title||"请选择对话喵"}
+                {props.currentChat?.title||"请选择对话喵"}
             </div>
             <div className='addChat' onClick={()=>{
-                if(token === null || account === null){
+                if(!props.isLogin){
                     message.error("你还没登录呢");
                     return;
                 }
@@ -53,13 +53,14 @@ export default function ChatList(props: Props){
                 setFold(true);
             }}>新增对话</div>
 
-            <div className='chatListBody'>
+            <div className='chatListBody-Relative'>
+                <div className='chatListBody-Absolute'>
                 {fold ? null : props.chatList?props.chatList.map((chat)=>{
                     return (
-                        <div className='chatItem' key={chat.id} onClick={() => setCurrentChat(chat)}>
+                        <div className='chatItem' key={chat.id} onClick={() =>{ props.onSelectChat(chat);setFold(true)}}>
                             {chat.title}
                         <EditOutlined onClick={(e) => {
-                            if(token === null || account === null){
+                            if(!props.isLogin){
                                 message.error("你还没登录呢");
                                 return;
                             }
@@ -71,7 +72,7 @@ export default function ChatList(props: Props){
                             }
                         }}/>
                         <DeleteOutlined onClick={(e) => {
-                            if(token === null || account === null){
+                            if(!props.isLogin){
                                 message.error("你还没登录呢");
                                 return;
                             }
@@ -83,10 +84,10 @@ export default function ChatList(props: Props){
                                 cancelText: "取消",
                                 onOk: () => {
                                     //调用删除对话的API
-                                    console.log("调用删除对话的API",currentChat?.id);
+                                    console.log("调用删除对话的API",props.currentChat?.id);
                                     props.onDelete(chat.id);
-                                    if(currentChat?.id === chat.id){
-                                        setCurrentChat(null);
+                                    if(props.currentChat?.id === chat.id){
+                                        props.onSelectChat(null);
                                     }
                                 }
                             })
@@ -94,7 +95,7 @@ export default function ChatList(props: Props){
                         </div>
                     )
                 }):null}
-
+                </div>
             </div>
 
 
