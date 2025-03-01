@@ -3,8 +3,6 @@ import axios, { AxiosRequestConfig } from "axios";
 import { getAccount, getToken } from "./token";
 import { Result, ResultCode } from "./type";
 import { nav } from "../common/utils";
-import { config } from "process";
-import { error } from "console";
 
 /*
  * messgae 用于在前端显示全局消息提醒
@@ -88,7 +86,8 @@ export async function request(
 
 // 封装GET和POST请求
 export async function get(url: string, data: { [key: string]: unknown }): Promise<Result> {
-  console.log("get", url, data);
+  console.log("get", url, "data:", data);
+  console.log("req.headers", Headers);
   return request(url, "GET", data);
 }
 

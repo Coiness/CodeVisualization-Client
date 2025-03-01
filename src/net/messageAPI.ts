@@ -1,9 +1,9 @@
-import { get, post } from "./request";
+import { post } from "./request";
 import { getAccount, getToken } from "./token";
 
 // 定义消息类型
 export interface MessageInfo {
-  id: number;
+  chatId: number;
   content: string;
   role: "user" | "assistant";
 }
@@ -22,95 +22,49 @@ export interface GetMessageResponseData {
 // 获取消息，返回的消息按照id排序，role排序
 export async function getMessage(currentChat: Chat): Promise<GetMessageResponseData> {
   const slug = currentChat.id;
-  let res = await get("message/get", { slug });
-  const sortedMessages = res.data.messages.sort((a: MessageInfo, b: MessageInfo) => {
-    if (a.id !== b.id) {
-      return a.id - b.id;
-    } else {
-      return a.role === b.role ? 0 : a.role === "user" ? -1 : 1;
-    }
-  });
-  return { messages: sortedMessages };
-}
-
-// 发送消息
-
-// messageAPI.ts
-
-/*
-export async function sendMessageStream(
-  content: string,
-  slug: string,
-  onChunk: (text: string) => void,
-  onFinish: () => void,
-  onError: (err: string) => void,
-) {
-  console.log("发起请求");
   const token = getToken();
   const account = getAccount();
-
-  if (token === null || account === null) {
-    onError("未登录");
-    return;
-  }
+  const url = `http://localhost:12345/message/get`;
 
   try {
-    console.log("发起请求try");
-    document.cookie = "account=" + account;
-    const response = await fetch("http://localhost:12345/message/send", {
-      method: "POST",
+    const response = await fetch(url, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
+        token: token!,
+        account: account!,
+        slug: slug,
       },
-      body: JSON.stringify({ content, slug, account }),
+      credentials: "include",
     });
-    console.log("send的response", response);
 
     if (!response.ok) {
       throw new Error("请求失败");
     }
 
-    const reader = response.body?.getReader();
-    const decoder = new TextDecoder();
-    let buffer = "";
+    const responseData = await response.json();
 
-    while (reader) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
-
-      for (const line of lines) {
-        if (!line.trim() || !line.startsWith("data: ")) continue;
-
-        try {
-          const json = JSON.parse(line.slice(5)) as StreamChunk;
-
-          if (json.error) {
-            onError("服务器返回错误");
-            return;
-          }
-
-          if (json.type === "textResponseChunk") {
-            if (json.textResponse) {
-              onChunk(json.textResponse);
-            }
-            if (json.close) {
-              onFinish();
-              return;
-            }
-          }
-        } catch (err) {
-          console.error("JSON解析失败:", err);
-        }
-      }
+    //添加防御性检查
+    if (!responseData || !responseData.data || !Array.isArray(responseData.data)) {
+      console.log("接口返回格式不符:", responseData);
+      return { messages: [] };
     }
+
+    const data = responseData.data;
+
+    const sortedMessages = data.sort((a: MessageInfo, b: MessageInfo) => {
+      if (a.chatId === b.chatId) {
+        return a.role === "user" ? -1 : 1;
+      }
+      return a.chatId - b.chatId;
+    });
+
+    return { messages: sortedMessages };
   } catch (err) {
-    onError(String(err));
+    console.error(err);
+    return { messages: [] };
   }
-}*/
+}
 
 export interface MessageResponse {
   uuid: string;
@@ -139,7 +93,7 @@ export class MessageService {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ content, slug }),
+        body: JSON.stringify({ content, slug, account: getAccount() }),
       });
 
       if (!response.ok) {
@@ -205,4 +159,9 @@ export class MessageService {
       reader.releaseLock();
     }
   }
+}
+
+export async function terminatemessage(slug: string): Promise<boolean> {
+  let res = await post("/message/terminate", { slug });
+  return res.flag;
 }

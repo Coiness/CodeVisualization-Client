@@ -14,7 +14,7 @@ const { TextArea } = Input;
 
 
 export interface Message{
-    id: number;
+    chatId: number;
     role: string;
     content: string;
 }
@@ -40,28 +40,40 @@ export default function ChatContent(props: ChatContentProps){
 
     //处理键盘事件
     const handleKeyDown : React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
-        if(event.key === 'Enter' && !event.shiftKey){
+        if(event.key === 'Enter' && !event.shiftKey  ){
             event.preventDefault();
             handleSend();
         }
     }
 
     const handleSend = () =>{
+        console.log("isLogin:",props.isLogin);
         if(!props.isLogin){
             message.error("你还没登录呢");
             return;
         }
 
+        if(props.isSending){
+            message.error("现在还有消息正在发送中，等会再试试吧");
+            return;
+        }
+
+        if(props.currentChat === null){
+            message.error("你还没选择对话呢");
+            return;
+        }
+
+        
         if(value.trim() === ""){
             message.error("请输入内容");
             return
         }
-
-        if(props.currentChat){
+        else{
             props.onSend(value);
             setValue("");
-            return;
         }
+
+        
     }
 
     //isSending的逻辑在父组件中实现    
@@ -70,7 +82,7 @@ export default function ChatContent(props: ChatContentProps){
             <div className="contentBox">
                 {props.messages.map((message)=>{
                     return (
-                        <div key={message.id} className={`message_${message.role}`}>
+                        <div  className={`message_${message.role}`}>
                             {message.content}
                         </div>
                     )
@@ -87,9 +99,9 @@ export default function ChatContent(props: ChatContentProps){
                 />
                 <div className="sendButton">
                 <Button icon={props.isSending?
-                    <LoadingOutlined onClick={()=>{props.stopGet()}}/>:
-                    <SendOutlined onClick={handleSend} />}
-                
+                    <LoadingOutlined />:
+                    <SendOutlined/>}
+                    onClick={props.isSending?props.stopGet:handleSend}
                 ></Button>
                 </div>
             </div>

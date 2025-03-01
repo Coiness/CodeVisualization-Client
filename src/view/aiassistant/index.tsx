@@ -10,13 +10,13 @@ import "./index.css";
 import ChatList from "../../components/chatList";
 import ChatContent from "../../components/chatContent";
 import { Button } from "antd";
-import {getChatList,renamechat,deletechat,getMessage,MessageService,addchat} from"../../net"
+import {getChatList,renamechat,deletechat,getMessage,MessageService,addchat,terminatemessage} from"../../net"
 import { isLogin } from "../../net/token";
 
 //toDo：判断是否登录，如果没有登录，提示登录
 
 export interface Message{
-    id: number;
+    chatId: number;
     role: string;
     content: string;
 }
@@ -55,10 +55,16 @@ export default function AiAssistant(){
   const [fold, setFold] = useState(true);
 
   //函数编写
+  const onSelectChat = (chat: Chat | null) => {
+    terminateMessage();
+    setCurrentChat(chat);
+  }
+
   const addChat = async () => {
     const res = await addchat();
     if (res) {
       setChatList([res, ...chatList]);
+      terminateMessage();
       setCurrentChat(res);
       message.success("成功创建新对话");
     } else {
@@ -104,14 +110,14 @@ export default function AiAssistant(){
   
   // 1. 创建并添加用户消息
   const userMessage: Message = {
-    id: messages.length,
+    chatId: messages.length,
     role: "user",
     content
   };
   
   // 2. 创建空的助手消息占位
   const assistantMessage: Message = {
-    id: messages.length + 1,
+    chatId: messages.length + 1,
     role: "assistant",
     content: ""  // 初始为空
   };
@@ -129,7 +135,7 @@ export default function AiAssistant(){
       // 5. 收到消息时更新助手消息内容
       setMessages(prevMessages => 
         prevMessages.map(msg => 
-          msg.id === assistantMessage.id
+          msg.chatId === assistantMessage.chatId
             ? { ...msg, content: msg.content + text }
             : msg
         )
@@ -145,7 +151,23 @@ export default function AiAssistant(){
   });
 };
 
-
+  const terminateMessage = async () =>{
+    console.log("stopGet");
+    if(isSending){
+    if(currentChat === null){
+      message.error("你还没选择对话呢");
+      return;
+    }
+    const res = await terminatemessage(currentChat.id);
+    if(res){
+      console.log("终止成功");
+      setIsSending(false);
+    }else{
+      message.error("终止失败");
+      setIsSending(false);
+    }}
+    
+  }
 
   useEffect(()=>{
     if(!isLogin()){
@@ -182,7 +204,7 @@ export default function AiAssistant(){
               chatList={chatList}
               currentChat={currentChat}
               isLogin={isLogin()}
-              onSelectChat={setCurrentChat}
+              onSelectChat={onSelectChat}
               onAdd={addChat}
               onDelete={deleteChat}
               onEdit={renameChat}
@@ -193,7 +215,7 @@ export default function AiAssistant(){
               messages={messages}
               isSending={isSending}
               onSend={sendMessage}
-              stopGet={() => {}}
+              stopGet={terminateMessage}
             />
           </>
         )}
