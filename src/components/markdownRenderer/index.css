@@ -1,0 +1,41 @@
+/* MarkdownRenderer/index.css */
+
+/* 代码块容器 */
+.code-block-wrapper {
+  position: relative;
+  margin: 8px 0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* 复制按钮默认状态 */
+.code-block-wrapper .copy-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* 鼠标悬停时显示按钮 */
+.code-block-wrapper:hover .copy-button {
+  opacity: 1;
+}
+
+/* 复制成功状态 */
+.code-block-wrapper .copy-button.copied {
+  background-color: rgba(72, 187, 120, 0.2);
+  border-color: rgba(72, 187, 120, 0.4);
+}
+
+/* 内联代码样式 */
+.markdown-content code:not([class*="language-"]) {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: monospace;
+}

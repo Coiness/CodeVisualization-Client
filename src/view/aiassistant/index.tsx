@@ -78,7 +78,7 @@ export default function AiAssistant(){
     if (res) {
       const newChatList = chatList.filter((chat) => chat.id !== id);
       if(currentChat?.id === id){
-        setCurrentChat(currentChat);
+        setCurrentChat(null);
         console.log("currentChat在删除后被设定为",currentChat);
       }
       setChatList(newChatList);

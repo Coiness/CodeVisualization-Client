@@ -9,7 +9,9 @@
 import { Input ,Button,message} from "antd";
 import { LoadingOutlined,SendOutlined } from "@ant-design/icons"; 
 import { useState } from "react";
+import markdownRender from "../markdownRenderer";
 import "./index.css";
+import MarkdownRenderer from "../markdownRenderer";
 const { TextArea } = Input;
 
 
@@ -82,13 +84,12 @@ export default function ChatContent(props: ChatContentProps){
             <div className="contentBox">
                 {props.messages.map((message)=>{
                     return (
-                        <div  className={`message_${message.role}`}>
-                            {message.content}
+                        <div key={message.chatId} className={`message_${message.role}`}>
+                            {message.role === "user"?(message.content):(<MarkdownRenderer content={message.content}/>)}
                         </div>
                     )
                 })}
             </div>
-            <div style={{ margin: '24px 0' }} />
             <div className="contentInput">
                 <TextArea
                 value={value}
