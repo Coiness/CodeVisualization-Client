@@ -1,6 +1,4 @@
-import exp from "constants";
 import { get, post } from "./request";
-import { ResultCode } from "./type";
 import { getAccount } from "./token";
 
 /*

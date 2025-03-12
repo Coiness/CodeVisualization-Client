@@ -35,6 +35,8 @@ export type Algorithm = {
 
 //将从API获取的数据转换为Algorithm类型
 export function constructAlgorithmList(algorithms: algorithmAPI.AlgorithmInfo[]): Algorithm[] {
+  if(!algorithms)return [];
+
   return algorithms.map((item: any) => {
     let deg = getIntRandom(0, 180); //随机角度
     let c1 = randomColor(180, 220); //随机颜色
@@ -63,6 +65,7 @@ export function AlgorithmCenter() {
 
   //获取算法列表
   async function getAlgorithmList(type: "all" | "search" | "mine", search?: string) {
+    try{
     let list: algorithmAPI.AlgorithmInfo[] = [];
     if (type === "all") {
       let res = await algorithmAPI.searchAlgorithm("");
@@ -79,7 +82,11 @@ export function AlgorithmCenter() {
       let res = await algorithmAPI.getMyAlgorithm();
       list = res.algorithms;
     }
-    setList(constructAlgorithmList(list));
+    setList(constructAlgorithmList(list));}
+    catch(error){
+      console.log("获取算法列表失败",error);
+      message.error("获取算法列表失败");
+    };
   }
 
   useEffect(() => {

@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types":["jest","node","@testing-library/jest-dom"]
   },
   "include": ["src"],
   "types": ["showdown", "react-color","jest","@testing-library/jest-dom"]

@@ -86,23 +86,38 @@ export interface SendMessageParams {
 export class MessageService {
   private static readonly API_URL = "http://localhost:12345/message/send";
 
-  static async sendMessage({ content, slug, onMessage, onComplete, onError }: SendMessageParams): Promise<void> {
+    static async sendMessage({ content, slug, onMessage, onComplete, onError }: SendMessageParams): Promise<void> {
+    // 创建 AbortController 用于超时控制
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 设置 60 秒超时
+      
     try {
       const response = await fetch(this.API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Connection": "keep-alive", // 明确指定保持连接
+          "token": getToken() || "", // 添加令牌
         },
         body: JSON.stringify({ content, slug, account: getAccount() }),
+        credentials: "include", // 启用凭据
+        signal: controller.signal, // 添加 AbortController 信号
+        keepalive: true, // 保持连接活跃
       });
-
+  
       if (!response.ok) {
-        throw new Error("请求失败");
+        throw new Error(`请求失败: ${response.status} ${response.statusText}`);
       }
-
+  
       await this.handleSSEResponse(response, onMessage, onComplete, onError);
     } catch (error) {
-      onError(error instanceof Error ? error.message : "未知错误");
+      if (error instanceof DOMException && error.name === "AbortError") {
+        onError("请求超时，请重试");
+      } else {
+        onError(error instanceof Error ? error.message : "未知错误");
+      }
+    } finally {
+      clearTimeout(timeoutId); // 清理超时计时器
     }
   }
 

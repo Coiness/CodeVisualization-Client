@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE 连接测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 8px 16px;
+            margin-right: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #cccccc;
+        }
+        button.danger {
+            background: #f44336;
+        }
+        button.danger:hover {
+            background: #d32f2f;
+        }
+        #status {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f0f0f0;
+        }
+        .connected {
+            color: #4CAF50;
+        }
+        .disconnected {
+            color: #f44336;
+        }
+        .connecting {
+            color: #2196F3;
+        }
+        #messageLog {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .message {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 0.8em;
+        }
+        .log-info {
+            color: #2196F3;
+        }
+        .log-error {
+            color: #f44336;
+        }
+        .log-message {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>SSE 连接测试工具</h1>
+    
+    <div class="card">
+        <h2>连接设置</h2>
+        <div>
+            <label for="sseUrl">SSE 接口地址:</label>
+            <input type="text" id="sseUrl" value="http://localhost:12345/" style="width: 300px;">
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="requestType">请求类型:</label>
+            <select id="requestType">
+                <option value="GET">GET</option>
+                <option value="POST" selected>POST</option>
+            </select>
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="requestBody">请求体 (JSON):</label>
+            <textarea id="requestBody" rows="4" style="width: 100%">
+{
+    "content": "测试消息",
+    "slug": "1512133221-at-qq-dot-com2025-03-10T080728-dot-590Z",
+    "account": "1512133221@qq.com"
+}</textarea>
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="headers">请求头 (JSON):</label>
+            <textarea id="headers" rows="4" style="width: 100%">
+{
+    "Content-Type": "application/json",
+    "Accept": "text/event-stream", 
+    "token": "test-token"
+}</textarea>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="connectBtn">连接</button>
+        <button id="disconnectBtn" disabled class="danger">断开</button>
+        <button id="clearBtn">清除日志</button>
+    </div>
+
+    <div class="card">
+        <h2>连接状态</h2>
+        <div id="status" class="disconnected">未连接</div>
+    </div>
+
+    <div class="card">
+        <h2>消息日志</h2>
+        <div id="messageLog"></div>
+    </div>
+
+    <script>
+        let eventSource = null;
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const status = document.getElementById('status');
+        const messageLog = document.getElementById('messageLog');
+        const sseUrl = document.getElementById('sseUrl');
+        const requestType = document.getElementById('requestType');
+        const requestBody = document.getElementById('requestBody');
+        const headers = document.getElementById('headers');
+
+        function updateButtonState(isConnected) {
+            connectBtn.disabled = isConnected;
+            disconnectBtn.disabled = !isConnected;
+        }
+
+        function updateStatus(message, className) {
+            status.textContent = message;
+            status.className = className;
+        }
+
+        function logMessage(message, type = 'info') {
+            const msgElem = document.createElement('div');
+            msgElem.className = `message log-${type}`;
+            
+            const timestamp = document.createElement('span');
+            timestamp.className = 'timestamp';
+            timestamp.textContent = `[${new Date().toISOString()}] `;
+            
+            const content = document.createElement('span');
+            content.textContent = message;
+            
+            msgElem.appendChild(timestamp);
+            msgElem.appendChild(content);
+            messageLog.appendChild(msgElem);
+            
+            // 自动滚动到底部
+            messageLog.scrollTop = messageLog.scrollHeight;
+        }
+
+        connectBtn.addEventListener('click', async () => {
+            try {
+                updateStatus('正在连接...', 'connecting');
+                logMessage('开始建立连接...');
+
+                const url = sseUrl.value.trim();
+                let source;
+
+                if (requestType.value === 'GET') {
+                    // 使用标准 EventSource 进行 GET 请求
+                    const headersObj = JSON.parse(headers.value);
+                    const urlWithParams = new URL(url);
+                    
+                    // 将 headers 添加为 URL 参数（因为 EventSource 不支持自定义请求头）
+                    Object.keys(headersObj).forEach(key => {
+                        urlWithParams.searchParams.append(key, headersObj[key]);
+                    });
+                    
+                    // 将请求体也添加为 URL 参数
+                    const bodyObj = JSON.parse(requestBody.value);
+                    Object.keys(bodyObj).forEach(key => {
+                        urlWithParams.searchParams.append(key, bodyObj[key]);
+                    });
+                    
+                    logMessage(`连接到: ${urlWithParams.toString()}`);
+                    source = new EventSource(urlWithParams.toString());
+                } else {
+                    // 使用 fetch 和 自定义响应处理进行 POST 请求
+                    logMessage('使用 POST 方式发起连接');
+                    logMessage(`请求地址: ${url}`);
+                    logMessage(`请求头: ${headers.value}`);
+                    logMessage(`请求体: ${requestBody.value}`);
+                    
+                    const headersObj = JSON.parse(headers.value);
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: headersObj,
+                        body: requestBody.value,
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP 错误! 状态: ${response.status}`);
+                    }
+
+                    logMessage(`响应状态: ${response.status} ${response.statusText}`);
+                    
+                    // 手动处理 SSE 响应
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    // 创建自定义事件处理
+                    source = {
+                        _events: {},
+                        addEventListener(event, callback) {
+                            if (!this._events[event]) {
+                                this._events[event] = [];
+                            }
+                            this._events[event].push(callback);
+                        },
+                        dispatchEvent(event, data) {
+                            if (this._events[event]) {
+                                this._events[event].forEach(callback => callback({data}));
+                            }
+                        },
+                        close() {
+                            this.closed = true;
+                            this.readingEnded = true;
+                            reader.cancel();
+                            if (this._events.close) {
+                                this._events.close.forEach(callback => callback());
+                            }
+                        },
+                        closed: false,
+                        readingEnded: false
+                    };
+
+                    // 开始读取流
+                    let buffer = '';
+                    const readStream = async () => {
+                        try {
+                            while (!source.readingEnded) {
+                                const {done, value} = await reader.read();
+                                
+                                if (done) {
+                                    source.readingEnded = true;
+                                    logMessage('流已关闭', 'error');
+                                    source.dispatchEvent('error', 'Stream ended');
+                                    break;
+                                }
+                                
+                                const chunk = decoder.decode(value, {stream: true});
+                                logMessage(`收到数据块: ${chunk.length} 字节`, 'info');
+                                
+                                buffer += chunk;
+                                const lines = buffer.split('\n');
+                                buffer = lines.pop() || '';
+                                
+                                for (const line of lines) {
+                                    if (line.trim() === '') continue;
+                                    if (line.startsWith('data:')) {
+                                        const eventData = line.slice(5).trim();
+                                        logMessage(`事件数据: ${eventData}`, 'message');
+                                        source.dispatchEvent('message', eventData);
+                                    }
+                                }
+                            }
+                        } catch (err) {
+                            logMessage(`流读取错误: ${err.message}`, 'error');
+                            source.dispatchEvent('error', err);
+                            source.readingEnded = true;
+                        }
+                    };
+                    
+                    readStream();
+                }
+
+                // 设置事件监听器
+                source.addEventListener('open', () => {
+                    logMessage('连接已打开', 'info');
+                    updateStatus('已连接', 'connected');
+                    updateButtonState(true);
+                });
+
+                source.addEventListener('message', (event) => {
+                    logMessage(`收到消息: ${event.data}`, 'message');
+                });
+
+                source.addEventListener('error', (event) => {
+                    logMessage('连接错误', 'error');
+                    if (source.readyState === 2) {
+                        updateStatus('连接已关闭', 'disconnected');
+                        updateButtonState(false);
+                    }
+                });
+
+                // 存储事件源
+                eventSource = source;
+            } catch (error) {
+                logMessage(`连接异常: ${error.message}`, 'error');
+                updateStatus('连接失败', 'disconnected');
+                updateButtonState(false);
+            }
+        });
+
+        disconnectBtn.addEventListener('click', () => {
+            if (eventSource) {
+                logMessage('手动断开连接');
+                eventSource.close();
+                eventSource = null;
+                updateStatus('已断开连接', 'disconnected');
+                updateButtonState(false);
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            messageLog.innerHTML = '';
+            logMessage('日志已清除');
+        });
+
+        // 初始化
+        updateStatus('未连接', 'disconnected');
+        logMessage('测试工具已初始化');
+    </script>
+</body>
+</html>

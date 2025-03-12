@@ -12,8 +12,8 @@ import ChatContent from "../../components/chatContent";
 import { Button } from "antd";
 import {getChatList,renamechat,deletechat,getMessage,MessageService,addchat,terminatemessage} from"../../net"
 import { isLogin } from "../../net/token";
+import { set } from "lodash";
 
-//toDo：判断是否登录，如果没有登录，提示登录
 
 export interface Message{
     chatId: number;
@@ -104,51 +104,68 @@ export default function AiAssistant(){
     }
   }
   
-  // 使用示例
-  const sendMessage = async (content: string) => {
+const sendMessage = async (content: string) => {
   if (!currentChat) return;
   
-  // 1. 创建并添加用户消息
+  // 创建消息对象
   const userMessage: Message = {
     chatId: messages.length,
     role: "user",
     content
   };
   
-  // 2. 创建空的助手消息占位
   const assistantMessage: Message = {
     chatId: messages.length + 1,
     role: "assistant",
-    content: ""  // 初始为空
+    content: ""
   };
   
-  // 3. 将两条消息添加到数组
   setMessages([...messages, userMessage, assistantMessage]);
-  
-  // 4. 开始发送请求
   setIsSending(true);
   
-  await MessageService.sendMessage({
-    content,
-    slug: currentChat.id,
-    onMessage: (text) => {
-      // 5. 收到消息时更新助手消息内容
-      setMessages(prevMessages => 
-        prevMessages.map(msg => 
-          msg.chatId === assistantMessage.chatId
-            ? { ...msg, content: msg.content + text }
-            : msg
-        )
-      );
-    },
-    onComplete: () => {
+  // 重试机制
+  let retries = 0;
+  const maxRetries = 3;
+  
+  const attemptSend = async () => {
+    try {
+      await MessageService.sendMessage({
+        content,
+        slug: currentChat.id,
+        onMessage: (text) => {
+          setMessages(prevMessages => 
+            prevMessages.map(msg => 
+              msg.chatId === assistantMessage.chatId
+                ? { ...msg, content: msg.content + text }
+                : msg
+            )
+          );
+        },
+        onComplete: () => {
+          setIsSending(false);
+          console.log('会话完成');
+          moveCurrentChatToTop();
+        },
+        onError: (err) => {
+          console.log('会话出错:', err);
+          if (retries < maxRetries) {
+            retries++;
+            console.log(`尝试第 ${retries} 次重连...`);
+            attemptSend();
+          } else {
+            setIsSending(false);
+            message.error(`会话失败，已重试 ${maxRetries} 次`);
+          }
+        }
+      });
+    } catch (error) {
+      console.error("发送消息异常:", error);
       setIsSending(false);
-      console.log('会话完成');
-    },onError: (err) => {
-      setIsSending(false);
-      console.log('会话失败', err);
+      message.error("发送消息时发生异常");
     }
-  });
+  };
+  
+  await attemptSend();
 };
 
   const terminateMessage = async () =>{
@@ -168,6 +185,21 @@ export default function AiAssistant(){
     }}
     
   }
+
+const moveCurrentChatToTop = ()=>{
+  if(!currentChat) return;
+  const newTime = new Date().toISOString();
+
+  const updatedChat = {
+    ...currentChat,
+    time:newTime
+  }
+
+  const newChatList = chatList.filter(chat => chat.id !== currentChat.id);
+  setChatList([updatedChat, ...newChatList]);
+
+  setCurrentChat(updatedChat);
+}
 
   useEffect(()=>{
     if(!isLogin()){
@@ -190,6 +222,8 @@ export default function AiAssistant(){
       });
     }
   },[currentChat]);
+
+  
 
 
     return (

@@ -8,8 +8,7 @@
 
 import { Input ,Button,message} from "antd";
 import { LoadingOutlined,SendOutlined } from "@ant-design/icons"; 
-import { useState } from "react";
-import markdownRender from "../markdownRenderer";
+import { useState,useRef, useEffect } from "react";
 import "./index.css";
 import MarkdownRenderer from "../markdownRenderer";
 const { TextArea } = Input;
@@ -39,6 +38,8 @@ export interface ChatContentProps{
 
 export default function ChatContent(props: ChatContentProps){
     const [value, setValue] = useState("");
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
 
     //处理键盘事件
     const handleKeyDown : React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
@@ -48,6 +49,7 @@ export default function ChatContent(props: ChatContentProps){
         }
     }
 
+    //处理发送事件
     const handleSend = () =>{
         console.log("isLogin:",props.isLogin);
         if(!props.isLogin){
@@ -72,16 +74,40 @@ export default function ChatContent(props: ChatContentProps){
         }
         else{
             props.onSend(value);
+            scrollToBottom();
             setValue("");
         }
 
         
     }
 
+    //判断是否在底部附近的函数
+    const isNearBottom = () =>{
+        if(!messagesContainerRef.current) return false;
+        const container = messagesContainerRef.current;
+        return container.scrollHeight - container.scrollTop - container.clientHeight < 60;
+    }
+
+    //滚动到底部的函数
+    const scrollToBottom = () =>{
+        messagesEndRef.current?.scrollIntoView({behavior:"smooth"});
+    }
+
+    useEffect(()=>{
+        if(isNearBottom() && props.isSending){
+            setTimeout(scrollToBottom,100);
+        }
+
+        if(!props.isSending && props.messages.length > 0){
+            setTimeout(scrollToBottom,300);
+        }
+
+    },[props.messages,props.isSending]);
+
     //isSending的逻辑在父组件中实现    
     return(
         <div className="chatContent">
-            <div className="contentBox">
+            <div className="contentBox" ref={messagesContainerRef}>
                 {props.messages.map((message)=>{
                     return (
                         <div key={message.chatId} className={`message_${message.role}`}>
@@ -89,6 +115,7 @@ export default function ChatContent(props: ChatContentProps){
                         </div>
                     )
                 })}
+                <div ref={messagesEndRef}></div>
             </div>
             <div className="contentInput">
                 <TextArea
