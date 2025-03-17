@@ -1,0 +1,20 @@
+{
+    "editor.autoClosingTags": true,
+    "editor.autoClosingBrackets": "always",
+    "javascript.autoClosingTags": true,
+    "typescript.autoClosingTags": true,
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+    },
+    "emmet.syntaxProfiles": {
+        "javascript": "jsx",
+        "typescript": "tsx"
+    },
+    "[typescriptreact]": {
+        "editor.autoClosingTags": true
+    },
+    "[javascriptreact]": {
+        "editor.autoClosingTags": true
+    }
+}

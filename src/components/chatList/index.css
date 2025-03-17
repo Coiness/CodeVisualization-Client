@@ -3,14 +3,14 @@
   position: relative;
   height: auto;
   background: #fff;
-  padding: 8px 0 0 0;
+  padding: 0 0 0 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   
 }
 
 /* 标题栏 */
 .chatListHeader {
-  padding: 10px 16px;
+  padding: 2px 16px;
   font-size: 16px;
   font-weight: 600;
   background: #f6f6f6;
@@ -56,7 +56,6 @@
   align-items: center;
   justify-content: center;
   height: 40px;
-  margin: 8px 16px;
   border: 1px dashed #1890ff;
   color: #1890ff;
   font-size: 15px;

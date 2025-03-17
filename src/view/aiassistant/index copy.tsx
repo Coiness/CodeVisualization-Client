@@ -298,7 +298,7 @@ export default function AiAssistant(){
         throttledUpdate.cancel();
       }
     };
-  },[]);
+  });
   
 
 

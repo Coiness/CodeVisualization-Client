@@ -1,7 +1,7 @@
 .chatContent {
   display: flex;            
   flex-direction: column;
-  background-color: bisque;
+  background-color: beige;
   height: calc(100vh - 100px); /* 100px是标题栏的高度 */
   padding: 0px;
   box-sizing: border-box;
@@ -12,10 +12,8 @@
 .contentBox {
   flex: 1; /*内容区域占满剩余空间*/
   overflow-y: auto;
-  background-color: bisque;
-  padding: 16px;
-  padding-top: 8px;
-  margin-bottom: 110px;
+  padding: 8px 8px 0px 16px;
+  margin-bottom: 68px;
 }
 
 /* 输入区域固定在底部 */
@@ -50,23 +48,62 @@
   display: flex;
   border-radius: 8px;
   justify-content: flex-start;
-  width: auto;
-  max-width: 100% ;
+  width: fit-content;
+  max-width: 90% ;
   padding: 8px;
   margin:8px 8px 8px 0  ;
   background-color: #1ADD19;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .message_assistant{
   display: flex;
   border-radius: 8px;
   justify-content: flex-start;
-  width: auto;
-  max-width: 100% ;
+  width: fit-content;
+  max-width: 95% ;
   padding: 0px 8px;
   margin:8px 8px 24px 0  ;
   background-color: white;
-
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
 }
 
+.message_assistant pre,
+.message_assistant code{
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.example-question{
+  display: flex;
+  border-radius: 8px;
+  justify-content: flex-start;
+  width: fit-content;
+  max-width: 100% ;
+  padding: 8px;
+  margin:8px 8px 8px 0  ;
+  background-color: #1ADD19;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.example-question:hover{
+  background-color: #1ADD19;
+  transform: scale(1.02);
+  cursor: pointer;
+}
+
+
 /* margin控制气泡间的间隔 padding让文字与气泡边缘保持距离*/
+/* flex宽度默认100%，一个元素一行  inline-flex宽度与内容长度相关，可以并列一行 */
+/* width设置为fit-content可以让元素宽度与content一样，可以配合flex*/

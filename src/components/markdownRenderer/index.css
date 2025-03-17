@@ -5,7 +5,8 @@
   position: relative;
   margin: 8px 0;
   border-radius: 6px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 /* 复制按钮默认状态 */
@@ -30,12 +31,28 @@
 .code-block-wrapper .copy-button.copied {
   background-color: rgba(72, 187, 120, 0.2);
   border-color: rgba(72, 187, 120, 0.4);
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 10;
+  width: 70px;
+
 }
 
 /* 内联代码样式 */
 .markdown-content code:not([class*="language-"]) {
-  background-color: rgba(0, 0, 0, 0.05);
   border-radius: 3px;
   padding: 0.2em 0.4em;
   font-family: monospace;
+}
+
+.markdown-content {
+  
+    width: auto;
+    max-width: 100% ;
+    background-color: white;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+  
 }
