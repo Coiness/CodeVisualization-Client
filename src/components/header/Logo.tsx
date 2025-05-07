@@ -10,7 +10,7 @@ export function Logo() {
         nav("/");
       }}
     >
-      D&A Visualization
+      代码视界
     </div>
   );
 }

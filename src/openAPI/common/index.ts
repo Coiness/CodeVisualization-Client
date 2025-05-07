@@ -9,6 +9,7 @@ import { ShowCodeLanguage } from "../../view/algorithmEdit/type";
 
 export class CommonApi {
   private console: ConsoleContent | null = null;
+  private currentStepConsole: ConsoleContent[] = [];
   private consoles: (ConsoleContent | null)[] = [];
   private langs: ShowCodeLanguage[] = [];
   private nowRow: { [key: string]: number } = {};
@@ -16,7 +17,13 @@ export class CommonApi {
   private isConsoleEnable: boolean = false;
 
   constructor() {
+    //创建一个数组来存储控制台的输出
+    this.currentStepConsole = [];
+
     consoleSub.subscribe((c) => {
+      //不覆盖，而是添加到当前步骤的控制台输出中
+      this.currentStepConsole.push(c);
+      //仍然保留最后一个用于其他逻辑
       this.console = c;
     });
   }
@@ -35,10 +42,18 @@ export class CommonApi {
 
   nextStep(...args: number[]) {
     steps.push({ actions: cloneDeep(actions) });
-    if (this.console !== null) {
+
+    //如果有控制台输出，则将其添加到当前步骤的控制台输出中
+    if (this.currentStepConsole.length > 0) {
       this.isConsoleEnable = true;
+      this.currentStepConsole.forEach(console => {
+        this.consoles.push(console);
+      });
+      this.currentStepConsole = [];
+    }else{
+      this.consoles.push(null);
     }
-    this.consoles.push(this.console);
+    
 
     if (this.isShowCodeEnable()) {
       if (args.length > 0) {

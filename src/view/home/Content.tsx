@@ -48,7 +48,7 @@ export function Content() {
       <div className="top">
         <div className="left">
           <div className="titles">
-            <div className="name">D&A Visualization</div>
+            <div className="name">代码视界</div>
             <div className="info1">支持自定义算法的</div>
             <div className="info2">数据结构与算法可视化系统</div>
           </div>

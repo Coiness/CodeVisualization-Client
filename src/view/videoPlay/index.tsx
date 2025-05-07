@@ -77,7 +77,7 @@ export function VideoPlay() {
     getVideoInfo(id).then((info) => {
       if (info !== null) {
         setInfo(info);
-        player.start(info.video);
+        player.start(info.video);//此处，对consoles进行赋值了
         // modelSwitcher.setModel(info.snapshot);
       } else {
         navigate("/videoCenter");

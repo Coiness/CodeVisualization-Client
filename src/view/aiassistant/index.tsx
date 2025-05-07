@@ -108,6 +108,7 @@ export default function AiAssistant(){
   }
   
   //创建节流更新函数
+  //useCallback用于创建一个记忆化的函数，避免在每次渲染时都创建新的函数实例
   const updateMessageWithThrottle = useCallback((assistantId:number,text:string) => {
     setMessages(prevMessages =>
       prevMessages.map(msg =>
@@ -118,6 +119,7 @@ export default function AiAssistant(){
     )
   },[]);
 
+  //使用useRef来存储节流函数的引用
   const throttledUpdate = useRef(
     throttle((assistantId:number,text:string) => {
       updateMessageWithThrottle(assistantId,text);
@@ -126,6 +128,13 @@ export default function AiAssistant(){
 
   const sendMessage = async (content: string) => {
     if (!currentChat) return;
+    
+    // 重置状态和清空缓冲区
+    messageBufferRef.current = "";
+    if (bufferTimerRef.current) {
+      clearInterval(bufferTimerRef.current);
+      bufferTimerRef.current = null;
+    }
     
     // 创建消息对象
     const userMessage: Message = {
@@ -137,7 +146,7 @@ export default function AiAssistant(){
     const assistantMessage: Message = {
       chatId: messages.length + 1,
       role: "assistant",
-      content: ""
+      content: "正在生成内容，请稍后..." // 添加等待提示
     };
     
     setMessages([...messages, userMessage, assistantMessage]);
@@ -146,6 +155,7 @@ export default function AiAssistant(){
     // 重试机制
     let retries = 0;
     const maxRetries = 3;
+    let isFirstChunk = true; // 标记是否是第一块内容
     
     const attemptSend = async () => {
       try {
@@ -153,19 +163,31 @@ export default function AiAssistant(){
           content,
           slug: currentChat.id,
           onMessage: (text) => {
-            //积累文本到缓冲区
+            // 如果是首次收到消息，清除等待提示
+            if (isFirstChunk) {
+              setMessages(prevMessages =>
+                prevMessages.map(msg =>
+                  msg.chatId === assistantMessage.chatId
+                    ? { ...msg, content: "" } // 清除等待提示
+                    : msg
+                )
+              );
+              isFirstChunk = false;
+            }
+            
+            // 积累文本到缓冲区
             messageBufferRef.current += text;
-
-            //如果没有活跃的计时器，创建一个
+  
+            // 如果没有活跃的计时器，创建一个
             if(!bufferTimerRef.current){
-              bufferTimerRef.current = setInterval(()=>{
-                //如果有缓冲内容
+              bufferTimerRef.current = setInterval(() => {
+                // 如果有缓冲内容
                 if(messageBufferRef.current){
                   const bufferedText = messageBufferRef.current;
-                  throttledUpdate(assistantMessage.chatId,bufferedText);
-                  messageBufferRef.current = "";
+                  throttledUpdate(assistantMessage.chatId, bufferedText);
+                  messageBufferRef.current = ""; // 确保每次处理后清空
                 }
-              },100);
+              }, 100);
             }
           },
           onComplete: () => {
@@ -173,27 +195,38 @@ export default function AiAssistant(){
               clearInterval(bufferTimerRef.current);
               bufferTimerRef.current = null;
             }
-
-            //确保处理最后的缓冲内容
+  
+            // 确保处理最后的缓冲内容
             if(messageBufferRef.current){
               setMessages(prev => prev.map(msg =>
                 msg.chatId === assistantMessage.chatId
-                  ? { ...msg, content: msg.content + messageBufferRef.current }
+                  ? { ...msg, content: isFirstChunk 
+                      ? "服务器无响应" // 如果完全没有收到内容
+                      : msg.content + messageBufferRef.current } 
                   : msg
-              ))
+              ));
+              messageBufferRef.current = ""; // 清空缓冲区
             }
-
+            moveCurrentChatToTop();
             setIsSending(false);
             console.log('会话完成');
-            moveCurrentChatToTop();
           },
           onError: (err) => {
             console.log('会话出错:', err);
+            // 错误时也要清空缓冲区
+            messageBufferRef.current = "";
+            
             if (retries < maxRetries) {
               retries++;
               console.log(`尝试第 ${retries} 次重连...`);
               attemptSend();
             } else {
+              // 在多次重试失败后，显示错误信息
+              setMessages(prev => prev.map(msg =>
+                msg.chatId === assistantMessage.chatId
+                  ? { ...msg, content: "生成失败，请重试。" } 
+                  : msg
+              ));
               setIsSending(false);
               message.error(`会话失败，已重试 ${maxRetries} 次`);
             }
@@ -201,6 +234,16 @@ export default function AiAssistant(){
         });
       } catch (error) {
         console.error("发送消息异常:", error);
+        // 异常时也要清空缓冲区
+        messageBufferRef.current = "";
+        
+        // 更新最后一条消息为错误提示
+        setMessages(prev => prev.map(msg =>
+          msg.chatId === assistantMessage.chatId
+            ? { ...msg, content: "发送消息失败，请重试。" } 
+            : msg
+        ));
+        
         setIsSending(false);
         message.error("发送消息时发生异常");
       }
@@ -208,7 +251,7 @@ export default function AiAssistant(){
     
     await attemptSend();
   };
-
+  
  const terminateMessage = async () => {
   console.log("stopGet");
   

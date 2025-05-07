@@ -87,6 +87,7 @@ export class Player {
     let res: string[] = [];
     let p = 0;
     let ln = true;
+    console.log("index", index,"consoles:", this.consoles);
     if (!this.consoles) {
       return res;
     }
