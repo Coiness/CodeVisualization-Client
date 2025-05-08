@@ -13,6 +13,36 @@ export class Player {
   private heightlines: { [lang: string]: number[] } | null = null;
   private index: number = 0;
 
+  //新增中间映射层
+  private consoleStepMap: Map<number,ConsoleContent[]> = new Map();
+  private buildConsoleStepMap() {
+    this.consoleStepMap.clear();
+    if (!this.consoles) return;
+    
+    //分析原始控制台数据，构建步骤到多个输出的映射
+    let currentStep = 0;
+    let currentStepConsoles: ConsoleContent[] = [];
+
+    for(let i = 0; i < this.consoles.length; i++) {
+      if(this.consoles[i]== null){
+        //null表示步骤分隔符号，保存当前步骤的控制台输出
+        if(currentStepConsoles.length > 0){
+          this.consoleStepMap.set(currentStep, [...currentStepConsoles]);
+          currentStepConsoles = [];
+        }
+        currentStep++;
+      }else{
+        //警控制台输出添加到当前步骤
+        currentStepConsoles.push(this.consoles[i]!);
+      }
+    }
+
+    //最后一步的控制台输出
+    if(currentStepConsoles.length > 0){
+      this.consoleStepMap.set(currentStep, [...currentStepConsoles]);
+    }
+  }
+
   progress = new Subject<number>();
 
   start(video: Video) {
@@ -22,6 +52,7 @@ export class Player {
     this.consoles = video.consoles;
     this.heightlines = video.heightlines;
     this.index = 0;
+    this.buildConsoleStepMap();
     this.progress.next(this.index);
     modelSwitcher.pushModel(this.snapshot);
   }
@@ -83,41 +114,49 @@ export class Player {
   }
 
   getConsoles(): string[] {
-    let index = this.index;
-    let res: string[] = [];
-    let p = 0;
-    let ln = true;
-    console.log("index", index,"consoles:", this.consoles);
-    if (!this.consoles) {
-      return res;
-    }
-    for (let i = 0; i < this.consoles.length; i++) {
-      if (i >= index) {
-        break;
-      }
+   if(!this.consoles) return [];
+   const result: string[] = [];
 
-      if (this.consoles[i] === null) {
-        continue;
-      }
+   //处理每一步骤的控制台输出
+   for(let  stepIndex = 0; stepIndex < this.index; stepIndex++){
+      const stepConsoles = this.consoleStepMap.get(stepIndex);
 
-      if (ln) {
-        res[p++] = this.consoles[i]!.content;
-      } else {
-        res[p] += this.consoles[i]!.content;
-      }
+      if(!stepConsoles) continue;
 
-      if (this.consoles[i]!.type === "print") {
-        ln = false;
-      } else if (this.consoles[i]!.type === "println") {
-        ln = true;
+      //处理这一步的控制台输出
+      let currentLine = "";
+      let isNewLine = true;
+
+      for(const consoleItem of stepConsoles){
+        if(isNewLine){
+          currentLine = consoleItem.content;
+        }else{
+          currentLine += consoleItem.content;
+        }
+
+        if(consoleItem.type === "println"){
+          result.push(currentLine);
+          currentLine = "";
+          isNewLine = true;
+        }else{
+          isNewLine = false;
+        }
       }
-    }
-    return res;
+      //如果有未完成的行，则添加到结果中
+      if(currentLine){
+        result.push(currentLine);
+        currentLine = "";
+      }
+   }
+
+   return result;
+
   }
 
   getHeightLine(lang: ShowCodeLanguage): number {
     return this.heightlines?.[lang][this.index] ?? 0;
   }
+
 
   end() {}
 }

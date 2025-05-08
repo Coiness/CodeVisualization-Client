@@ -23,8 +23,6 @@ export class CommonApi {
     consoleSub.subscribe((c) => {
       //不覆盖，而是添加到当前步骤的控制台输出中
       this.currentStepConsole.push(c);
-      //仍然保留最后一个用于其他逻辑
-      this.console = c;
     });
   }
 
@@ -44,16 +42,21 @@ export class CommonApi {
     steps.push({ actions: cloneDeep(actions) });
 
     //如果有控制台输出，则将其添加到当前步骤的控制台输出中
-    if (this.currentStepConsole.length > 0) {
+    if (this.currentStepConsole.length > 0){
       this.isConsoleEnable = true;
-      this.currentStepConsole.forEach(console => {
+
+      for(const console of this.currentStepConsole){
         this.consoles.push(console);
-      });
+      }
+
+      this.consoles.push(null);
+
       this.currentStepConsole = [];
     }else{
       this.consoles.push(null);
     }
     
+
 
     if (this.isShowCodeEnable()) {
       if (args.length > 0) {
