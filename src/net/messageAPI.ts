@@ -3,13 +3,15 @@ import { getAccount, getToken } from "./token";
 
 // 定义消息类型
 export interface MessageInfo {
-  chatId: number;
+  chat_id: string;
+  role: string; // 'system' | 'user' | 'assistant'
   content: string;
-  role: "user" | "assistant";
+  sequence_number: number;
+  timestamp: number;
 }
 
 interface Chat {
-  id: string;
+  chat_id: string;
   title: string;
   time: string;
 }
@@ -21,7 +23,7 @@ export interface GetMessageResponseData {
 
 // 获取消息，返回的消息按照id排序，role排序
 export async function getMessage(currentChat: Chat): Promise<GetMessageResponseData> {
-  const slug = currentChat.id;
+  const chat_id = currentChat.chat_id;
   const token = getToken();
   const account = getAccount();
   const url = `http://localhost:12345/message/get`;
@@ -33,7 +35,7 @@ export async function getMessage(currentChat: Chat): Promise<GetMessageResponseD
         "Content-Type": "application/json",
         token: token!,
         account: account!,
-        slug: slug,
+        chat_id: chat_id,
       },
       credentials: "include",
     });
@@ -53,10 +55,10 @@ export async function getMessage(currentChat: Chat): Promise<GetMessageResponseD
     const data = responseData.data;
 
     const sortedMessages = data.sort((a: MessageInfo, b: MessageInfo) => {
-      if (a.chatId === b.chatId) {
+      if (a.sequence_number === b.sequence_number) {
         return a.role === "user" ? -1 : 1;
       }
-      return a.chatId - b.chatId;
+      return a.sequence_number - b.sequence_number;
     });
 
     return { messages: sortedMessages };
@@ -77,7 +79,7 @@ export interface MessageResponse {
 
 export interface SendMessageParams {
   content: string;
-  slug: string;
+  chat_id: string;
   onMessage: (text: string) => void;
   onComplete: () => void;
   onError: (error: string) => void;
@@ -86,7 +88,7 @@ export interface SendMessageParams {
 export class MessageService {
   private static readonly API_URL = "http://localhost:12345/message/send";
 
-    static async sendMessage({ content, slug, onMessage, onComplete, onError }: SendMessageParams): Promise<void> {
+    static async sendMessage({ content, chat_id, onMessage, onComplete, onError }: SendMessageParams): Promise<void> {
     // 创建 AbortController 用于超时控制
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 60000); // 设置 60 秒超时
@@ -99,7 +101,7 @@ export class MessageService {
           "Connection": "keep-alive", // 明确指定保持连接
           "token": getToken() || "", // 添加令牌
         },
-        body: JSON.stringify({ content, slug, account: getAccount() }),
+        body: JSON.stringify({ content, chat_id, account: getAccount() }),
         credentials: "include", // 启用凭据
         signal: controller.signal, // 添加 AbortController 信号
         keepalive: true, // 保持连接活跃
@@ -127,28 +129,48 @@ export class MessageService {
     onComplete: () => void,
     onError: (error: string) => void,
   ): Promise<void> {
+
+    // 获得响应流
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error("无法读取响应流");
     }
 
+    // 设置解码器与缓冲区
     const decoder = new TextDecoder();
     let buffer = "";
 
     try {
+      // 循环读取数据流
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
+        // 解码和缓冲处理
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
 
+        // 解析和处理SSE数据
         for (const line of lines) {
+          // js的trim方法会去掉字符串两端的空格
           const trimmed = line.trim();
+          // 过滤掉空行和非数据行
           if (!trimmed || !trimmed.startsWith("data: ")) continue;
 
           try {
+            /**
+             * 原始SSE数据流
+             * data:{"type":"textResponseChunk","textResponse":"你好","close":false,"error":false}
+             * slice(5)去掉前缀"data: "
+             * {type: "textResponseChunk", textResponse: "你好", close: false, error: false}
+             * 解析JSON为JS对象
+             * {
+             * type: "textResponseChunk",
+             * textResponse: "你好",
+             * close: false,
+             * error: false}
+             */
             const data: MessageResponse = JSON.parse(trimmed.slice(5).trim());
 
             if (data.error) {
@@ -176,7 +198,7 @@ export class MessageService {
   }
 }
 
-export async function terminatemessage(slug: string): Promise<boolean> {
-  let res = await post("/message/terminate", { slug });
+export async function terminatemessage(chat_id: string): Promise<boolean> {
+  let res = await post("/message/terminate", { chat_id });
   return res.flag;
 }

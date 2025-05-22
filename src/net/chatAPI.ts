@@ -1,6 +1,16 @@
 import { get, post } from "./request";
 import { getAccount } from "./token";
 
+function formatDateTime(date: Date): string {
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const seconds = date.getSeconds().toString().padStart(2, '0');
+
+  return `${date.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 /*
  * nav 用于导航到指定URL
  * get 用于发送GET请求
@@ -11,7 +21,7 @@ import { getAccount } from "./token";
 
 export interface Chat {
   account: string;
-  id: string;
+  chat_id: string;
   title: string;
   time: string;
 }
@@ -36,18 +46,19 @@ export async function getChatList(): Promise<GetChatResponseData | null> {
 }
 
 // 更改聊天名称
-export async function renamechat(id: string, name: string): Promise<boolean> {
-  let res = await post("/chat/rename", { id, name });
+export async function renamechat(chat_id: string, name: string): Promise<boolean> {
+  let res = await post("/chat/rename", { chat_id, name });
   return res.flag;
 }
 
 // 删除聊天
-export async function deletechat(id: string): Promise<boolean> {
-  let res = await post("/chat/delete", { id });
+export async function deletechat(chat_id: string): Promise<boolean> {
+  let res = await post("/chat/delete", { chat_id });
   return res.flag;
 }
 
 // 新增聊天
+// 后端创建后会返回一个chat_id
 export async function addchat(): Promise<Chat> {
   let res = await post("/chat/add", {});
   let newChat: Chat;
@@ -55,15 +66,15 @@ export async function addchat(): Promise<Chat> {
   if (account) {
     newChat = {
       account: account,
-      id: res.data.id,
-      title: "新对话",
+      chat_id: res.data.chat_id,
+      title: "新对话"+ formatDateTime(new Date()),
       time: new Date().toISOString(),
     };
     return newChat;
   } else {
     newChat = {
       account: "",
-      id: "",
+      chat_id: "",
       title: "未登录（不过这种情况真的存在吗）",
       time: new Date().toISOString(),
     };

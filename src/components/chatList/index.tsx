@@ -12,7 +12,7 @@ import { Modal ,message} from 'antd';
 import "./index.css";
 
 export interface Chat{
-    id: string;
+    chat_id: string;
     title: string;
     time: string;
 }
@@ -57,7 +57,7 @@ export default function ChatList(props: ChatListProps){
                 <div className='chatListBody-Absolute'>
                 {fold ? null : props.chatList?props.chatList.map((chat)=>{
                     return (
-                        <div className='chatItem' key={chat.id} onClick={() =>{ props.onSelectChat(chat);setFold(true)}}>
+                        <div className='chatItem' key={chat.chat_id} onClick={() =>{ props.onSelectChat(chat);setFold(true)}}>
                             {chat.title}
                         <EditOutlined onClick={(e) => {
                             if(!props.isLogin){
@@ -68,7 +68,7 @@ export default function ChatList(props: ChatListProps){
                             const newName = prompt("请输入新的名字");
                             if(newName){
                                 //调用修改名字的API
-                                props.onEdit(chat.id, newName);
+                                props.onEdit(chat.chat_id, newName);
                             }
                         }}/>
                         <DeleteOutlined onClick={(e) => {
@@ -84,9 +84,9 @@ export default function ChatList(props: ChatListProps){
                                 cancelText: "取消",
                                 onOk: () => {
                                     //调用删除对话的API
-                                    console.log("调用删除对话的API",props.currentChat?.id);
-                                    props.onDelete(chat.id);
-                                    if(props.currentChat?.id === chat.id){
+                                    console.log("调用删除对话的API",props.currentChat?.chat_id);
+                                    props.onDelete(chat.chat_id);
+                                    if(props.currentChat?.chat_id === chat.chat_id){
                                         props.onSelectChat(null);
                                     }
                                 }

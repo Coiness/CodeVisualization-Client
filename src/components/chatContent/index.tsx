@@ -16,13 +16,15 @@ const { TextArea } = Input;
 
 
 export interface Message{
-    chatId: number;
-    role: string;
+    chat_id: string;  // 这个现在是指定与Chat绑定的ID，而不是消息序列号
+    role: string; // 'system' | 'user' | 'assistant'
     content: string;
+    sequence_number: number; // 这个现在表示消息序列号
+    timestamp: number;
 }
 
 export interface Chat{
-    id:string;
+    chat_id:string;
     title:string;
     time:string;
 }
@@ -135,7 +137,7 @@ export default function ChatContent(props: ChatContentProps){
 
     const MessageItem = React.memo(({message}:{message:Message})=>{
         return(
-            <div key={message.chatId} className={`message_${message.role}`}>
+            <div key={message.sequence_number} className={`message_${message.role}`}>
                 {message.role === "user"?
                 (message.content)
                 :( <MarkdownRenderer content={message.content}/>)}
@@ -153,7 +155,7 @@ export default function ChatContent(props: ChatContentProps){
             ? 
             props.messages.map((message)=>{
                 return(
-                    <MessageItem key={message.chatId} message={message}></MessageItem>
+                    <MessageItem key={message.sequence_number} message={message}></MessageItem>
                 )
             })
             :

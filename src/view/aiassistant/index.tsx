@@ -15,14 +15,17 @@ import {getChatList,renamechat,deletechat,getMessage,MessageService,addchat,term
 import { isLogin } from "../../net/token";
 
 
+// 定义消息类型
 export interface Message{
-    chatId: number;
-    role: string;
-    content: string;
+  chat_id: string;
+  role: string; // 'system' | 'user' | 'assistant'
+  content: string;
+  sequence_number: number;
+  timestamp: number;
 }
 
 export interface Chat{
-    id:string;
+    chat_id:string;
     title:string;
     time:string;
 }
@@ -79,8 +82,8 @@ export default function AiAssistant(){
     const res = await deletechat(id);
     console.log("删除对话",res);
     if (res) {
-      const newChatList = chatList.filter((chat) => chat.id !== id);
-      if(currentChat?.id === id){
+      const newChatList = chatList.filter((chat) => chat.chat_id !== id);
+      if(currentChat?.chat_id === id){
         setCurrentChat(null);
         console.log("currentChat在删除后被设定为",currentChat);
       }
@@ -95,7 +98,7 @@ export default function AiAssistant(){
     const res = await renamechat(id, name);
     if (res) {
       const newChatList = chatList.map((chat) => {
-        if (chat.id === id) {
+        if (chat.chat_id === id) {
           chat.title = name;
         }
         return chat;
@@ -112,7 +115,7 @@ export default function AiAssistant(){
   const updateMessageWithThrottle = useCallback((assistantId:number,text:string) => {
     setMessages(prevMessages =>
       prevMessages.map(msg =>
-        msg.chatId === assistantId
+        msg.sequence_number === assistantId
           ? { ...msg, content: msg.content + text }
           : msg
       )
@@ -136,17 +139,26 @@ export default function AiAssistant(){
       bufferTimerRef.current = null;
     }
     
+    // 寻找当前最大的sequence_number
+    const maxSequence = messages.length > 0 
+        ? Math.max(...messages.map(m => m.sequence_number)) 
+        : 0;
+    
     // 创建消息对象
     const userMessage: Message = {
-      chatId: messages.length,
-      role: "user",
-      content
+        sequence_number: maxSequence + 1,  // 确保序列号递增
+        role: "user",
+        chat_id: currentChat.chat_id,
+        timestamp: Date.now(),
+        content
     };
     
     const assistantMessage: Message = {
-      chatId: messages.length + 1,
-      role: "assistant",
-      content: "正在生成内容，请稍后..." // 添加等待提示
+        sequence_number: maxSequence + 2,  // 确保序列号递增
+        role: "assistant",
+        chat_id: currentChat.chat_id,
+        timestamp: Date.now(),
+        content: "正在生成内容，请稍后..." // 添加等待提示
     };
     
     setMessages([...messages, userMessage, assistantMessage]);
@@ -161,13 +173,13 @@ export default function AiAssistant(){
       try {
         await MessageService.sendMessage({
           content,
-          slug: currentChat.id,
+          chat_id: currentChat.chat_id,
           onMessage: (text) => {
             // 如果是首次收到消息，清除等待提示
             if (isFirstChunk) {
               setMessages(prevMessages =>
                 prevMessages.map(msg =>
-                  msg.chatId === assistantMessage.chatId
+                  msg.sequence_number === assistantMessage.sequence_number
                     ? { ...msg, content: "" } // 清除等待提示
                     : msg
                 )
@@ -184,7 +196,7 @@ export default function AiAssistant(){
                 // 如果有缓冲内容
                 if(messageBufferRef.current){
                   const bufferedText = messageBufferRef.current;
-                  throttledUpdate(assistantMessage.chatId, bufferedText);
+                  throttledUpdate(assistantMessage.sequence_number, bufferedText);
                   messageBufferRef.current = ""; // 确保每次处理后清空
                 }
               }, 100);
@@ -199,7 +211,7 @@ export default function AiAssistant(){
             // 确保处理最后的缓冲内容
             if(messageBufferRef.current){
               setMessages(prev => prev.map(msg =>
-                msg.chatId === assistantMessage.chatId
+                msg.sequence_number === assistantMessage.sequence_number
                   ? { ...msg, content: isFirstChunk 
                       ? "服务器无响应" // 如果完全没有收到内容
                       : msg.content + messageBufferRef.current } 
@@ -223,7 +235,7 @@ export default function AiAssistant(){
             } else {
               // 在多次重试失败后，显示错误信息
               setMessages(prev => prev.map(msg =>
-                msg.chatId === assistantMessage.chatId
+                msg.sequence_number === assistantMessage.sequence_number
                   ? { ...msg, content: "生成失败，请重试。" } 
                   : msg
               ));
@@ -239,7 +251,7 @@ export default function AiAssistant(){
         
         // 更新最后一条消息为错误提示
         setMessages(prev => prev.map(msg =>
-          msg.chatId === assistantMessage.chatId
+          msg.sequence_number === assistantMessage.sequence_number
             ? { ...msg, content: "发送消息失败，请重试。" } 
             : msg
         ));
@@ -266,7 +278,7 @@ export default function AiAssistant(){
     const lastMessage = messages.find(msg => msg.role === "assistant");
     if (lastMessage) {
       setMessages(prev => prev.map(msg => 
-        msg.chatId === lastMessage.chatId 
+        msg.sequence_number === lastMessage.sequence_number
           ? { ...msg, content: msg.content + messageBufferRef.current + "\n\n[消息已终止]" } 
           : msg
       ));
@@ -277,7 +289,7 @@ export default function AiAssistant(){
   // 然后再通知后端
   if (isSending && currentChat) {
     try {
-      const res = await terminatemessage(currentChat.id);
+      const res = await terminatemessage(currentChat.chat_id);
       if (res) {
         console.log("终止成功");
       } else {
@@ -300,7 +312,7 @@ export default function AiAssistant(){
       time:newTime
     }
 
-    const newChatList = chatList.filter(chat => chat.id !== currentChat.id);
+    const newChatList = chatList.filter(chat => chat.chat_id !== currentChat.chat_id);
     setChatList([updatedChat, ...newChatList]);
 
     setCurrentChat(updatedChat);
